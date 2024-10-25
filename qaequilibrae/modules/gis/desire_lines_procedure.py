@@ -294,9 +294,9 @@ class DesireLinesProcedure(WorkerThread):
             for c in self.matrix.view_names:
                 attr.extend(
                     [
-                        float(link_loads.data[c + "_ab"][i]),
-                        float(link_loads.data[c + "_ba"][i]),
-                        float(link_loads.data[c + "_tot"][i]),
+                        float(link_loads[c + "_ab"][link_id]),
+                        float(link_loads[c + "_ba"][link_id]),
+                        float(link_loads[c + "_tot"][link_id]),
                     ]
                 )
             feature.setAttributes(attr)

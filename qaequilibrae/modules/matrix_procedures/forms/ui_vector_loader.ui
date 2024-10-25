@@ -38,7 +38,7 @@
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>68</y>
+     <y>95</y>
      <width>131</width>
      <height>23</height>
     </rect>
@@ -147,7 +147,7 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>36</y>
+     <y>53</y>
      <width>190</width>
      <height>24</height>
     </rect>
@@ -160,7 +160,7 @@
    <property name="geometry">
     <rect>
      <x>171</x>
-     <y>40</y>
+     <y>57</y>
      <width>121</width>
      <height>16</height>
     </rect>
@@ -169,7 +169,7 @@
     <string>Index field</string>
    </property>
   </widget>
-  <widget class="QRadioButton" name="radio_aequilibrae">
+  <widget class="QRadioButton" name="radio_csv">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -178,8 +178,11 @@
      <height>20</height>
     </rect>
    </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>AequilibraE data</string>
+    <string>CSV</string>
    </property>
    <property name="checked">
     <bool>true</bool>
@@ -189,7 +192,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>40</y>
+     <y>70</y>
      <width>161</width>
      <height>17</height>
     </rect>
@@ -205,7 +208,7 @@
    <property name="geometry">
     <rect>
      <x>12</x>
-     <y>96</y>
+     <y>120</y>
      <width>141</width>
      <height>22</height>
     </rect>
@@ -221,7 +224,7 @@
    <property name="geometry">
     <rect>
      <x>304</x>
-     <y>68</y>
+     <y>95</y>
      <width>136</width>
      <height>23</height>
     </rect>
@@ -271,9 +274,9 @@
    <property name="geometry">
     <rect>
      <x>247</x>
-     <y>139</y>
+     <y>149</y>
      <width>190</width>
-     <height>261</height>
+     <height>251</height>
     </rect>
    </property>
    <column>
@@ -286,9 +289,9 @@
    <property name="geometry">
     <rect>
      <x>13</x>
-     <y>139</y>
+     <y>149</y>
      <width>190</width>
-     <height>261</height>
+     <height>251</height>
     </rect>
    </property>
    <column>
@@ -339,7 +342,7 @@
    <property name="geometry">
     <rect>
      <x>11</x>
-     <y>68</y>
+     <y>95</y>
      <width>131</width>
      <height>23</height>
     </rect>
@@ -389,7 +392,7 @@
    <property name="geometry">
     <rect>
      <x>250</x>
-     <y>10</y>
+     <y>17</y>
      <width>190</width>
      <height>24</height>
     </rect>
@@ -402,7 +405,7 @@
    <property name="geometry">
     <rect>
      <x>171</x>
-     <y>13</y>
+     <y>20</y>
      <width>121</width>
      <height>16</height>
     </rect>
@@ -415,13 +418,26 @@
    <property name="geometry">
     <rect>
      <x>283</x>
-     <y>122</y>
+     <y>130</y>
      <width>131</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
     <string>Keep these fields only</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="radio_parquet">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>82</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Parquet</string>
    </property>
   </widget>
  </widget>
