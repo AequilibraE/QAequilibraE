@@ -53,7 +53,6 @@ class LoadDataset(WorkerThread):
                 fields.append(str(field.name()))
                 idxs.append(self.layer.dataProvider().fieldNameIndex(field.name()))
 
-        index_idx = self.layer.dataProvider().fieldNameIndex(self.index_field)
         datafile_spec["field_names"] = fields
         datafile_spec["data_types"] = types
         datafile_spec["file_path"] = self.output_name
@@ -68,8 +67,8 @@ class LoadDataset(WorkerThread):
                         self.output.loc[p, field] = empty
                     else:
                         self.output.loc[p, field] = feat.attributes()[idx]
-                # self.output.index[p] = feat.attributes()[index_idx]
                 self.signal.emit(["update", 0, p, f"Feature count: {p}", "master"])
+            self.output.set_index(self.index_field, inplace=True)
 
         self.signal.emit(["set_text", 0, feat_count, f"Feature count: {feat_count}", "master"])
         self.signal.emit(["finished"])

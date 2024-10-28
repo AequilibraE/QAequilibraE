@@ -210,14 +210,17 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         dlg2.show()
         dlg2.exec_()
         if isinstance(dlg2.dataset, pd.DataFrame):
-            dataset_name = dlg2.file_path
+            dataset_name = dlg2.output_name
             if dataset_name is not None:
                 data_name = os.path.splitext(os.path.basename(dataset_name))[0]
                 data_name = self.find_non_conflicting_name(data_name, self.datasets)
                 self.datasets[data_name] = dlg2.dataset
                 self.add_to_table(self.datasets, self.table_datasets)
                 self.load_comboboxes(self.datasets.keys(), self.cob_data)
-                self.load_comboboxes(self.datasets.keys(), self.cob_data)
+            self._has_idx = True if dlg2.radio_layer_matrix.isChecked() else False
+            if self._has_idx:
+                self.cob_index.clear()
+                self.cob_index.setEnabled(False)
 
     def load_model(self):
         file_name = self.browse_outfile("mod")
@@ -304,7 +307,8 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
 
             if self.job != "calibrate":
                 vec = self.datasets[self.cob_data.currentText()]
-                vec.set_index(self.cob_index.currentText(), inplace=True)
+                if not self._has_idx:
+                    vec.set_index(self.cob_index.currentText(), inplace=True)
                 prod_field = self.cob_prod_field.currentText()
                 atra_field = self.cob_atra_field.currentText()
 
@@ -313,7 +317,7 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
                 if self.out_name is not None:
                     args = {
                         "matrix": seed_matrix,
-                        "vectors": vec, 
+                        "vectors": vec,
                         "row_field": prod_field,
                         "column_field": atra_field,
                         "nan_as_zero": self.chb_empty_as_zero.isChecked(),
@@ -365,7 +369,7 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
                 return
             self.add_job_to_list(worker_thread, self.out_name)
         else:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Procedure error: "), self.error, level=3)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Procedure error: "), self.error, level=3, duration=10)
 
     def add_job_to_list(self, job, out_name):
         self.job_queue[out_name] = job
@@ -432,8 +436,8 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.exit_procedure()
 
     def exit_procedure(self):
-        self.close()
         if self.report is not None:
             dlg2 = ReportDialog(self.iface, self.report)
             dlg2.show()
             dlg2.exec_()
+        self.close()

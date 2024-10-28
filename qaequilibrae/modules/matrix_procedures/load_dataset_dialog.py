@@ -171,8 +171,10 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
             self.exit_procedure()
 
     def load_from_file(self):
-        formats = ["Comma-separated values (*.csv)", "Parquet (*.parquet)"]
-        out_name, _ = GetOutputFileName(self, "Load file", formats, ".csv", self.path)
+        if self.radio_csv.isChecked():
+            out_name, _ = GetOutputFileName(self, "Load file", ["Comma-separated values (*.csv)"], ".csv", self.path)
+        elif self.radio_parquet.isChecked():
+            out_name, _ = GetOutputFileName(self, "Load file", ["Parquet (*.parquet)"], ".parquet", self.path)
         self.load_with_file_name(out_name)
 
     def load_with_file_name(self, out_name):
@@ -181,7 +183,7 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
                 self.dataset = pd.read_csv(out_name)
             elif ".parquet" in out_name:
                 self.dataset = pd.read_parquet(out_name)
-            self.file_path = out_name
+            self.output_name = out_name
         except Exception as e:
             self.error = self.tr(
                 "Could not load file. It might be corrupted or not a valid file format. {}".format(e.args)
@@ -197,8 +199,6 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
                 self.error = self.tr("Invalid field chosen")
 
             index_field = self.cob_index_field.currentText()
-            if index_field in self.selected_fields:
-                self.selected_fields.remove(index_field)
 
             if len(self.selected_fields) > 0:
                 self.worker_thread = LoadDataset(
@@ -223,9 +223,7 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
         else:
             formats = ["Comma-separated values (*.csv)", "Parquet (*.parquet)"]
             self.error = None
-            self.output_name, _ = GetOutputFileName(
-                self, "Save vector", formats, ".csv", self.path
-            )
+            self.output_name, _ = GetOutputFileName(self, "Save layer vector", formats, ".csv", self.path)
             if self.output_name is None:
                 self.error = self.tr("No name provided for the output file")
 
