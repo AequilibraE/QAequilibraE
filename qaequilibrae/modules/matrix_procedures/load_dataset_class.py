@@ -1,11 +1,12 @@
-from qgis.PyQt.QtCore import QVariant
 import numpy as np
+import struct
+import pandas as pd
+import qgis
 from uuid import uuid4
 from aequilibrae.utils.interface.worker_thread import WorkerThread
-import struct
-from aequilibrae.matrix import AequilibraeData
+from qgis.PyQt.QtCore import pyqtSignal, QVariant
+
 from qaequilibrae.modules.common_tools.global_parameters import float_types, string_types, integer_types
-from qgis.PyQt.QtCore import pyqtSignal
 
 
 class LoadDataset(WorkerThread):
@@ -18,7 +19,7 @@ class LoadDataset(WorkerThread):
         self.fields = fields
         self.error = None
         self.python_version = 8 * struct.calcsize("P")
-        self.output = AequilibraeData()
+        self.output = pd.DataFrame
         self.output_name = file_name
 
     def doWork(self):
@@ -55,24 +56,19 @@ class LoadDataset(WorkerThread):
         index_idx = self.layer.dataProvider().fieldNameIndex(self.index_field)
         datafile_spec["field_names"] = fields
         datafile_spec["data_types"] = types
-
-        if self.output_name is None:
-            self.output_name = self.output.random_name()
-        else:
-            self.output_name += f"_{uuid4().hex[:10]}"
         datafile_spec["file_path"] = self.output_name
 
         if self.error is None:
-            self.output.create_empty(**datafile_spec)
+            self.output = pd.DataFrame([])
 
             # Get all the data
             for p, feat in enumerate(self.layer.getFeatures()):
                 for idx, field, empty in zip(idxs, fields, empties):
                     if feat.attributes()[idx] == QVariant():
-                        self.output.data[field][p] = empty
+                        self.output.loc[p, field] = empty
                     else:
-                        self.output.data[field][p] = feat.attributes()[idx]
-                self.output.index[p] = feat.attributes()[index_idx]
+                        self.output.loc[p, field] = feat.attributes()[idx]
+                # self.output.index[p] = feat.attributes()[index_idx]
                 self.signal.emit(["update", 0, p, f"Feature count: {p}", "master"])
 
         self.signal.emit(["set_text", 0, feat_count, f"Feature count: {feat_count}", "master"])

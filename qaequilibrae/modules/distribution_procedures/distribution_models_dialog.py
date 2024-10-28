@@ -5,9 +5,10 @@ from functools import partial
 from os.path import join
 
 import numpy as np
+import pandas as pd
 from aequilibrae.distribution import SyntheticGravityModel
 from aequilibrae.distribution.synthetic_gravity_model import valid_functions
-from aequilibrae.matrix import AequilibraeData, AequilibraeMatrix
+from aequilibrae.matrix import AequilibraeMatrix
 
 from qgis.PyQt.QtWidgets import QAbstractItemView
 from qaequilibrae.modules.matrix_procedures.matrix_lister import list_matrices
@@ -64,11 +65,14 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.but_load_data.clicked.connect(self.load_datasets)
         self.but_load_model.clicked.connect(self.load_model)
 
-        self.cob_prod_data.currentIndexChanged.connect(
-            partial(self.change_vector_field, self.cob_prod_data, self.cob_prod_field, "data")
+        self.cob_data.currentIndexChanged.connect(
+            partial(self.change_vector_field, self.cob_data, self.cob_index, "data")
         )
-        self.cob_atra_data.currentIndexChanged.connect(
-            partial(self.change_vector_field, self.cob_atra_data, self.cob_atra_field, "data")
+        self.cob_data.currentIndexChanged.connect(
+            partial(self.change_vector_field, self.cob_data, self.cob_prod_field, "data")
+        )
+        self.cob_data.currentIndexChanged.connect(
+            partial(self.change_vector_field, self.cob_data, self.cob_atra_field, "data")
         )
 
         self.cob_imped_mat.currentIndexChanged.connect(
@@ -205,15 +209,15 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         dlg2 = LoadDatasetDialog(self.iface)
         dlg2.show()
         dlg2.exec_()
-        if isinstance(dlg2.dataset, AequilibraeData):
-            dataset_name = dlg2.dataset.file_path
+        if isinstance(dlg2.dataset, pd.DataFrame):
+            dataset_name = dlg2.file_path
             if dataset_name is not None:
                 data_name = os.path.splitext(os.path.basename(dataset_name))[0]
                 data_name = self.find_non_conflicting_name(data_name, self.datasets)
                 self.datasets[data_name] = dlg2.dataset
                 self.add_to_table(self.datasets, self.table_datasets)
-                self.load_comboboxes(self.datasets.keys(), self.cob_prod_data)
-                self.load_comboboxes(self.datasets.keys(), self.cob_atra_data)
+                self.load_comboboxes(self.datasets.keys(), self.cob_data)
+                self.load_comboboxes(self.datasets.keys(), self.cob_data)
 
     def load_model(self):
         file_name = self.browse_outfile("mod")
@@ -230,9 +234,9 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         d = str(cob_orig.currentText())
         if len(d) > 0:
             if dt == "data":
-                for f in self.datasets[d].fields:
-                    if np.issubdtype(self.datasets[d].data[f].dtype, np.integer) or np.issubdtype(
-                        self.datasets[d].data[f].dtype, np.float64
+                for f in self.datasets[d].columns:
+                    if np.issubdtype(self.datasets[d][f].dtype, np.integer) or np.issubdtype(
+                        self.datasets[d][f].dtype, np.float64
                     ):
                         cob_dest.addItem(f)
             else:
@@ -265,14 +269,13 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
 
         for i, data_name in enumerate(dictio.keys()):
             table.setItem(i, 0, QTableWidgetItem(data_name))
-            if isinstance(dictio[data_name], AequilibraeData):
-                table.setItem(i, 1, QTableWidgetItem(str(dictio[data_name].num_fields)))
+            if isinstance(dictio[data_name], pd.DataFrame):
+                table.setItem(i, 1, QTableWidgetItem(str(dictio[data_name].shape[1] - 1)))
             else:
                 table.setItem(i, 1, QTableWidgetItem(str(dictio[data_name].cores)))
 
     def browse_outfile(self, file_type):
         file_types = {
-            "aed": ["AequilibraE dataset", ["Aequilibrae dataset(*.aed)"], ".aed"],
             "mod": ["Model file", ["Model file(*.mod)"], ".mod"],
             "aem": ["Matrix", ["Aequilibrae matrix(*.aem)"], ".aem"],
         }
@@ -300,9 +303,9 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
                 seed_matrix.computational_view([self.cob_seed_field.currentText()])
 
             if self.job != "calibrate":
-                prod_vec = self.datasets[self.cob_prod_data.currentText()]
+                vec = self.datasets[self.cob_data.currentText()]
+                vec.set_index(self.cob_index.currentText(), inplace=True)
                 prod_field = self.cob_prod_field.currentText()
-                atra_vec = self.datasets[self.cob_atra_data.currentText()]
                 atra_field = self.cob_atra_field.currentText()
 
             if self.job == "ipf":
@@ -310,9 +313,8 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
                 if self.out_name is not None:
                     args = {
                         "matrix": seed_matrix,
-                        "rows": prod_vec,
+                        "vectors": vec, 
                         "row_field": prod_field,
-                        "columns": atra_vec,
                         "column_field": atra_field,
                         "nan_as_zero": self.chb_empty_as_zero.isChecked(),
                     }
@@ -328,11 +330,10 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
                             self.model.beta = float(self.table_model.cellWidget(i, 1).value())
 
                     args = {
-                        "impedance": imped_matrix,
-                        "rows": prod_vec,
-                        "row_field": prod_field,
                         "model": self.model,
-                        "columns": atra_vec,
+                        "impedance": imped_matrix,
+                        "vectors": vec,
+                        "row_field": prod_field,
                         "column_field": atra_field,
                         "output": self.out_name,
                         "nan_as_zero": self.chb_empty_as_zero.isChecked(),
@@ -431,8 +432,8 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.exit_procedure()
 
     def exit_procedure(self):
+        self.close()
         if self.report is not None:
             dlg2 = ReportDialog(self.iface, self.report)
             dlg2.show()
             dlg2.exec_()
-        self.close()
