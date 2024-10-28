@@ -128,37 +128,34 @@ def test_calibrate_gravity(run_assignment, method, folder_path, mocker):
         assert "function: POWER" in file_text
 
 
-@pytest.mark.skip("AED")
-@pytest.mark.parametrize(("method", "ext"), [("negative", "X"), ("power", "Y"), ("gamma", "Z")])
-def test_apply_gravity(ae_with_project, method, ext, folder_path, mocker):
+@pytest.mark.parametrize("method", ["negative", "power", "gamma"])
+def test_apply_gravity(ae_with_project, method, folder_path, mocker, timeoutDetector):
 
-    file_path = f"{folder_path}/matrices/ADJ-TrafficAssignment_DP_{ext}.omx"
+    file_path = f"{folder_path}/matrices/ADJ-TrafficAssignment_DP.omx"
     mocker.patch(
         "qaequilibrae.modules.distribution_procedures.distribution_models_dialog.DistributionModelsDialog.browse_outfile",
         return_value=file_path,
     )
 
-    dataset_name = "test/data/SiouxFalls_project/synthetic_future_vector.aed"
+    dataset_path = "test/data/SiouxFalls_project/synthetic_future_vector.csv"
+    dataset = pd.read_csv(dataset_path)
 
-    dataset = AequilibraeData()
-    dataset.load(dataset_name)
-
-    data_name = splitext(basename(dataset_name))[0]
+    data_name = splitext(basename(dataset_path))[0]
 
     dialog = DistributionModelsDialog(ae_with_project, mode="apply")
+    dialog._has_idx = False
 
     dialog.datasets[data_name] = dataset
-    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_prod_data)
-    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_atra_data)
+    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_data)
 
     temp = list(dialog.matrices["name"])
     imped_idx = temp.index(f"trafficassignment_dp_x_car_omx")
     dialog.cob_imped_mat.setCurrentIndex(imped_idx)
     dialog.cob_imped_field.setCurrentText("free_flow_time_final")
 
-    dialog.cob_prod_data.setCurrentText("synthetic_future_vector")
+    dialog.cob_data.setCurrentText("synthetic_future_vector")
+    dialog.cob_index.setCurrentText("index")
     dialog.cob_prod_field.setCurrentText("origins")
-    dialog.cob_atra_data.setCurrentText("synthetic_future_vector")
     dialog.cob_atra_field.setCurrentText("destinations")
 
     if method == "negative":
