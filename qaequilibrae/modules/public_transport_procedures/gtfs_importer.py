@@ -88,6 +88,8 @@ class GTFSImporter(QDialog, FORM_CLASS):
 
         for _, feed in enumerate(self.feeds):
             feed.signal.connect(self.signal_handler)
+            if self.check_allow_map_match.isChecked():
+                feed.set_allow_map_match()
             feed.execute_import()
 
         self.qgis_project.projectManager.removeTab(0)

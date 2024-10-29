@@ -47,7 +47,6 @@ class GTFSFeed(QDialog, FORM_CLASS):
             item.setVisible(not item.isVisible())
         self.setMinimumHeight(370)
         self.feed = self._p.new_gtfs_builder(agency="", file_path=source_path_file)
-        self.feed.set_allow_map_match()
         if dates := self.feed.dates_available():
             dates = [QDate.fromString(dt, "yyyy-MM-dd") for dt in dates]
             md = min(dates)
