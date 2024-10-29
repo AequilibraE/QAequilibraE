@@ -114,7 +114,7 @@ html_js_files = ["toggle.js"]
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-html_sidebars = {"**": ["globaltoc.html"]}
+# html_sidebars = {"**": ["globaltoc.html"]}
 
 # -- Options for HTMLHelp output ---------------------------------------------
 

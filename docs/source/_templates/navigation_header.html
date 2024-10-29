@@ -3,10 +3,48 @@
     <li class="nav-item">
       <a class="nav-link" href="https://www.aequilibrae.com/python/latest/">Python</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link active" href="https://www.aequilibrae.com/qgis/latest/index.html"><b>QGIS</b></a>
+    <li class="nav-item dropdown">
+      <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="true"
+        aria-controls="pst-nav-more-links" id="qgis-button">
+        QGIS
+      </button>
+      <ul id="pst-nav-more-links" class="dropdown-menu" data-bs-popper="static">
+        <li class=" ">
+          <a class="nav-link dropdown-item nav-internal" href="qgis.html">&#127968; Home</a>
+        </li>
+        <li class=" ">
+          <a class="nav-link dropdown-item nav-internal"
+            href="https://www.aequilibrae.com/qgis/latest/getting_started/getting_started.html">
+            Getting Started
+          </a>
+        </li>
+        <li class=" ">
+          <a class="nav-link dropdown-item nav-internal"
+            href="https://www.aequilibrae.com/qgis/latest/menus_in_detail/readme.html">
+            Menus in detail
+          </a>
+        </li>
+        <li class=" ">
+          <a class="nav-link dropdown-item nav-internal"
+            href="https://www.aequilibrae.com/qgis/latest/processing_provider/readme.html">
+            Processing provider
+          </a>
+        </li>
+      </ul>
     </li>
   </ul>
 </nav>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const isQGISPage = window.location.pathname.endsWith("qgis.html");
+    const qgisButton = document.getElementById("qgis-button");
+
+    if (!isQGISPage) {
+      qgisButton.innerHTML = "<b>QGIS</b>";
+    }
+  });
+</script>
+
 <!-- TODO: Fix this nav-link for AequilibraE. It has to redirect to .../python.html --> 
+<!-- TODO: Fix dropdown links for QGIS. They're all outadated -->

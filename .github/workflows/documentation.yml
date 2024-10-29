@@ -26,6 +26,7 @@ jobs:
 
     - name: Build documentation
       run: |
+        cp qaequilibrae/large_icon.png _static/large_icon.png
         cd docs
         make html
 
