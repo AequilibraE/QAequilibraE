@@ -19,7 +19,7 @@ class LoadDataset(WorkerThread):
         self.fields = fields
         self.error = None
         self.python_version = 8 * struct.calcsize("P")
-        self.output = pd.DataFrame
+        self.output = pd.DataFrame([])
         self.output_name = file_name
 
     def doWork(self):
@@ -58,7 +58,6 @@ class LoadDataset(WorkerThread):
         datafile_spec["file_path"] = self.output_name
 
         if self.error is None:
-            self.output = pd.DataFrame([])
 
             # Get all the data
             for p, feat in enumerate(self.layer.getFeatures()):
