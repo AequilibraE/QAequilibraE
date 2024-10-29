@@ -92,11 +92,11 @@ html_theme_options = {
         "text": "AequilibraE",
         "image_light": "_static/large_icon.png",
         "image_dark": "_static/large_icon.png",
-        "link": "https://www.aequilibrae.com/python/latest/index.html",
+        "link": "https://www.aequilibrae.com/python/dev/576/aequilibrae.html",
     },
 }
 
-# The name for this set of Sphinx documents.  If None, it defaults to
+# The name for this set of Sphinx documents. If None, it defaults to
 html_title = f"AequilibraE for QGIS"
 
 # Add any paths that contain custom static files (such as style sheets) here,
