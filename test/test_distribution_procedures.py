@@ -11,7 +11,7 @@ from qaequilibrae.modules.distribution_procedures.distribution_models_dialog imp
 
 
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
-def test_ipf(ae_with_project, folder_path, mocker, method, load_synthetic_future_vector, qtbot, timeoutDetector):
+def test_ipf(ae_with_project, folder_path, mocker, method, load_synthetic_future_vector):
 
     file_path = f"{folder_path}/demand_ipf_D.aem"
     mocker.patch(
@@ -129,7 +129,7 @@ def test_calibrate_gravity(run_assignment, method, folder_path, mocker):
 
 
 @pytest.mark.parametrize("method", ["negative", "power", "gamma"])
-def test_apply_gravity(ae_with_project, method, folder_path, mocker, timeoutDetector):
+def test_apply_gravity(ae_with_project, method, folder_path, mocker):
 
     file_path = f"{folder_path}/matrices/ADJ-TrafficAssignment_DP.omx"
     mocker.patch(

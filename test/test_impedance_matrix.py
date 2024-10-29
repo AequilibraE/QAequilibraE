@@ -1,5 +1,3 @@
-import pytest
-
 from qaequilibrae.modules.paths_procedures.impedance_matrix_dialog import ImpedanceMatrixDialog
 
 
