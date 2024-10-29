@@ -6,11 +6,11 @@
     max-width: 80%;
 }
 
-.bd-links__title[role="heading"][aria-level="1"] {
+/* .bd-links__title[role="heading"][aria-level="1"] {
     display: none;
-}
+} */
 
-.toc-tree .toc-item {
+/* .toc-tree .toc-item {
     list-style-type: none;
     padding-bottom: 2px;
 }
@@ -46,4 +46,4 @@
 
 .toggle-btn:focus {
     outline: none;
-}
+} */
