@@ -29,7 +29,7 @@ class LoadMatrix(WorkerThread):
     def doWork(self):
         if self.matrix_type == "layer":
             feat_count = self.layer.featureCount()
-            self.signal.emit(["start", 0, feat_count, self.tr("Loading from table"), "master"])
+            self.signal.emit(["start", feat_count, self.tr("Loading from table")])
 
             # We read all the vectors and put in a list of lists
             matrix = []
@@ -42,9 +42,9 @@ class LoadMatrix(WorkerThread):
                 matrix.append([a, b, c])
                 if P % 1000 == 0:
                     txt = self.tr("Loading matrix: {}/{}").format(P, feat_count)
-                    self.signal.emit(["update", 0, int(P), txt, "master"])
+                    self.signal.emit(["update", int(P), txt])
 
-            self.signal.emit(["set_text", 0, 0, self.tr("Converting to a NumPy array"), "master"])
+            self.signal.emit(["set_text", self.tr("Converting to a NumPy array")])
 
             matrix1 = np.array(matrix)  # transform the list of lists in NumPy array
             del matrix
@@ -63,7 +63,7 @@ class LoadMatrix(WorkerThread):
             del matrix1
 
         elif self.matrix_type == "numpy":
-            self.signal.emit(["set_text", 0, 0, self.tr("Loading from NumPy"), "master"])
+            self.signal.emit(["set_text", self.tr("Loading from NumPy")])
             try:
                 mat = np.load(self.numpy_file)
                 if len(mat.shape[:]) == 2:
@@ -86,4 +86,4 @@ class LoadMatrix(WorkerThread):
             except Exception as e:
                 self.report.append(f"Could not load array. {e.args}")
 
-        self.signal.emit(["finished", 0, 0, "LOADED-MATRIX", "master"])
+        self.signal.emit(["finished", "LOADED-MATRIX"])

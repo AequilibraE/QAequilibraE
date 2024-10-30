@@ -38,12 +38,12 @@ class NetworkPreparationProcedure(WorkerThread):
         layer = get_vector_layer_by_name(line_layer)
         feat_count = layer.featureCount()
 
-        self.signal.emit(["set_text", 0, 0, self.tr("Duplicating line layer"), "master"])
+        self.signal.emit(["set_text", self.tr("Duplicating line layer")])
 
         # We create the new line layer and load it in memory
         self.epsg_code = int(layer.crs().authid().split(":")[1])
         new_line_layer = self.duplicate_layer(layer, "Linestring", self.new_line_layer)
-        self.signal.emit(["set_text", 0, 0, self.tr("Line layer duplicated"), "master"])
+        self.signal.emit(["set_text", self.tr("Line layer duplicated")])
 
         # Add the A_Node and B_node fields to the layer
         field_names = [x.name().upper() for x in new_line_layer.dataProvider().fields().toList()]
@@ -52,7 +52,7 @@ class NetworkPreparationProcedure(WorkerThread):
             if f not in field_names:
                 _ = new_line_layer.dataProvider().addAttributes([QgsField(f, QVariant.Int)])
         new_line_layer.updateFields()
-        self.signal.emit(["set_text", 0, 0, self.tr("Adding fields to line layer"), "master"])
+        self.signal.emit(["set_text", self.tr("Adding fields to line layer")])
         # If we have node IDs, we iterate over the ID field to make sure they are unique
 
         if node_ids:
@@ -77,12 +77,12 @@ class NetworkPreparationProcedure(WorkerThread):
         all_nodes = np.zeros(feat_count * 2, dtype=DTYPE)
         line = 0
         txt = self.tr("Links read: {}/{}")
-        self.signal.emit(["start", 0, feat_count, txt.format(0, feat_count), "master"])
+        self.signal.emit(["start", feat_count, txt.format(0, feat_count)])
 
         #  Let's read all links and the coordinates for their extremities
         for p, feat in enumerate(new_line_layer.getFeatures()):
             if p % 500 == 0:
-                self.signal.emit(["update", 0, p, txt.format(p, feat_count), "master"])
+                self.signal.emit(["update", p, txt.format(p, feat_count)])
 
             link = list(feat.geometry().asPolyline())
             if link:
@@ -102,7 +102,7 @@ class NetworkPreparationProcedure(WorkerThread):
                 all_nodes[line][3] = 1
                 line += 1
 
-        self.signal.emit(["update", 0, feat_count, txt.format(feat_count, feat_count), "master"])
+        self.signal.emit(["update", feat_count, txt.format(feat_count, feat_count)])
 
         # Now we sort the nodes and assign IDs to them
         all_nodes = np.sort(all_nodes, order=["LAT", "LONG"])
@@ -111,7 +111,7 @@ class NetworkPreparationProcedure(WorkerThread):
         incremental_ids = self.node_start - 1
         p = 0
         txt = self.tr("Computing node IDs: {}/{}")
-        self.signal.emit(["start", 0, int(feat_count * 2), txt.format(0, feat_count * 2), "master"])
+        self.signal.emit(["start", int(feat_count * 2), txt.format(0, feat_count * 2)])
         for i in all_nodes:
             p += 1
             lat, longit, link_id, position, node_id = i
@@ -124,17 +124,15 @@ class NetworkPreparationProcedure(WorkerThread):
             i[4] = incremental_ids
 
             if p % 2000 == 0:
-                self.signal.emit(["update", 0, p, txt.format(p, int(feat_count * 2)), "master"])
+                self.signal.emit(["update", p, txt.format(p, int(feat_count * 2))])
 
-        self.signal.emit(
-            ["update", 0, int(feat_count * 2), txt.format(int(feat_count * 2), int(feat_count * 2)), "master"]
-        )
+        self.signal.emit(["update", int(feat_count * 2), txt.format(int(feat_count * 2), int(feat_count * 2))])
 
         # And we write the node layer as well
         node_id0 = -1
         p = 0
         txt = self.tr("Writing new node layer: {}/{}")
-        self.signal.emit(["start", 0, incremental_ids, txt.format(0, incremental_ids), "master"])
+        self.signal.emit(["start", incremental_ids, txt.format(0, incremental_ids)])
         cfeatures = []
         for i in all_nodes:
             lat, longit, link_id, position, node_id = i
@@ -148,15 +146,15 @@ class NetworkPreparationProcedure(WorkerThread):
                 node_id0 = node_id
 
             if p % 500 == 0:
-                self.signal.emit(["update", 0, incremental_ids, txt.format(p, incremental_ids), "master"])
+                self.signal.emit(["update", incremental_ids, txt.format(p, incremental_ids)])
         _ = new_node_layer.dataProvider().addFeatures(cfeatures)
         del cfeatures
         new_node_layer.commitChanges()
-        self.signal.emit(["update", 0, incremental_ids, txt.format(incremental_ids, incremental_ids), "master"])
+        self.signal.emit(["update", incremental_ids, txt.format(incremental_ids, incremental_ids)])
 
         # Now we write all the node _IDs back to the line layer
         txt = self.tr("Writing node IDs to links: {}/{}")
-        self.signal.emit(["start", 0, int(feat_count * 2), txt.format(0, int(feat_count * 2)), "master"])
+        self.signal.emit(["start", int(feat_count * 2), txt.format(0, int(feat_count * 2))])
         fid1 = new_line_layer.dataProvider().fieldNameIndex("A_NODE")
         fid2 = new_line_layer.dataProvider().fieldNameIndex("B_NODE")
         for p, i in enumerate(all_nodes):
@@ -168,11 +166,9 @@ class NetworkPreparationProcedure(WorkerThread):
                 new_line_layer.dataProvider().changeAttributeValues({int(link_id): {fid2: int(node_id)}})
 
             if p % 50 == 0:
-                self.signal.emit(["update", 0, int(p), txt.format(p, int(feat_count * 2)), "master"])
+                self.signal.emit(["update", int(p), txt.format(p, int(feat_count * 2))])
 
-        self.signal.emit(
-            ["update", 0, int(feat_count * 2), txt.format(int(feat_count * 2), int(feat_count * 2)), "master"]
-        )
+        self.signal.emit(["update", int(feat_count * 2), txt.format(int(feat_count * 2), int(feat_count * 2))])
 
         new_line_layer.commitChanges()
         self.new_line_layer = new_line_layer
@@ -183,10 +179,10 @@ class NetworkPreparationProcedure(WorkerThread):
         nodes = get_vector_layer_by_name(node_layer)
         index = QgsSpatialIndex()
         idx = nodes.dataProvider().fieldNameIndex(node_ids)
-        self.signal.emit(["start", 0, nodes.featureCount(), "Checking node layer", "master"])
+        self.signal.emit(["start", nodes.featureCount(), "Checking node layer"])
         for P, feat in enumerate(nodes.getFeatures()):
             txt = self.tr("Checking node layer: {}/{}").format(str(P), str(nodes.featureCount()))
-            self.signal.emit(["update", 0, P, txt, "master"])
+            self.signal.emit(["update", P, txt])
             index.addFeature(feat)
             i_d = feat.attributes()[idx]
             if i_d in ids:
@@ -198,12 +194,12 @@ class NetworkPreparationProcedure(WorkerThread):
                 break
             ids.append(i_d)
         if self.error is None:
-            self.signal.emit(["start", 0, new_line_layer.featureCount(), "Processing links", "master"])
+            self.signal.emit(["start", new_line_layer.featureCount(), "Processing links"])
             P = 0
             for feat in new_line_layer.getFeatures():
                 P += 1
                 txt = self.tr("Processing links: {}/{}").format(str(P), str(feat_count))
-                self.signal.emit(["update", 0, int(P), txt, "master"])
+                self.signal.emit(["update", int(P), txt])
 
                 # We search for matches for all AB nodes
                 ab_nodes = [("A_NODE", 0), ("B_NODE", -1)]

@@ -114,7 +114,7 @@ class DesireLinesDialog(QDialog, FORM_CLASS):
         return cell_widget
 
     def run_thread(self):
-        self.worker_thread.desire_lines.connect(self.signal_handler)
+        self.worker_thread.signal.connect(self.signal_handler)
         self.worker_thread.start()
         self.exec_()
 
@@ -129,13 +129,13 @@ class DesireLinesDialog(QDialog, FORM_CLASS):
     def signal_handler(self, val):
         # Signals that will come from traffic assignment
         if val[0] == "set_text":
-            self.progress_label.setText(val[3])
+            self.progress_label.setText(val[1])
 
         # Signals that will come from desire lines procedure
         elif val[0] == "start":
-            self.progress_label.setText(val[3])
+            self.progress_label.setText(val[2])
             self.progressbar.setValue(0)
-            self.progressbar.setMaximum(val[2])
+            self.progressbar.setMaximum(val[1])
         elif val[0] == "update":
             self.progressbar.setValue(self.progressbar.value() + 1)
         elif val[0] == "finished":

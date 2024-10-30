@@ -137,13 +137,13 @@ class ProjectFromOSMDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def signal_handler(self, val):
         if val[0] == "start":
-            self.progress_label.setText(val[3])
+            self.progress_label.setText(val[2])
             self.progressbar.setValue(0)
-            self.progressbar.setMaximum(val[2])
+            self.progressbar.setMaximum(val[1])
         elif val[0] == "update":
-            self.progressbar.setValue(val[2])
+            self.progressbar.setValue(val[1])
         elif val[0] == "set_text":
-            self.progress_label.setText(val[3])
+            self.progress_label.setText(val[2])
             self.progressbar.reset()
         elif val[0] == "finished":
             # lines = self.qgis_project.project.network.count_links()

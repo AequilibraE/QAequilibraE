@@ -14,4 +14,4 @@ class IpfProcedure(WorkerThread):
         self.ipf.fit()
         self.report = self.ipf.report
         self.output = self.ipf.output
-        self.jobFinished.emit(["finished", 0, 0, "finishedIPF", "master"])
+        self.jobFinished.emit(["finished", "finishedIPF"])

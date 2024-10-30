@@ -377,14 +377,13 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
     def signal_handler(self, val):
         if val[0] == "start":
             self.progressbar.setValue(0)
-            self.progressbar.setMaximum(val[2])
-            self.progress_label.setText(val[3])
+            self.progressbar.setMaximum(val[1])
+            self.progress_label.setText(val[2])
         elif val[0] == "update":
-            self.progressbar.setValue(val[2])
-            self.progress_label.setText(val[3])
+            self.progressbar.setValue(val[1])
+            self.progress_label.setText(val[2])
         elif val[0] == "finished":
-            if val[3] == "assignment":
-                self.job_finished_from_thread()
+            self.job_finished_from_thread()
 
     # Save link flows to disk
     def produce_all_outputs(self):

@@ -18,7 +18,7 @@ class AddZonesProcedure(WorkerThread):
     def doWork(self):
         features = list(self.lyr.selectedFeatures()) if self.select_only else list(self.lyr.getFeatures())
 
-        self.signal.emit(["start", 0, len(features), self.tr("Importing zones"), "master"])
+        self.signal.emit(["start", len(features), self.tr("Importing zones")])
 
         idx_id = self.field_corresp["zone_id"]
         zoning = self.project.zoning
@@ -32,5 +32,5 @@ class AddZonesProcedure(WorkerThread):
             zone.save()
             if self.add_centroids:
                 zone.add_centroid(None)
-            self.signal.emit(["update", 0, i + 1, f"Num. zones: {i}", "master"])
+            self.signal.emit(["update", i + 1, f"Num. zones: {i}"])
         self.signal.emit(["finished"])

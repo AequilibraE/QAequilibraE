@@ -153,11 +153,11 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
     def signal_handler(self, val):
         if val[0] == "start":
             self.progressbar.setValue(0)
-            self.progressbar.setMaximum(val[2])
+            self.progressbar.setMaximum(val[1])
         elif val[0] == "update":
-            self.progressbar.setValue(val[2])
+            self.progressbar.setValue(val[1])
         elif val[0] == "set_text":
-            self.progressbar.setValue(val[2])
+            self.progressbar.setValue(val[1])
         elif val[0] == "finished":
             self.but_load.setEnabled(True)
             self.but_save_and_use.setEnabled(True)

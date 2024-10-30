@@ -42,13 +42,13 @@ class AddsConnectorsProcedure(WorkerThread):
 
             zones = [x[0] for x in conn.execute("select zone_id from zones")]
 
-        self.signal.emit(["start", 0, tot_zones, "Adding connectors from zones", "master"])
+        self.signal.emit(["start", tot_zones, "Adding connectors from zones"])
         for counter, zone_id in enumerate(zones):
             zone = zoning.get(zone_id)
             zone.add_centroid(None)
             for mode_id in self.modes:
                 zone.connect_mode(mode_id=mode_id, link_types=self.link_types, connectors=self.num_connectors)
-            self.signal.emit(["update", 0, counter + 1, f"Connector from zone: {zone_id}", "master"])
+            self.signal.emit(["update", counter + 1, f"Connector from zone: {zone_id}"])
 
     def do_from_network(self):
         nodes = self.project.network.nodes
@@ -57,13 +57,13 @@ class AddsConnectorsProcedure(WorkerThread):
         with commit_and_close(database_connection("network")) as conn:
             centroids = [x[0] for x in conn.execute("select node_id from nodes where is_centroid=1")]
 
-        self.signal.emit(["start", 0, self.project.network.count_centroids(), "Adding connectors from nodes", "master"])
+        self.signal.emit(["start", self.project.network.count_centroids(), "Adding connectors from nodes"])
         for counter, zone_id in enumerate(centroids):
             node = nodes.get(zone_id)
             geo = self.polygon_from_radius(node.geometry)
             for mode_id in self.modes:
                 node.connect_mode(area=geo, mode_id=mode_id, link_types=self.link_types, connectors=self.num_connectors)
-            self.signal.emit(["update", 0, counter + 1, f"Connector from node: {zone_id}", "master"])
+            self.signal.emit(["update", counter + 1, f"Connector from node: {zone_id}"])
 
     def do_from_layer(self):
         nodes = self.project.network.nodes
@@ -72,7 +72,7 @@ class AddsConnectorsProcedure(WorkerThread):
         idx = self.layer.fields().indexOf(self.field)
         features = list(self.layer.getFeatures())
 
-        self.signal.emit(["start", 0, self.project.network.count_centroids(), "Adding connectors from layer", "master"])
+        self.signal.emit(["start", self.project.network.count_centroids(), "Adding connectors from layer"])
         for counter, feat in enumerate(features):
             zone_id = feat.attributes()[idx]
             node = nodes.new_centroid(zone_id)
@@ -81,7 +81,7 @@ class AddsConnectorsProcedure(WorkerThread):
             geo = self.polygon_from_radius(node.geometry)
             for mode_id in self.modes:
                 node.connect_mode(area=geo, mode_id=mode_id, link_types=self.link_types, connectors=self.num_connectors)
-            self.signal.emit(["update", 0, counter + 1, f"Connector from layer feature: {zone_id}", "master"])
+            self.signal.emit(["update", counter + 1, f"Connector from layer feature: {zone_id}"])
 
     def polygon_from_radius(self, point: Point):
         # We approximate with the radius of the Earth at the equator

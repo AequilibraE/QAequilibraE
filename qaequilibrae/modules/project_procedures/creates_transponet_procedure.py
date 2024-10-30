@@ -24,23 +24,23 @@ class CreatesTranspoNetProcedure(WorkerThread):
         self.project: Project
 
     def doWork(self):
-        self.signal.emit(["start", 0, 1, self.tr("Initializing project"), "master"])
+        self.signal.emit(["start", 1, self.tr("Initializing project")])
         self.project = Project()
         self.project.new(self.proj_folder)
-        self.signal.emit(["update", 0, 1, "Project created", "master"])
+        self.signal.emit(["update", 1, "Project created"])
 
         # Add the required extra fields to the link layer
-        self.signal.emit(["start", 0, 2, self.tr("Adding extra network data fields to database"), "master"])
+        self.signal.emit(["start", 2, self.tr("Adding extra network data fields to database")])
         self.additional_fields_to_layers("links", self.link_layer, self.link_fields)
-        self.signal.emit(["update", 0, 1, "Added additional fields", "master"])
+        self.signal.emit(["update", 1, "Added additional fields"])
         self.additional_fields_to_layers("nodes", self.node_layer, self.node_fields)
-        self.signal.emit(["update", 0, 2, "Added additional fields", "master"])
+        self.signal.emit(["update", 2, "Added additional fields"])
 
         self.transfer_layer_features("links", self.link_layer, self.link_fields)
         self.renumber_nodes()
 
-        self.signal.emit(["set_text", 0, 0, self.tr("Creating layer triggers"), "master"])
-        self.signal.emit(["set_text", 0, 0, self.tr("Spatial indices"), "master"])
+        self.signal.emit(["set_text", self.tr("Creating layer triggers")])
+        self.signal.emit(["set_text", self.tr("Spatial indices")])
         self.signal.emit(["finished"])
 
     # Adds the non-standard fields to a layer
@@ -85,7 +85,7 @@ class CreatesTranspoNetProcedure(WorkerThread):
             conn.execute("Update Nodes set node_id=node_id+?", [max_val])
             conn.execute("COMMIT;")
 
-            self.signal.emit(["start", 0, self.node_layer.featureCount(), self.tr("Transferring nodes"), "master"])
+            self.signal.emit(["start", self.node_layer.featureCount(), self.tr("Transferring nodes")])
 
             find_sql = """SELECT node_id
                             FROM nodes
@@ -100,7 +100,7 @@ class CreatesTranspoNetProcedure(WorkerThread):
 
             crs = int(self.node_layer.crs().authid().split(":")[1])
             for j, f in enumerate(self.node_layer.getFeatures()):
-                self.signal.emit(["update", 0, j + 1, f"Feature: {j}", "master"])
+                self.signal.emit(["update", j + 1, f"Feature: {j}"])
                 attrs = [
                     self.convert_data(f.attributes()[val]) if val >= 0 else None for val in self.node_fields.values()
                 ]
@@ -113,7 +113,7 @@ class CreatesTranspoNetProcedure(WorkerThread):
             conn.commit()
 
     def transfer_layer_features(self, table, layer, layer_fields):
-        self.signal.emit(["start", 0, layer.featureCount(), self.tr("Transferring {}").format(table), "master"])
+        self.signal.emit(["start", layer.featureCount(), self.tr("Transferring {}").format(table)])
 
         field_titles = ",".join(layer_fields.keys())
         all_modes = set()
@@ -125,7 +125,7 @@ class CreatesTranspoNetProcedure(WorkerThread):
         crs = int(layer.crs().authid().split(":")[1])
 
         for j, f in enumerate(layer.getFeatures()):
-            self.signal.emit(["update", 0, j + 1, f"Feature: {j}", "master"])
+            self.signal.emit(["update", j + 1, f"Feature: {j}"])
             attrs = [self.convert_data(f.attributes()[val]) if val >= 0 else None for val in layer_fields.values()]
             attrs.extend([f.geometry().asWkb().data(), crs])
             data_to_add.append(attrs)

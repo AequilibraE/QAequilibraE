@@ -101,18 +101,18 @@ class ShortestPathDialog(QtWidgets.QDialog, FORM_CLASS):
         self.link_features = None
 
     def search_for_point_from(self):
-        self.clickTool.clicked.connect(self.fill_path_from)
+        self.clickTool.signal.connect(self.fill_path_from)
         self.iface.mapCanvas().setMapTool(self.clickTool)
         self.from_but.setEnabled(False)
 
     def search_for_point_to(self):
         self.iface.mapCanvas().setMapTool(self.clickTool)
-        self.clickTool.clicked.connect(self.fill_path_to)
+        self.clickTool.signal.connect(self.fill_path_to)
         self.to_but.setEnabled(False)
 
     def search_for_point_to_after_from(self):
         self.iface.mapCanvas().setMapTool(self.clickTool)
-        self.clickTool.clicked.connect(self.fill_path_to)
+        self.clickTool.signal.connect(self.fill_path_to)
 
     def fill_path_to(self):
         self.to_node = self.find_point()

@@ -132,13 +132,12 @@ class ImpedanceMatrixDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def signal_handler(self, val):
         if val[0] == "start":
-            self.progressbar.setMaximum(val[2])
+            self.progressbar.setMaximum(val[1])
         elif val[0] == "update":
-            self.progress_label.setText(val[3])
-            self.progressbar.setValue(val[2])
+            self.progress_label.setText(val[2])
+            self.progressbar.setValue(val[1])
         elif val[0] == "set_text":
-            self.progress_label.setText(val[3])
-            self.progressbar.setValue(val[2])
+            self.progress_label.setText(val[1])
         elif val[0] == "finished":
             self.progressbar.reset()
             self.progress_label.clear()

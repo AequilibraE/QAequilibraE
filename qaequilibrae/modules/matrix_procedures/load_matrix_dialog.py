@@ -117,14 +117,14 @@ class LoadMatrixDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def signal_handler(self, val):
         if val[0] == "start":
-            self.progress_label.setText(val[3])
+            self.progress_label.setText(val[2])
             self.progressbar.setValue(0)
-            self.progressbar.setMaximum(val[2])
+            self.progressbar.setMaximum(val[1])
         elif val[0] == "update":
-            self.progress_label.setText(val[3])
-            self.progressbar.setValue(val[2])
+            self.progress_label.setText(val[2])
+            self.progressbar.setValue(val[1])
         elif val[0] == "set_text":
-            self.progress_label.setText(val[3])
+            self.progress_label.setText(val[1])
             self.progressbar.setValue(0)
         elif val[0] == "finished":
             self.progress_label.clear()
@@ -135,7 +135,7 @@ class LoadMatrixDialog(QtWidgets.QDialog, FORM_CLASS):
                 dlg2.show()
                 dlg2.exec_()
             else:
-                if val[3] == "LOADED-MATRIX":
+                if val[1] == "LOADED-MATRIX":
                     self.compressed.setVisible(True)
                     self.progress_label.setVisible(False)
 
@@ -152,7 +152,7 @@ class LoadMatrixDialog(QtWidgets.QDialog, FORM_CLASS):
                     if not self.multiple:
                         self.update_matrix_hashes()
 
-                elif val[3] == "REBLOCKED MATRICES":
+                elif val[1] == "REBLOCKED MATRICES":
                     self.matrix = self.worker_thread.matrix
                     if self.compressed.isChecked():
                         pass

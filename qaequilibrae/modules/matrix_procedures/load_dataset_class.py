@@ -1,8 +1,6 @@
 import numpy as np
 import struct
 import pandas as pd
-import qgis
-from uuid import uuid4
 from aequilibrae.utils.interface.worker_thread import WorkerThread
 from qgis.PyQt.QtCore import pyqtSignal, QVariant
 
@@ -24,7 +22,7 @@ class LoadDataset(WorkerThread):
 
     def doWork(self):
         feat_count = self.layer.featureCount()
-        self.signal.emit(["start", 0, feat_count, f"Total features: {feat_count}", "master"])
+        self.signal.emit(["start", feat_count, f"Total features: {feat_count}"])
 
         # Create specification for the output file
         datafile_spec = {"entries": feat_count}
@@ -66,8 +64,8 @@ class LoadDataset(WorkerThread):
                         self.output.loc[p, field] = empty
                     else:
                         self.output.loc[p, field] = feat.attributes()[idx]
-                self.signal.emit(["update", 0, p, f"Feature count: {p}", "master"])
+                self.signal.emit(["update", p, f"Feature count: {p}"])
             self.output.set_index(self.index_field, inplace=True)
 
-        self.signal.emit(["set_text", 0, feat_count, f"Feature count: {feat_count}", "master"])
+        self.signal.emit(["set_text", feat_count])
         self.signal.emit(["finished"])
