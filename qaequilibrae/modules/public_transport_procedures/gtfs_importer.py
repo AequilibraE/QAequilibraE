@@ -98,7 +98,7 @@ class GTFSImporter(QDialog, FORM_CLASS):
         self.close()
 
     def signal_handler(self, val):
-        
+
         if val[0] == "start":
             self.progressbar.setValue(0)
             self.progressbar.setMaximum(val[1])
