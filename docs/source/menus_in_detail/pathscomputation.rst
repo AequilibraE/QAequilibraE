@@ -140,11 +140,11 @@ layer will be automatically joined with the links layer.
 
 Now we can revisit the instructions for :ref:`siouxfalls-stacked-bandwidth`
 
-Video tutorial
-~~~~~~~~~~~~~~
+.. Video tutorial
+.. ~~~~~~~~~~~~~~
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/DRY4QpdX3qQ"
-     frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope;
-     picture-in-picture" allowfullscreen></iframe>
+..     <iframe width="560" height="315" src="https://www.youtube.com/embed/DRY4QpdX3qQ"
+..      frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope;
+..      picture-in-picture" allowfullscreen></iframe>

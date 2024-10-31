@@ -82,7 +82,6 @@ html_theme = "pydata_sphinx_theme"
 # documentation.
 #
 html_theme_options = {
-    "show_nav_level": 0,
     "github_url": "https://github.com/AequilibraE/qaequilibrae",
     "navbar_end": ["theme-switcher", "navbar-icon-links"],
     "navbar_center": ["navigation_header"],
@@ -104,7 +103,6 @@ html_title = f"AequilibraE for QGIS"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
-html_js_files = ["toggle.js"]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

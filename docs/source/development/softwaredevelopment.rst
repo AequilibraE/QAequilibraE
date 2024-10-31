@@ -1,3 +1,5 @@
+:orphan:
+
 .. _contributing_to_qaequilibrae:
 
 Contributing to AequilibraE for QGIS

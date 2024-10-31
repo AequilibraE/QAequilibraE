@@ -5,7 +5,7 @@ QGIS
 
 **Download documentation**: :download:`HTML <_static/AequilibraE.zip>` | :download:`PDF <_static/latex/AequilibraE.pdf>`
 
-**Useful links**: :ref:`contributing_to_qaequilibrae` | :ref:`plugin_i18n` | :ref:`support`
+**Useful links**: :ref:`contributing_to_qaequilibrae` | :ref:`plugin_i18n` | :ref:`support` | :ref:`citation`
 
 |
 

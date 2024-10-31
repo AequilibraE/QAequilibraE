@@ -24,8 +24,6 @@ which has nearly 40,000 links and almost 1,800 zones.
 Got a bigger instance we could use as an example? Send it over!
 
 .. toctree::
-   :hidden:
-   :maxdepth: 1
 
    project
    build_model
