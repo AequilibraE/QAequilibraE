@@ -1,5 +1,4 @@
 import pytest
-from time import sleep
 from shapely.geometry import Point
 from aequilibrae.utils.db_utils import read_and_close
 from aequilibrae.project.database_connection import database_connection
@@ -10,9 +9,11 @@ from qgis.PyQt.QtCore import QVariant
 from qaequilibrae.modules.network.adds_connectors_dialog import AddConnectorsDialog
 
 
-def test_add_connectors_from_zones(pt_no_feed):
+@pytest.mark.parametrize("in_zone", [True, False])
+def test_add_connectors_from_zones(pt_no_feed, in_zone):
     dialog = AddConnectorsDialog(pt_no_feed)
     dialog.rdo_zone.setChecked(True)
+    dialog.chb_zone.setChecked(in_zone)
 
     dialog.lst_modes.setCurrentRow(1)
     dialog.lst_link_types.setCurrentRow(11)
@@ -22,11 +23,6 @@ def test_add_connectors_from_zones(pt_no_feed):
     assert len(zoning.all_zones())
 
     dialog.run()
-
-    sleep(2)
-
-    dialog.project.network.links.refresh()
-    dialog.project.network.nodes.refresh()
 
     with read_and_close(database_connection("network")) as conn:
         node_count = conn.execute("select count(node_id) from nodes where is_centroid=1").fetchone()[0]
@@ -61,11 +57,6 @@ def test_add_connectors_from_network(pt_no_feed, node_id, radius, point):
     dialog.run()
 
     assert dialog.sb_radius.value() == radius
-
-    sleep(2)
-
-    dialog.project.network.links.refresh()
-    dialog.project.network.nodes.refresh()
 
     with read_and_close(database_connection("network")) as conn:
         node_count = conn.execute("select count(node_id) from nodes where is_centroid=1").fetchone()[0]
@@ -113,15 +104,12 @@ def test_add_connectors_from_layer(pt_no_feed):
     dialog = AddConnectorsDialog(pt_no_feed)
     dialog.rdo_layer.setChecked(True)
 
+    dialog.set_fields()
+
     dialog.lst_modes.setCurrentRow(1)
     dialog.lst_link_types.setCurrentRow(11)
 
     dialog.run()
-
-    sleep(2)
-
-    dialog.project.network.links.refresh()
-    dialog.project.network.nodes.refresh()
 
     with read_and_close(database_connection("network")) as conn:
         node_count = conn.execute("select count(node_id) from nodes where is_centroid=1").fetchone()[0]

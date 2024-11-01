@@ -43,6 +43,8 @@ class AddConnectorsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.layer_box.layerChanged.connect(self.set_fields)
         self.layer_box.setFilters(QgsMapLayerProxyModel.PointLayer)
 
+        self.chb_zone.setVisible(False)
+
         self.but_process.clicked.connect(self.run)
 
     def centroid_source(self):
@@ -50,6 +52,9 @@ class AddConnectorsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.field_box.setEnabled(self.rdo_layer.isChecked())
         self.field_box.setVisible(not self.rdo_zone.isChecked())
         self.lbl_radius.setVisible(not self.rdo_zone.isChecked())
+        self.sb_radius.setVisible(not self.rdo_zone.isChecked())
+        self.layer_box.setVisible(not self.rdo_zone.isChecked())
+        self.chb_zone.setVisible(self.rdo_zone.isChecked())
 
     def set_fields(self):
         self.field_box.setLayer(self.layer_box.currentLayer())
@@ -74,18 +79,21 @@ class AddConnectorsDialog(QtWidgets.QDialog, FORM_CLASS):
             "source": source,
         }
 
-        if source != "zone":
+        if source == "zone":
+            parameters["limit_to_zone"] = self.chb_zone.isChecked()
+        else:
             parameters["radius"] = self.sb_radius.value()
         if source == "layer":
             parameters["layer"] = self.layer_box.currentLayer()
             parameters["field"] = self.field_box.currentField()
+
         self.worker_thread = AddsConnectorsProcedure(qgis.utils.iface.mainWindow(), **parameters)
         self.run_thread()
 
     def run_thread(self):
         self.worker_thread.signal.connect(self.signal_handler)
         self.worker_thread.start()
-        self.show()
+        self.exec_()
 
     def signal_handler(self, val):
         if val[0] == "start":
