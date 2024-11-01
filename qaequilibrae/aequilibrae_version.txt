@@ -1,1 +1,1 @@
-aequilibrae==1.1.2
+git+https://github.com/AequilibraE/aequilibrae.git@develop
