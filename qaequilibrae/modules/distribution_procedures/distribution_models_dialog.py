@@ -428,10 +428,10 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
             qgis.utils.iface.messageBar().pushMessage(self.tr("Procedure error: "), error.args[0], level=3)
         self.report.extend(self.worker_thread.report)
 
-        if val[3] == "calibrate":
+        if val[1] == "calibrate":
             self.worker_thread.model.save(self.outfile)
 
-        if val[3] in ["apply_gravity", "finishedIPF"]:
+        if val[1] in ["apply_gravity", "finishedIPF"]:
             self.worker_thread.output.export(self.outfile)
         self.exit_procedure()
 

@@ -143,7 +143,7 @@ class ProjectFromOSMDialog(QtWidgets.QDialog, FORM_CLASS):
         elif val[0] == "update":
             self.progressbar.setValue(val[1])
         elif val[0] == "set_text":
-            self.progress_label.setText(val[2])
+            self.progress_label.setText(val[1])
             self.progressbar.reset()
         elif val[0] == "finished":
             # lines = self.qgis_project.project.network.count_links()
