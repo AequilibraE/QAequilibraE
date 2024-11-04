@@ -59,9 +59,10 @@ class DownloadAll:
     def install_package(self, package):
         Path(self.target_folder).mkdir(parents=True, exist_ok=True)
 
-        install_command = f'-m pip install {package} -t "{self.target_folder}"'
-        if "ortools" in package.lower():
-            install_command += " --no-deps"
+        install_uv = f'"{self.find_python()}" -m pip install uv'
+        _ = self.execute(install_uv)
+
+        install_command = f'-m uv pip install {package} --target "{self.target_folder}"'
 
         command = f'"{self.find_python()}" {install_command}'
         print(command)
