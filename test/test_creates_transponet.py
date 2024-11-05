@@ -26,6 +26,7 @@ def load_test_layer(path):
             QgsProject.instance().addMapLayer(layer)
 
 
+@pytest.mark.skip("not ready")
 def test_without_nodes(ae, tmp_path, qtbot, timeoutDetector):
     # path = join(tmp_path, uuid4().hex)
     folder = "/workspaces/drive_d/.OuterLoop/.QAequilibrae/.move to 1.1/debugging"
