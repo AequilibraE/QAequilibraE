@@ -20,8 +20,8 @@ jobs:
         run: |
           python3 -m venv /tmp/venv_test --system-site-package
           . /tmp/venv_test/bin/activate
-          python3 -m pip install setuptools
-          python3 -m pip install -r test/requirements-test.txt
+          python3 -m pip install setuptools uv
+          python3 -m uv pip install -r test/requirements-test.txt
           python3 ./ci/dependency_installation.py
           export PYTHONPATH=$(pwd)/qaequilibrae/packages:$PYTHONPATH
           echo "PYTHONPATH=$PYTHONPATH" >> $GITHUB_ENV

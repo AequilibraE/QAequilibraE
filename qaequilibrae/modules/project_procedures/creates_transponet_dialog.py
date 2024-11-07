@@ -327,7 +327,7 @@ class CreatesTranspoNetDialog(QtWidgets.QDialog, FORM_CLASS):
     def run_thread(self):
         self.worker_thread.signal.connect(self.signal_handler)
         self.worker_thread.start()
-        self.show()
+        self.exec_()
 
     def signal_handler(self, val):
         if val[0] == "start":
@@ -336,9 +336,6 @@ class CreatesTranspoNetDialog(QtWidgets.QDialog, FORM_CLASS):
             self.progressbar.setMaximum(val[1])
         elif val[0] == "update":
             self.progressbar.setValue(val[1])
-        elif val[0] == "set_text":
-            self.progress_label.setText(val[1])
-            self.progressbar.reset()
         elif val[0] == "finished":
             if self.worker_thread.report:
                 dlg2 = ReportDialog(self.iface, self.worker_thread.report)

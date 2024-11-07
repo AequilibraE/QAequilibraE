@@ -4,11 +4,10 @@ from os.path import join
 from shutil import copytree
 
 from aequilibrae import Project
+from qgis.PyQt import QtWidgets
 from qgis.core import QgsProject, QgsVectorLayer
-from qgis.PyQt import QtWidgets, QtCore
 from qaequilibrae.modules.project_procedures.creates_transponet_dialog import CreatesTranspoNetDialog
 from qaequilibrae.modules.project_procedures.creates_transponet_procedure import CreatesTranspoNetProcedure
-from qaequilibrae.modules.common_tools.geodataframe_from_data_layer import geodataframe_from_layer
 
 
 def load_test_layer(path):
@@ -28,11 +27,8 @@ def load_test_layer(path):
             QgsProject.instance().addMapLayer(layer)
 
 
-@pytest.mark.skip()
-def test_without_nodes(ae, tmp_path, qtbot):
-    # path = join(tmp_path, uuid4().hex)
-    folder = "/workspaces/drive_d/.OuterLoop/.QAequilibrae/.move to 1.1/debugging"
-    path = join(folder, uuid4().hex)
+def test_dialog(ae, tmp_path):
+    path = join(tmp_path, uuid4().hex)
     copytree("test/data/NetworkPreparation", path)
 
     load_test_layer(path)
@@ -75,24 +71,35 @@ def test_without_nodes(ae, tmp_path, qtbot):
         i = chd.findText(nodes_columns[idx])
         chd.setCurrentIndex(i)
 
-    # all_layers = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
-    # print(all_layers)
-
     dialog.create_net()
-
-    # path_links = qtbot.screenshot(dialog.tabs_list_widget.widget(0), suffix="tab_links")
-    # path_nodes = qtbot.screenshot(dialog.tabs_list_widget.widget(1), suffix="tab_nodes")
-    # print(path_links, path_nodes)
 
     QgsProject.instance().removeAllMapLayers()
 
+    # Test assertions
+    project = Project()
+    project.open(dialog.worker_thread.proj_folder)
 
-def test_procedure(ae):
-    folder = "/workspaces/drive_d/.OuterLoop/.QAequilibrae/.move to 1.1/debugging"
-    path = join(folder, uuid4().hex)
+    project_links = project.network.links.data
+    assert project_links.shape[0] == 4
+
+    project_nodes = project.network.nodes.data
+    assert project_nodes.shape[0] == 4
+    assert project_nodes[project_nodes["is_centroid"] == 1].shape[0] == 2
+
+    link_types = project.network.link_types
+    assert "a" in link_types.all_types().keys()
+
+    modes = project.network.modes
+    for mode in ["a", "r", "x"]:
+        assert mode in modes.all_modes().keys()
+
+
+def test_procedure(ae, tmp_path):
+    path = join(tmp_path, uuid4().hex)
     copytree("test/data/NetworkPreparation", path)
 
     load_test_layer(path)
+    
     nodes = QgsProject.instance().mapLayersByName("node")[0]
     links = QgsProject.instance().mapLayersByName("link")[0]
 
