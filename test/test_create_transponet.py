@@ -26,7 +26,7 @@ def load_test_layer(path):
             QgsProject.instance().addMapLayer(layer)
 
 
-def test_dialog(ae, tmp_path, timeoutDetector):
+def test_dialog(ae, tmp_path):
     path = join(tmp_path, uuid4().hex)
     copytree("test/data/NetworkPreparation", path)
 
@@ -93,7 +93,7 @@ def test_dialog(ae, tmp_path, timeoutDetector):
         assert mode in modes.all_modes().keys()
 
 
-def test_procedure(ae, tmp_path, timeoutDetector):
+def test_procedure(ae, tmp_path):
     path = join(tmp_path, uuid4().hex)
     copytree("test/data/NetworkPreparation", path)
 
