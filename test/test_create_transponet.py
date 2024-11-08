@@ -1,4 +1,3 @@
-import pytest
 from uuid import uuid4
 from os.path import join
 from shutil import copytree
@@ -99,7 +98,7 @@ def test_procedure(ae, tmp_path):
     copytree("test/data/NetworkPreparation", path)
 
     load_test_layer(path)
-    
+
     nodes = QgsProject.instance().mapLayersByName("node")[0]
     links = QgsProject.instance().mapLayersByName("link")[0]
 
