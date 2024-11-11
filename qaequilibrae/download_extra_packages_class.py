@@ -104,7 +104,7 @@ class DownloadAll:
     def find_python(self):
         # Check if we're inside a virtual environment
         if sys.prefix != sys.base_prefix:
-            return "/tmp/.venv/bin/python3"
+            return "python3"
 
         sys_exe = Path(sys.executable)
         if sys.platform == "linux" or sys.platform == "linux2":

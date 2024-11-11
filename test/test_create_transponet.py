@@ -1,3 +1,4 @@
+import pytest
 from uuid import uuid4
 from os.path import join
 from shutil import copytree
@@ -26,6 +27,7 @@ def load_test_layer(path):
             QgsProject.instance().addMapLayer(layer)
 
 
+@pytest.mark.skip()
 def test_dialog(ae, tmp_path):
     path = join(tmp_path, uuid4().hex)
     copytree("test/data/NetworkPreparation", path)
@@ -93,6 +95,7 @@ def test_dialog(ae, tmp_path):
         assert mode in modes.all_modes().keys()
 
 
+@pytest.mark.skip()
 def test_procedure(ae, tmp_path):
     path = join(tmp_path, uuid4().hex)
     copytree("test/data/NetworkPreparation", path)

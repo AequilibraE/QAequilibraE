@@ -19,12 +19,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          /usr/bin/python3 -m venv /tmp/.venv --system-site-package
-          /tmp/.venv/bin/python3 -m pip install -U pip setuptools uv
-          /tmp/.venv/bin/python3 -m uv pip install "git+https://github.com/AequilibraE/aequilibrae.git@develop"
+          python3 -m venv /tmp/.venv --system-site-packages
+          . /tmp/venv_test/bin/activate
+          python3 -m pip install -U pip setuptools uv
+          python3 -m uv pip install "git+https://github.com/AequilibraE/aequilibrae.git@develop"
           touch ./qaequilibrae/packages/aequilibrae_version.txt
-          /tmp/.venv/bin/python3 ./ci/dependency_installation.py
-          /tmp/.venv/bin/python3 -m uv pip install -r test/requirements-test.txt --constraint ./ci/constraints.txt
+          python3 ./ci/dependency_installation.py
+          python3 -m uv pip install -r test/requirements-test.txt --constraint ./ci/constraints.txt
           export PYTHONPATH=$(pwd)/qaequilibrae/packages:$PYTHONPATH
           echo "PYTHONPATH=$PYTHONPATH" >> $GITHUB_ENV
 
@@ -32,4 +33,4 @@ jobs:
         run: |
           export QT_QPA_PLATFORM=offscreen
           pwd
-          /tmp/.venv/bin/python3 -m pytest --cov-report term --cov-config=.coveragerc --cov=qaequilibrae test
+          python3 -m pytest --cov-report term --cov-config=.coveragerc --cov=qaequilibrae test
