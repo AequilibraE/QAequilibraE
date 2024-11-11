@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y --fix-missing texlive-latex-extra
+        sudo apt-get install -y --fix-missing latexmk texlive-latex-extra
         python -m pip install --upgrade pip
         pip install -r docs/requirements-docs.txt
 
