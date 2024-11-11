@@ -12,7 +12,7 @@ QGIS
 .. grid::
 
    .. grid-item-card:: :material-outlined:`info;1.5em` Getting Started
-      :link: getting_started/readme
+      :link: getting_started
       :link-type: any
       :text-align: center
       
@@ -20,7 +20,7 @@ QGIS
       Get started here!
 
    .. grid-item-card:: :material-outlined:`menu_book;1.5em` Menus in Detail
-      :link: menus_in_detail/readme
+      :link: menus_in_detail
       :link-type: any
       :text-align: center
       
@@ -30,7 +30,7 @@ QGIS
 .. grid::
     
    .. grid-item-card:: :material-outlined:`settings;1.5em` Processing Provider
-      :link: processing_provider/readme
+      :link: processing_provider
       :link-type: any
       :text-align: center
       
@@ -47,6 +47,6 @@ QGIS
    :hidden:
    :maxdepth: 1
 
-   getting_started/readme
-   menus_in_detail/readme
-   processing_provider/readme
+   getting_started
+   menus_in_detail
+   processing_provider

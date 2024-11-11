@@ -7,6 +7,6 @@ QGIS
    :hidden:
    :maxdepth: 1
 
-   getting_started/readme
-   menus_in_detail/readme
-   processing_provider/readme
+   getting_started
+   menus_in_detail
+   processing_provider

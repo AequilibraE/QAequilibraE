@@ -1,5 +1,3 @@
-.. _getting_started:
-
 Getting Started
 ===============
 
@@ -23,13 +21,13 @@ Step-by-step installation
 The steps for installing AequilibraE are the same as for any QGIS plugin.
 Go to the Plugins panel and click on **Manage and Install Plugins**.
 
-.. image:: ../images/getting_started_1.png
+.. image:: images/getting_started_1.png
     :align: center
     :alt: First step
 
 In the tab *All*, search for QAequilibraE.
 
-.. image:: ../images/getting_started_2.png
+.. image:: images/getting_started_2.png
     :align: center
     :alt: Second step
 
@@ -39,21 +37,21 @@ features. This is necessary because AequilibraE's algorithms rely on compiled
 extensions, but it is against the QGIS's community guidelines to upload binaries
 to the repository.
 
-.. image:: ../images/getting_started_3.png
+.. image:: images/getting_started_3.png
     :align: center
     :alt: Third step
 
 If you select to download the packages, QGIS will freeze for a few seconds before
 showing the image below.
 
-.. image:: ../images/getting_started_4.png
+.. image:: images/getting_started_4.png
     :align: center
     :alt: Fourth step
 
 Otherwise, a message warning about installation problems will be shown, and your
 plugin will be non-functional.
 
-.. image:: ../images/getting_started_5.png
+.. image:: images/getting_started_5.png
     :align: center
     :alt: Fifth step
 
@@ -66,7 +64,7 @@ are stored in **qgis_layer.sqlite**, a database automatically created to store t
 to do is go to the Project panel and select **Save** or **Save as**, indicate where you want to store 
 your project file, and press save!
 
-.. image:: ../images/getting_started_6.png
+.. image:: images/getting_started_6.png
     :align: center
     :alt: Saving file
 
