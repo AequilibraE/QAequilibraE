@@ -2,9 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
-    <name>AboutDialog</name>
-</context>
-<context>
     <name>AddConnectors</name>
     <message>
         <location filename="../modules/processing_provider/Add_connectors.py" line="86"/>
@@ -1501,9 +1498,6 @@
     </message>
 </context>
 <context>
-    <name>MatrixViewer</name>
-</context>
-<context>
     <name>NetworkPreparationDialog</name>
     <message>
         <location filename="../modules/network/network_preparation_dialog.py" line="93"/>
@@ -1551,6 +1545,11 @@
     <message>
         <location filename="../modules/network/Network_preparation_procedure.py" line="55"/>
         <source>Adding fields to line layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="46"/>
+        <source>Line layer duplicated</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2061,9 +2060,6 @@
     </message>
 </context>
 <context>
-    <name>advanced_graph_details</name>
-</context>
-<context>
     <name>bandwidths</name>
     <message>
         <location filename="../modules/gis/forms/ui_bandwidths.ui" line="20"/>
@@ -2361,9 +2357,6 @@
     </message>
 </context>
 <context>
-    <name>gravity_parameters</name>
-</context>
-<context>
     <name>load_network_info</name>
     <message>
         <location filename="../modules/common_tools/forms/ui_load_network_info.ui" line="17"/>
@@ -2458,9 +2451,6 @@
         <source>Single use</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>nodes_to_area</name>
 </context>
 <context>
     <name>parameters</name>
@@ -3024,6 +3014,11 @@
     <message>
         <location filename="../modules/network/forms/ui_add_connectors.ui" line="190"/>
         <source>Limit connector creation to zone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="19"/>
+        <source>AequilibraE - Add centroid connectors</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
