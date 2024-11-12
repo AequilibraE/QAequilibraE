@@ -183,7 +183,7 @@ The *GUI* for this procedure is fairly straightforward, as shown below.
 
 When creating centroids from zone centers, one can choose to limit the connector
 to the zone or not. Plase notice if one choose to limit the connector creation to a 
-zone that has fewer links of a certain type than the number of connectors will result 
+zone that has fewer nodes connected to links of the required types than the number of connectors will result 
 in fewer connectors being created than desired.
 
 One would notice that nowhere in the *GUI* one can indicate which modes they

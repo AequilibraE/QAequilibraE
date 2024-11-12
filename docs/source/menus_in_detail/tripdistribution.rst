@@ -49,7 +49,7 @@ After the vector is properly loaded, it will appear in the *Load datasets* tab.
     :alt: ipf_3
 
 You can now select the production/attraction (origin/destination) vectors. If your data comes
-from an open layer, you'll notice that the *Index* collapsible list is deactivated because
+from a table/layer opened in QGIS, you'll notice that the *Index* collapsible list is deactivated because
 the data index was selected when loading the data.
 
 .. image:: ../images/tripdistribution-ipf-4.png
