@@ -19,7 +19,8 @@ Import GTFS
 
 To import a GTFS feed, click **Public transport > Import GTFS**. A new window with the importer
 will open. If it is the first time you are creating a GTFS feed for your project, it may take a little while
-to create the public transport database in the project folder. In the GTFS importer window, you can click on
+to create the public transport database in the project folder, and your QGIS screen might not be responsible 
+until the database is created in the project folder. In the GTFS importer window, you can click on
 *Add Feed* and point to the location in your machine where the GTFS data is.
 
 .. image:: ../images/gtfs_1.png
@@ -41,7 +42,9 @@ and you will return to the GTFS importer screen.
 
 Notice that the feed information is now available at the *Feeds to import* table view. The first time you create a 
 GTFS feed, the only option available is **Create new route system**, so you don't have to click on it.
-Then, you can effectively import your GTFS feed to your project by clicking on **Execute Importer**. 
+If you want to map-match the existing transit routes, you can select **Allow map-match**.
+Then, you can import your GTFS feed to your project by clicking on **Execute Importer**. 
+
 A window with a progress bar will open and once it is finished, you can check out the GTFS feed data you just 
 imported in your project folder.
 
