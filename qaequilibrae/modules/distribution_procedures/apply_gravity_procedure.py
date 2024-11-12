@@ -1,8 +1,11 @@
 from aequilibrae.distribution import GravityApplication
 from aequilibrae.utils.interface.worker_thread import WorkerThread
+from PyQt5.QtCore import pyqtSignal
 
 
 class ApplyGravityProcedure(WorkerThread):
+    signal = pyqtSignal(object)
+
     def __init__(self, parentThread, **kwargs):
         WorkerThread.__init__(self, parentThread)
         self.gravity = GravityApplication(**kwargs)
@@ -14,4 +17,4 @@ class ApplyGravityProcedure(WorkerThread):
         self.gravity.apply()
         self.output = self.gravity.output
         self.report = self.gravity.report
-        self.jobFinished.emit(["finished", "apply_gravity"])
+        self.signal.emit(["finished"])

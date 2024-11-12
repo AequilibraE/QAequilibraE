@@ -188,7 +188,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QRadioButton" name="radio_layer_matrix">
+  <widget class="QRadioButton" name="radio_layer">
    <property name="geometry">
     <rect>
      <x>10</x>

@@ -34,7 +34,7 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
         self.ignore_fields = []
         self.single_use = single_use
 
-        self.radio_layer_matrix.clicked.connect(partial(self.size_it_accordingly, False))
+        self.radio_layer.clicked.connect(partial(self.size_it_accordingly, False))
         self.radio_csv.clicked.connect(partial(self.size_it_accordingly, False))
         self.radio_parquet.clicked.connect(partial(self.size_it_accordingly, False))
         self.chb_all_fields.clicked.connect(self.set_tables_with_fields)
@@ -55,7 +55,7 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
                     self.cob_data_layer.addItem(layer.name())
 
         if not self.single_use:
-            self.radio_layer_matrix.setChecked(True)
+            self.radio_layer.setChecked(True)
             self.radio_csv.setEnabled(False)
             self.radio_parquet.setEnabled(False)
             self.but_import_and_use.setEnabled(False)
@@ -92,7 +92,7 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
             set_size(154, 124)
         else:
             if final:
-                if self.radio_layer_matrix.isChecked():
+                if self.radio_layer.isChecked():
                     if self.chb_all_fields.isChecked():
                         set_size(498, 120)
                     self.progressbar.setMinimumHeight(100)
@@ -193,7 +193,7 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
     def load_the_vector(self):
         self.set_output_name()
 
-        if self.radio_layer_matrix.isChecked() and self.error is None:
+        if self.radio_layer.isChecked() and self.error is None:
             self.output_name = self.layer.name()
             if self.cob_data_layer.currentIndex() < 0 or self.cob_index_field.currentIndex() < 0:
                 self.error = self.tr("Invalid field chosen")

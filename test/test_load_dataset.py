@@ -22,7 +22,7 @@ def test_load_dialog(ae_with_project, method, folder_path, load_synthetic_future
         layer = QgsProject.instance().mapLayersByName("synthetic_future_vector")[0]
 
         dialog.layer = layer
-        dialog.radio_layer_matrix.setChecked(True)
+        dialog.radio_layer.setChecked(True)
 
         dialog.size_it_accordingly(True)
         dialog.cob_index_field.setCurrentText("index")

@@ -39,7 +39,7 @@ def test_ipf(ae_with_project, folder_path, mocker, method, load_synthetic_future
         dialog._has_idx = False
     else:
         dataset = LoadDatasetDialog(dialog.iface)
-        dataset.radio_layer_matrix.setChecked(True)
+        dataset.radio_layer.setChecked(True)
         dataset.size_it_accordingly(True)
         dataset.cob_index_field.setCurrentText("index")
         dataset.layer = layer
