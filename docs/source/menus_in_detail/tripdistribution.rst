@@ -19,20 +19,20 @@ presented in one of the subsections below.
 
 Iterative Proportional Fitting (IPF)
 ------------------------------------
-It is possible to balance the production/attraction vectors using IPF. There are two different
-ways to load a vector's data: loading an \*.AED file or importing from an open layer. 
+It is possible to balance the production/attraction vectors using IPF. There are three different
+ways to load a vector's data: loading a \*.CSV or \*.parquet file or importing from an open layer. 
 
 We click on the Iterative Proportional Fitting option to open the menu.
 
-Loading the vector from an \*.AED file is straightforward. Just select the *AequilibraE Data* option
-in the menu, and click *Load*, pointing to the location of the vector in your machine.
+Loading the vector from a \*.CSV or \*.parquet file is quite the same. Select your preferred option
+in the menu, and click *Load*, pointing to the location of the vector file in your machine.
 
 .. image:: ../images/tripdistribution-ipf-1.png
     :width: 513
     :align: center
     :alt: ipf_1
 
-Otherwise, case you are loading from an open layer, just click *Import from layer*,
+Case you are loading from an open layer, just click *Import from layer*,
 point the available data layer, and the name of its index column. You can choose between *Use data*
 or *Save and use*. Case you choose to save, the vector will be saved in a temporary QGIS folder.
 
@@ -48,7 +48,9 @@ After the vector is properly loaded, it will appear in the *Load datasets* tab.
     :align: center
     :alt: ipf_3
 
-You can now select the production/attraction (origin/destination) vectors.
+You can now select the production/attraction (origin/destination) vectors. If your data comes
+from a table/layer opened in QGIS, you'll notice that the *Index* collapsible list is deactivated because
+the data index was selected when loading the data.
 
 .. image:: ../images/tripdistribution-ipf-4.png
     :width: 513

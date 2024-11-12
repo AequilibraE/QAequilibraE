@@ -1,4 +1,4 @@
-FROM qgis/qgis:3.34.7
+FROM qgis/qgis:ltr
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt update -y && apt install -y pandoc zip

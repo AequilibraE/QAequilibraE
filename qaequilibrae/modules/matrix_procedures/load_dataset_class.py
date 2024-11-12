@@ -1,18 +1,14 @@
-from qgis.PyQt.QtCore import QVariant
 import numpy as np
-from uuid import uuid4
-from aequilibrae.utils.worker_thread import WorkerThread
 import struct
-from aequilibrae.matrix import AequilibraeData
+import pandas as pd
+from aequilibrae.utils.interface.worker_thread import WorkerThread
+from qgis.PyQt.QtCore import pyqtSignal, QVariant
+
 from qaequilibrae.modules.common_tools.global_parameters import float_types, string_types, integer_types
-from qgis.PyQt.QtCore import pyqtSignal
 
 
 class LoadDataset(WorkerThread):
-    ProgressText = pyqtSignal(object)
-    ProgressValue = pyqtSignal(object)
-    ProgressMaxValue = pyqtSignal(object)
-    finished_threaded_procedure = pyqtSignal(object)
+    signal = pyqtSignal(object)
 
     def __init__(self, parent_thread, layer, index_field, fields, file_name):
         WorkerThread.__init__(self, parent_thread)
@@ -21,12 +17,12 @@ class LoadDataset(WorkerThread):
         self.fields = fields
         self.error = None
         self.python_version = 8 * struct.calcsize("P")
-        self.output = AequilibraeData()
+        self.output = pd.DataFrame([])
         self.output_name = file_name
 
     def doWork(self):
         feat_count = self.layer.featureCount()
-        self.ProgressMaxValue.emit(feat_count)
+        self.signal.emit(["start", feat_count, f"Total features: {feat_count}"])
 
         # Create specification for the output file
         datafile_spec = {"entries": feat_count}
@@ -55,28 +51,21 @@ class LoadDataset(WorkerThread):
                 fields.append(str(field.name()))
                 idxs.append(self.layer.dataProvider().fieldNameIndex(field.name()))
 
-        index_idx = self.layer.dataProvider().fieldNameIndex(self.index_field)
         datafile_spec["field_names"] = fields
         datafile_spec["data_types"] = types
-
-        if self.output_name is None:
-            self.output_name = self.output.random_name()
-        else:
-            self.output_name += f"_{uuid4().hex[:10]}"
         datafile_spec["file_path"] = self.output_name
 
         if self.error is None:
-            self.output.create_empty(**datafile_spec)
 
             # Get all the data
             for p, feat in enumerate(self.layer.getFeatures()):
                 for idx, field, empty in zip(idxs, fields, empties):
                     if feat.attributes()[idx] == QVariant():
-                        self.output.data[field][p] = empty
+                        self.output.loc[p, field] = empty
                     else:
-                        self.output.data[field][p] = feat.attributes()[idx]
-                self.output.index[p] = feat.attributes()[index_idx]
-                self.ProgressValue.emit(p)
+                        self.output.loc[p, field] = feat.attributes()[idx]
+                self.signal.emit(["update", p, f"Feature count: {p}"])
+            self.output.set_index(self.index_field, inplace=True)
 
-            self.ProgressValue.emit(feat_count)
-        self.finished_threaded_procedure.emit("Done")
+        self.signal.emit(["set_text", feat_count])
+        self.signal.emit(["finished"])

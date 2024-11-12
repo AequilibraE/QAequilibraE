@@ -1,14 +1,16 @@
 from os.path import isfile, splitext, basename
 import numpy as np
+import pandas as pd
 import openmatrix as omx
 import pytest
 from qgis.core import QgsProject
-from aequilibrae.matrix import AequilibraeData, AequilibraeMatrix
+from aequilibrae.matrix import AequilibraeMatrix
 
+from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
 from qaequilibrae.modules.distribution_procedures.distribution_models_dialog import DistributionModelsDialog
 
 
-@pytest.mark.parametrize("method", ("dataset", "open_layer"))
+@pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
 def test_ipf(ae_with_project, folder_path, mocker, method, load_synthetic_future_vector):
 
     file_path = f"{folder_path}/demand_ipf_D.aem"
@@ -19,45 +21,37 @@ def test_ipf(ae_with_project, folder_path, mocker, method, load_synthetic_future
 
     dialog = DistributionModelsDialog(ae_with_project, mode="ipf")
 
-    if method == "dataset":
-        dataset_path = "test/data/SiouxFalls_project/synthetic_future_vector.aed"
-        dataset = AequilibraeData()
-        dataset.load(dataset_path)
-
-        data_name = splitext(basename(dataset_path))[0]
-
-        dialog.datasets[data_name] = dataset
-    else:
+    if method == "csv":
+        dataset_path = "test/data/SiouxFalls_project/synthetic_future_vector.csv"
+        dataset = pd.read_csv(dataset_path)
+    elif method == "parquet":
+        dataset_path = "test/data/SiouxFalls_project/synthetic_future_vector.parquet"
+        dataset = pd.read_parquet(dataset_path)
+    elif method == "open layer":
         layer = QgsProject.instance().mapLayersByName("synthetic_future_vector")[0]
         dialog.iface.setActiveLayer(layer)
-        idx = []
-        origin = []
-        destination = []
-        for feat in layer.getFeatures():
-            f = feat.attributes()
-            idx.append(f[0])
-            origin.append(f[1])
-            destination.append(f[2])
-        args = {
-            "entries": 24,
-            "field_names": ["origins", "destinations"],
-            "data_types": [np.float64, np.float64],
-            "file_path": f"{folder_path}/synthetic_future_vector_CSV.aed",
-        }
 
-        dataset = AequilibraeData()
-        dataset.create_empty(**args)
+    if method in ["csv", "parquet"]:
+        data_name = splitext(basename(dataset_path))[0]
+        dialog.datasets[data_name] = dataset
 
-        dataset.origins[:] = origin[:]
-        dataset.destinations[:] = destination[:]
-        dataset.index[:] = idx[:]
+        dialog.cob_index.setCurrentText("index")
+        dialog._has_idx = False
+    else:
+        dataset = LoadDatasetDialog(dialog.iface)
+        dataset.radio_layer.setChecked(True)
+        dataset.size_it_accordingly(True)
+        dataset.cob_index_field.setCurrentText("index")
+        dataset.layer = layer
+        dataset.load_the_vector()
 
-        dialog.datasets["synthetic_future_vector_CSV"] = dataset
+        dialog.datasets["synthetic_future_vector"] = dataset.dataset
+        dialog._has_idx = True
+        dialog.cob_index.clear()
+        dialog.cob_index.setEnabled(False)
 
     dialog.outfile = file_path
-
-    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_prod_data)
-    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_atra_data)
+    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_data)
 
     temp = list(dialog.matrices["name"])
     demand_idx = temp.index("demand.aem")
@@ -134,36 +128,34 @@ def test_calibrate_gravity(run_assignment, method, folder_path, mocker):
         assert "function: POWER" in file_text
 
 
-@pytest.mark.parametrize(("method", "ext"), [("negative", "X"), ("power", "Y"), ("gamma", "Z")])
-def test_apply_gravity(ae_with_project, method, ext, folder_path, mocker):
+@pytest.mark.parametrize("method", ["negative", "power", "gamma"])
+def test_apply_gravity(ae_with_project, method, folder_path, mocker):
 
-    file_path = f"{folder_path}/matrices/ADJ-TrafficAssignment_DP_{ext}.omx"
+    file_path = f"{folder_path}/matrices/ADJ-TrafficAssignment_DP.omx"
     mocker.patch(
         "qaequilibrae.modules.distribution_procedures.distribution_models_dialog.DistributionModelsDialog.browse_outfile",
         return_value=file_path,
     )
 
-    dataset_name = "test/data/SiouxFalls_project/synthetic_future_vector.aed"
+    dataset_path = "test/data/SiouxFalls_project/synthetic_future_vector.csv"
+    dataset = pd.read_csv(dataset_path)
 
-    dataset = AequilibraeData()
-    dataset.load(dataset_name)
-
-    data_name = splitext(basename(dataset_name))[0]
+    data_name = splitext(basename(dataset_path))[0]
 
     dialog = DistributionModelsDialog(ae_with_project, mode="apply")
+    dialog._has_idx = False
 
     dialog.datasets[data_name] = dataset
-    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_prod_data)
-    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_atra_data)
+    dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_data)
 
     temp = list(dialog.matrices["name"])
     imped_idx = temp.index(f"trafficassignment_dp_x_car_omx")
     dialog.cob_imped_mat.setCurrentIndex(imped_idx)
     dialog.cob_imped_field.setCurrentText("free_flow_time_final")
 
-    dialog.cob_prod_data.setCurrentText("synthetic_future_vector")
+    dialog.cob_data.setCurrentText("synthetic_future_vector")
+    dialog.cob_index.setCurrentText("index")
     dialog.cob_prod_field.setCurrentText("origins")
-    dialog.cob_atra_data.setCurrentText("synthetic_future_vector")
     dialog.cob_atra_field.setCurrentText("destinations")
 
     if method == "negative":

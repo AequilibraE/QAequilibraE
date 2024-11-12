@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 import sys
+from importlib.util import find_spec
 from os.path import join, isdir
 from pathlib import Path
 
@@ -39,6 +40,10 @@ class DownloadAll:
 
     def install(self):
         reps = []
+        command = f'"{self.find_python()}" -m pip install uv'
+        _ = self.execute(command)
+        print(command)
+
         for file in self.dependency_files:
             flag = self.target_folder / file.name
             if flag.exists():
@@ -59,9 +64,10 @@ class DownloadAll:
     def install_package(self, package):
         Path(self.target_folder).mkdir(parents=True, exist_ok=True)
 
-        install_command = f'-m pip install {package} -t "{self.target_folder}"'
-        if "ortools" in package.lower():
-            install_command += " --no-deps"
+        spec = find_spec("uv")
+        is_uv = "" if spec is None else "uv"
+
+        install_command = f'-m {is_uv} pip install {package} --target "{self.target_folder}"'
 
         command = f'"{self.find_python()}" {install_command}'
         print(command)
@@ -96,6 +102,10 @@ class DownloadAll:
         return lines
 
     def find_python(self):
+        # Check if we're inside a virtual environment
+        if sys.prefix != sys.base_prefix:
+            return "python3"
+
         sys_exe = Path(sys.executable)
         if sys.platform == "linux" or sys.platform == "linux2":
             # Unlike other platforms, linux uses the system python, lets see if we can guess it
@@ -147,8 +157,8 @@ class DownloadAll:
 
 if __name__ == "__main__":
     result = DownloadAll().install()
-    output = ("".join([str(x).upper() for x in result]))
-    
+    output = "".join([str(x).upper() for x in result])
+
     print(output)
 
     assert "ERROR" not in output
