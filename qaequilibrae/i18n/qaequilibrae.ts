@@ -3,46 +3,11 @@
 <TS version="2.1">
 <context>
     <name>AboutDialog</name>
-    <message>
-        <location filename="../modules/common_tools/about_dialog.py" line="50"/>
-        <source>AequilibraE Version name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/common_tools/about_dialog.py" line="51"/>
-        <source>AequilibraE Version number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/common_tools/about_dialog.py" line="52"/>
-        <source>GUI version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/common_tools/about_dialog.py" line="53"/>
-        <source>GUI Repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/common_tools/about_dialog.py" line="54"/>
-        <source>Minimum QGIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/common_tools/about_dialog.py" line="55"/>
-        <source>Developers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/common_tools/about_dialog.py" line="56"/>
-        <source>Sponsors</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>AddConnectors</name>
     <message>
-        <location filename="../modules/processing_provider/Add_connectors.py" line="87"/>
+        <location filename="../modules/processing_provider/Add_connectors.py" line="86"/>
         <source>Go through all the centroids and add connectors only if none exists for the chosen mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -62,7 +27,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/processing_provider/Add_connectors.py" line="43"/>
+        <location filename="../modules/processing_provider/Add_connectors.py" line="41"/>
         <source>AequilibraE module not found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -72,17 +37,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/processing_provider/Add_connectors.py" line="61"/>
+        <location filename="../modules/processing_provider/Add_connectors.py" line="60"/>
         <source>Adding {} connectors when none exists for mode &quot;{}&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/processing_provider/Add_connectors.py" line="78"/>
+        <location filename="../modules/processing_provider/Add_connectors.py" line="77"/>
         <source>Add centroid connectors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/processing_provider/Add_connectors.py" line="84"/>
+        <location filename="../modules/processing_provider/Add_connectors.py" line="83"/>
         <source>Model Building</source>
         <translation type="unfinished"></translation>
     </message>
@@ -90,7 +55,7 @@
 <context>
     <name>AddZonesProcedure</name>
     <message>
-        <location filename="../modules/project_procedures/add_zones_procedure.py" line="22"/>
+        <location filename="../modules/project_procedures/add_zones_procedure.py" line="21"/>
         <source>Importing zones</source>
         <translation type="unfinished"></translation>
     </message>
@@ -368,28 +333,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="35"/>
-        <source>Adding extra network data fields to database</source>
+        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="36"/>
+        <source>Adding extra fields to links layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="42"/>
-        <source>Creating layer triggers</source>
+        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="38"/>
+        <source>Adding extra fields to nodes layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="43"/>
-        <source>Spatial indices</source>
+        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="41"/>
+        <source>Building links layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="88"/>
-        <source>Transferring nodes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="116"/>
-        <source>Transferring {}</source>
+        <location filename="../modules/project_procedures/creates_transponet_procedure.py" line="44"/>
+        <source>Renumbering nodes layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -474,12 +434,12 @@
 <context>
     <name>DesireLinesDialog</name>
     <message>
-        <location filename="../modules/gis/desire_lines_dialog.py" line="211"/>
+        <location filename="../modules/gis/desire_lines_dialog.py" line="209"/>
         <source>Inputs not loaded properly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_dialog.py" line="211"/>
+        <location filename="../modules/gis/desire_lines_dialog.py" line="209"/>
         <source>You need the layer and at least one matrix_procedures core</source>
         <translation type="unfinished"></translation>
     </message>
@@ -487,32 +447,22 @@
 <context>
     <name>DesireLinesProcedure</name>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="65"/>
-        <source>Loading Layer Features: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="88"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="87"/>
         <source>Manipulating matrix indices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="95"/>
-        <source>Collecting all matrices</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="104"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="103"/>
         <source>Filtering zones with no geography available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="116"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="115"/>
         <source>Filtering down to OD pairs with flows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="137"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="136"/>
         <source>Concatenating AB &amp; BA flows</source>
         <translation type="unfinished"></translation>
     </message>
@@ -522,47 +472,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="184"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="187"/>
         <source>Building Delaunay dataset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="194"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="193"/>
         <source>Computing Delaunay Triangles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="197"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="201"/>
         <source>Building Delaunay Network: Collecting Edges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="209"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="207"/>
         <source>Building Delaunay Network: Getting unique edges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="212"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="214"/>
         <source>Building Delaunay Network: Assembling Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="236"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="234"/>
         <source>Building graph</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="268"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="266"/>
         <source>Assigning demand</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="273"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="270"/>
         <source>Collecting results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/desire_lines_procedure.py" line="274"/>
+        <location filename="../modules/gis/desire_lines_procedure.py" line="273"/>
         <source>Building resulting layer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -595,7 +545,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="316"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="342"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
@@ -620,160 +570,130 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="184"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="210"/>
         <source>Impedance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="288"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="314"/>
         <source>Core</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="275"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="301"/>
         <source>Matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="247"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="273"/>
         <source>Seed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="374"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="400"/>
         <source>Model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="337"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="363"/>
         <source>Parameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="342"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="368"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="380"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="406"/>
         <source>Negative Exponential</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="390"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="416"/>
         <source>Inverse Power</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="397"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="423"/>
         <source>Gamma Function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="404"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="430"/>
         <source>Friction Factors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="412"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="438"/>
         <source>jobs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="429"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="455"/>
         <source>Job</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="434"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="460"/>
         <source>Output name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="439"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="465"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="418"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="444"/>
         <source>Treat empties as zeros</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="451"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="477"/>
         <source>Iterative Proportional Fitting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="458"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="484"/>
         <source>Apply Gravity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="465"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="491"/>
         <source>Calibrate Gravity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="472"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="498"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="479"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="505"/>
         <source>Queue jobs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="489"/>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="515"/>
         <source>Run jobs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/common_tools/forms/ui_about.ui" line="14"/>
-        <source>AequilibraE - About</source>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="191"/>
+        <source>Vector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/common_tools/forms/ui_about.ui" line="36"/>
-        <source>Info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/common_tools/forms/ui_about.ui" line="44"/>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_SegmentingLines.ui" line="14"/>
-        <source>AequilibraE - Creating line segments</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_SegmentingLines.ui" line="42"/>
-        <source>Selected features only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_SegmentingLines.ui" line="65"/>
-        <source>Line Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_SegmentingLines.ui" line="78"/>
-        <source>Break features in</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_SegmentingLines.ui" line="101"/>
-        <source>segments</source>
+        <location filename="../modules/distribution_procedures/forms/ui_distribution.ui" line="204"/>
+        <source>Index</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DisplayAequilibraEFormatsDialog</name>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="383"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="380"/>
         <source>AequilibraE custom formats</source>
         <translation type="unfinished"></translation>
     </message>
@@ -788,42 +708,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="76"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="73"/>
         <source>Could not load dataset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="105"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="102"/>
         <source>Thousands separator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="114"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="111"/>
         <source>Decimal places</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="179"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="176"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="174"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="171"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="151"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="148"/>
         <source>No mapping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="155"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="152"/>
         <source>By origin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="159"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="156"/>
         <source>By destination</source>
         <translation type="unfinished"></translation>
     </message>
@@ -831,68 +751,73 @@
 <context>
     <name>DistributionModelsDialog</name>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="134"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="130"/>
         <source>AequilibraE - Iterative Proportional Fitting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="135"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="131"/>
         <source>Seed matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="139"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="135"/>
         <source>AequilibraE - Apply gravity model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="145"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="141"/>
         <source>AequilibraE - Calibrate gravity model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="146"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="142"/>
         <source>Observed matrix</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="172"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="168"/>
         <source>Function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="224"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="228"/>
         <source>Could not load model. {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="423"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="422"/>
         <source>Procedure error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="379"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="378"/>
         <source>Queued</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="397"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="396"/>
         <source>Production vector is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="400"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="399"/>
         <source>Attraction vector is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="404"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="403"/>
         <source>Observed (seed) matrix is missing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="408"/>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="407"/>
         <source>Impedance matrix is missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/distribution_procedures/distribution_models_dialog.py" line="218"/>
+        <source>You need to load a dataset to proceed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -914,22 +839,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/processing_provider/export_matrix.py" line="50"/>
+        <location filename="../modules/processing_provider/export_matrix.py" line="44"/>
         <source>AequilibraE module not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/processing_provider/export_matrix.py" line="72"/>
+        <location filename="../modules/processing_provider/export_matrix.py" line="74"/>
         <source>Export matrices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/processing_provider/export_matrix.py" line="78"/>
+        <location filename="../modules/processing_provider/export_matrix.py" line="80"/>
         <source>Data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/processing_provider/export_matrix.py" line="81"/>
+        <location filename="../modules/processing_provider/export_matrix.py" line="83"/>
         <source>Export an existing *.omx or *.aem matrix file into *.csv, *.aem or *.omx</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1007,42 +932,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="43"/>
+        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="149"/>
         <source>Resetting Transit Tables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="62"/>
+        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="52"/>
         <source>Execute Importer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="107"/>
+        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="123"/>
         <source>Add Feed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="121"/>
+        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="98"/>
         <source>Feeds to import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="153"/>
-        <source>Rebuild active transport networks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="175"/>
+        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="181"/>
         <source>Overwrite Routes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="197"/>
+        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="71"/>
         <source>Add to Existing Routes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="272"/>
+        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="247"/>
         <source>Running</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1226,6 +1146,11 @@
         <source>Zonal mapping</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../modules/public_transport_procedures/forms/gtfs_importer.ui" line="191"/>
+        <source>Allow map-match</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GTFSFeed</name>
@@ -1266,17 +1191,17 @@
 <context>
     <name>ImpedanceMatrixDialog</name>
     <message>
-        <location filename="../modules/paths_procedures/impedance_matrix_dialog.py" line="191"/>
+        <location filename="../modules/paths_procedures/impedance_matrix_dialog.py" line="195"/>
         <source>It is not possible to trace paths between all nodes while blocking flows through centroids</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/impedance_matrix_dialog.py" line="196"/>
+        <location filename="../modules/paths_procedures/impedance_matrix_dialog.py" line="200"/>
         <source>No graph loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/impedance_matrix_dialog.py" line="199"/>
+        <location filename="../modules/paths_procedures/impedance_matrix_dialog.py" line="203"/>
         <source>No skim fields provided</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1377,7 +1302,7 @@
 <context>
     <name>LoadDataset</name>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_class.py" line="53"/>
+        <location filename="../modules/matrix_procedures/load_dataset_class.py" line="49"/>
         <source>Field {} does has a type not supported.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1385,55 +1310,55 @@
 <context>
     <name>LoadDatasetDialog</name>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="61"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="63"/>
         <source>Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="165"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="166"/>
         <source>Error while loading vector:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="181"/>
-        <source>Could not load file. It might be corrupted or not a valid AequilibraE file. {}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="224"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="228"/>
         <source>No name provided for the output file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="192"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="199"/>
         <source>Invalid field chosen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="209"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="214"/>
         <source>One cannot load a dataset with indices only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="188"/>
+        <source>Could not load file. It might be corrupted or not a valid file format. {}</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LoadMatrix</name>
     <message>
-        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="34"/>
+        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="32"/>
         <source>Loading from table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="49"/>
+        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="44"/>
         <source>Loading matrix: {}/{}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="52"/>
+        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="47"/>
         <source>Converting to a NumPy array</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="71"/>
+        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="66"/>
         <source>Loading from NumPy</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1555,103 +1480,33 @@
 <context>
     <name>MatrixReblocking</name>
     <message>
-        <location filename="../modules/matrix_procedures/mat_reblock.py" line="32"/>
+        <location filename="../modules/matrix_procedures/mat_reblock.py" line="27"/>
         <source>Building correspondence</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/mat_reblock.py" line="66"/>
+        <location filename="../modules/matrix_procedures/mat_reblock.py" line="60"/>
         <source>Reblocking matrices</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/mat_reblock.py" line="83"/>
+        <location filename="../modules/matrix_procedures/mat_reblock.py" line="77"/>
         <source>Could not create reblocked matrix.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/mat_reblock.py" line="97"/>
+        <location filename="../modules/matrix_procedures/mat_reblock.py" line="91"/>
         <source>Matrix Reblocking finalized</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MatrixViewer</name>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="20"/>
-        <source>MainWindow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="48"/>
-        <source>Marginals</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="63"/>
-        <source>None</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="73"/>
-        <source>Sum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="83"/>
-        <source>Max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="93"/>
-        <source>Min</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="118"/>
-        <source>Matrix cores</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="146"/>
-        <source>Matrix indices</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="164"/>
-        <source>Load new matrix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="182"/>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="195"/>
-        <source>Matrix type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="207"/>
-        <source>CSV Matrix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="220"/>
-        <source>Numpy Array</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_MatrixViewer.ui" line="233"/>
-        <source>OMX</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>NetworkPreparationDialog</name>
     <message>
-        <location filename="../modules/network/network_preparation_dialog.py" line="92"/>
+        <location filename="../modules/network/network_preparation_dialog.py" line="93"/>
         <source>Node layer error: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1659,38 +1514,43 @@
 <context>
     <name>NetworkPreparationProcedure</name>
     <message>
-        <location filename="../modules/network/Network_preparation_procedure.py" line="46"/>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="41"/>
         <source>Duplicating line layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/Network_preparation_procedure.py" line="89"/>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="79"/>
         <source>Links read: {}/{}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/Network_preparation_procedure.py" line="132"/>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="113"/>
         <source>Computing node IDs: {}/{}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/Network_preparation_procedure.py" line="156"/>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="134"/>
         <source>Writing new node layer: {}/{}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/Network_preparation_procedure.py" line="174"/>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="156"/>
         <source>Writing node IDs to links: {}/{}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/Network_preparation_procedure.py" line="187"/>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="184"/>
         <source>Checking node layer: {}/{}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/Network_preparation_procedure.py" line="205"/>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="201"/>
         <source>Processing links: {}/{}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/network/Network_preparation_procedure.py" line="55"/>
+        <source>Adding fields to line layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1940,27 +1800,27 @@
 <context>
     <name>SimpleTAG</name>
     <message>
-        <location filename="../modules/gis/simple_tag_procedure.py" line="55"/>
+        <location filename="../modules/gis/simple_tag_procedure.py" line="52"/>
         <source>Initializing. Sit tight</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_procedure.py" line="77"/>
+        <location filename="../modules/gis/simple_tag_procedure.py" line="73"/>
         <source>Spatial index for target layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_procedure.py" line="92"/>
+        <location filename="../modules/gis/simple_tag_procedure.py" line="86"/>
         <source>Spatial index for source layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_procedure.py" line="104"/>
+        <location filename="../modules/gis/simple_tag_procedure.py" line="95"/>
         <source>Performing spatial matching</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_procedure.py" line="116"/>
+        <location filename="../modules/gis/simple_tag_procedure.py" line="104"/>
         <source>Writing data to target layer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1978,27 +1838,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_dialog.py" line="246"/>
+        <location filename="../modules/gis/simple_tag_dialog.py" line="254"/>
         <source>Input data not provided correctly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_dialog.py" line="246"/>
+        <location filename="../modules/gis/simple_tag_dialog.py" line="227"/>
         <source>  Try again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_dialog.py" line="252"/>
+        <location filename="../modules/gis/simple_tag_dialog.py" line="233"/>
         <source>If source layer is a polygon, source needs to enclose target.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_dialog.py" line="254"/>
+        <location filename="../modules/gis/simple_tag_dialog.py" line="235"/>
         <source>If only target is a polygon, target needs to enclose source.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/gis/simple_tag_dialog.py" line="256"/>
+        <location filename="../modules/gis/simple_tag_dialog.py" line="237"/>
         <source>First found record is used.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2165,78 +2025,43 @@
 <context>
     <name>TrafficAssignmentDialog</name>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="231"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="232"/>
         <source>Class name already used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="284"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="285"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="338"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="336"/>
         <source>Input error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="368"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="360"/>
         <source>No traffic classes to assign</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="373"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="365"/>
         <source>Missing scenario name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="378"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="370"/>
         <source>Result table name already exists. Choose a new name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="446"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="429"/>
         <source>VDF parameter is not numeric</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>advanced_graph_details</name>
-    <message>
-        <location filename="../modules/paths_procedures/forms/advanced_graph_details.ui" line="14"/>
-        <source>Graph Centroids setting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/paths_procedures/forms/advanced_graph_details.ui" line="31"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/paths_procedures/forms/advanced_graph_details.ui" line="49"/>
-        <source>Set centroids</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/paths_procedures/forms/advanced_graph_details.ui" line="85"/>
-        <source>Block path through connectors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/paths_procedures/forms/advanced_graph_details.ui" line="113"/>
-        <source>Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/paths_procedures/forms/advanced_graph_details.ui" line="131"/>
-        <source>ID field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/paths_procedures/forms/advanced_graph_details.ui" line="152"/>
-        <source>Selected nodes only</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>bandwidths</name>
@@ -2537,26 +2362,6 @@
 </context>
 <context>
     <name>gravity_parameters</name>
-    <message>
-        <location filename="../modules/distribution_procedures/forms/ui_gravity_parameters.ui" line="14"/>
-        <source>AequilibraE - Gravity Parameters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/distribution_procedures/forms/ui_gravity_parameters.ui" line="26"/>
-        <source>Alpha</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/distribution_procedures/forms/ui_gravity_parameters.ui" line="39"/>
-        <source>Beta</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/distribution_procedures/forms/ui_gravity_parameters.ui" line="75"/>
-        <source>Done</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>load_network_info</name>
@@ -2656,81 +2461,6 @@
 </context>
 <context>
     <name>nodes_to_area</name>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="22"/>
-        <source>AequilibraE  -  Node to Area data aggregation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="53"/>
-        <source>Data source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="225"/>
-        <source>Node field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="98"/>
-        <source>Node Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="112"/>
-        <source>Data destination</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="212"/>
-        <source>Area field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="157"/>
-        <source>Area Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="171"/>
-        <source>Aggregation criteria</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="238"/>
-        <source>Fields need to have matching values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="255"/>
-        <source>Operation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="267"/>
-        <source>Sum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="283"/>
-        <source>Max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="296"/>
-        <source>Min</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="309"/>
-        <source>Average</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/forms/ui_nodes_to_areas.ui" line="322"/>
-        <source>Divided value in case of multiple area overlapping</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>parameters</name>
@@ -2874,7 +2604,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1265"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1197"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2894,7 +2624,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="824"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="818"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;xcxc&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2999,7 +2729,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1270"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1202"/>
         <source>Field</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3009,132 +2739,132 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="676"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="673"/>
         <source>Blended</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="693"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="687"/>
         <source>Critical analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="708"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="702"/>
         <source>Select link analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="814"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="808"/>
         <source>Build Query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="843"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="837"/>
         <source>Links</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="848"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="842"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="853"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="847"/>
         <source>Query name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="858"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="852"/>
         <source>Del</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="783"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="777"/>
         <source>Link flow extraction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="792"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="786"/>
         <source>Perform link flow extraction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="867"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="861"/>
         <source>Assignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1004"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="913"/>
         <source>Status Message 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="885"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="920"/>
         <source>ASSIGN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="942"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1058"/>
         <source>CANCEL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1023"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="989"/>
         <source>Algorithm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1055"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1021"/>
         <source>Relative Gap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1062"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1028"/>
         <source>Maximum Iterations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1098"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1071"/>
         <source>Network information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1109"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1082"/>
         <source>Free Flow Travel time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1121"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1094"/>
         <source>Capacity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1179"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="879"/>
         <source>Outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1188"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="888"/>
         <source>Save complete path file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1198"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="898"/>
         <source>Result_name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1214"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1146"/>
         <source>Volume-Delay function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1220"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1152"/>
         <source>Function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1260"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1192"/>
         <source>Parameter</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3142,7 +2872,7 @@
 <context>
     <name>ui_transponet_construction</name>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="19"/>
+        <location filename="../modules/project_procedures/forms/ui_add_zoning.ui" line="19"/>
         <source>AequilibraE - Add zoning layer to project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3152,22 +2882,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="57"/>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="100"/>
         <source>From network</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="67"/>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="93"/>
         <source>Zone centers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="74"/>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="73"/>
         <source>Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="100"/>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="83"/>
         <source>Search radius (m)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3182,22 +2912,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="126"/>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="158"/>
         <source>Modes to connect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="158"/>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="176"/>
         <source>Add conectors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="197"/>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="210"/>
         <source>Connectors per centroid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/network/forms/ui_add_connectors.ui" line="233"/>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="246"/>
         <source>Creating Connectors</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3291,6 +3021,11 @@
         <source>Status Message 0</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../modules/network/forms/ui_add_connectors.ui" line="190"/>
+        <source>Limit connector creation to zone</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>vector_loader</name>
@@ -3310,48 +3045,53 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="182"/>
-        <source>AequilibraE data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="198"/>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="201"/>
         <source>Import from layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="214"/>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="217"/>
         <source>All fields</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="267"/>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="270"/>
         <source>Save and Use</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="296"/>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="299"/>
         <source>Field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="329"/>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="332"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="385"/>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="388"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="411"/>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="414"/>
         <source>Data layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="424"/>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="427"/>
         <source>Keep these fields only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="185"/>
+        <source>CSV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/matrix_procedures/forms/ui_vector_loader.ui" line="440"/>
+        <source>Parquet</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
