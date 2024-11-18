@@ -14,13 +14,14 @@
 
 import os
 import sys
+from datetime import datetime
 
 sys.path.insert(0, os.path.abspath("../.."))
 
 # -- Project information -----------------------------------------------------
 
 project = "AequilibraE for QGIS"
-copyright = "2018, AequilibraE developers"
+copyright = f"{str(datetime.now().date())}, AequilibraE developers"
 author = "Pedro Camargo"
 
 # The short X.Y.Z version
@@ -124,7 +125,7 @@ texinfo_documents = [
         "AequilibraE for QGIS",
         author,
         "AequilibraE",
-        "Comprehensive Python package for transportation modeling",
+        "A QGIS plugin for transportation modeling",
         "Miscellaneous",
     )
 ]

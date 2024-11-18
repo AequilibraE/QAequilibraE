@@ -1,7 +1,7 @@
 Paths and Assignment
 ====================
 
-From version 0.6, AequilibraE plug-in does not require the user to create the graph to perform
+From version 0.6, AequilibraE plugin does not require the user to create the graph to perform
 path computation as in previous versions. In this version, as you set up your own configurations,
 the software already computes the graph for you.
 

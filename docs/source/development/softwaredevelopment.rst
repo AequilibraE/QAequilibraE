@@ -5,83 +5,61 @@
 Contributing to AequilibraE for QGIS
 ====================================
 
-This page presents some initial instructions on how to setup your system to start contributing to AequilibraE and lists
-the requirements for all pull-requests to be merged into master.
+This page presents some initial instructions on how to setup your system to start contributing to QAequilibraE 
+and lists the requirements for all pull-requests to be merged into main.
 
 Software Design and requirements
 --------------------------------
 
-The most important piece of AequilibraE's backend is, without a doubt, `NumPy <http://numpy.org>`_.
+QAequilibraE is built on top of AequilibraE's main features, and the most important piece of AequilibraE's backend 
+is, without a doubt, `NumPy <http://numpy.org>`_.
 
-Whenever vectorization is not possible through the use of NumPy functions, compiled code is developed in order to
-accelerate computation. All compiled code is written in `Cython <https://cython.org/>`_.
+The user might not see or know, but whenever vectorization is not possible through the use of NumPy functions, 
+compiled code written in `Cython <https://cython.org/>`_ is developed in order to accelerate computation.
 
-AequilibraE also observes a strong requirement of only using libraries that are available in the Python installation
-used by `QGIS <https://qgis.org/en/site/>`_ on Windows, as the most important use case of this library is as the computational
-backend of the AequilibraE GUI for QGIS. This requirement can be relaxed, but it has to be analysed on a base-by-case
-basis and CANNOT break current workflow within QGIS.
+QAequilibraE also observes a strong requirement of only using libraries that are available in the Python installation
+used by `QGIS <https://qgis.org/en/site/>`_ on Windows.
 
-We have not yet found an ideal source of recommendations for developing AequilibraE, but a good initial take can be
+We have not yet found an ideal source of recommendations for developing QAequilibraE, but a good initial take can be
 found in `this article <http://www.plosbiology.org/article/info%3Adoi%2F10.1371%2Fjournal.pbio.1001745>`_.
+
+Please notice that QAequilibraE installation MUST WORK at least in the most recent long-term release (LTR).
 
 Development Install
 -------------------
 
-As it goes with most Python packages, we recommend using a dedicated virtual environment to develop AequilibraE.
+We recommend using a dedicated virtual environment to develop QAequilibraE, using the version of Python related 
+to the most recent QGIS long-term release. When this section was updated (November/2024), LTR 3.34.12 was coming
+with a default 3.12.7 Python environment.
 
-AequilibraE is currently tested for Python 3.9, 3.10, 3.11 & 3.12, but we recommend using Python 3.9 or 3.10 for development.
+We also assume you are using one of `PyCharm <https://www.jetbrains.com/pycharm>`_ or 
+`VSCode <https://code.visualstudio.com/>`_, which are good IDEs for Python. If you are using a different IDE, 
+we would welcome if you could contribute with instructions to set that up.
 
-We also assume you are using `PyCharm <https://www.jetbrains.com/pycharm>`_, which is an awesome IDE for Python.
+(For us,) The easiest way of developing a QGIS plugin is using a Docker container to build an image containing
+a QGIS installation. When cloning QAequilibraE repository into your local machine you will find a ``Dockerfile`` 
+with this recipe. ::
 
-If you are using a different IDE, we would welcome if you could contribute with instructions to set that up.
+  git clone https://github.com/AequilibraE/qaequilibrae.git
 
-Cloning the computational engine as submodule
----------------------------------------------
+Then all you have to do is create a virtual environment, and proceed with the requirements' installation.
+We understood that the creation of a virtual development environment within a container would be redundant, 
+however after facing some developing issues related to `PEP 668 <https://peps.python.org/pep-0668/>`_, we believe
+that using a virtual environment would be a good practice. ::
 
-:: 
-
-  git submodule update --init --recursive
-
-  git submodule update --recursive --remote
-
-
-Non-Windows
-~~~~~~~~~~~
-::
-
-  ./ci.sh setup_dev
-
-Windows
-~~~~~~~
-
-Make sure to clone the AequilibraE repository and run the following from within that cloned repo using an elevated
-command prompt.
-
-Python 3.6 needs to be installed, and the following instructions assume you are using `Chocolatey
-<https://chocolatey.org/>`_ as a package manager.
-::
-
-    cinst python3 --version 3.6.8
-    cinst python
-
-    set PATH=C:\Python36;%PATH%
-    python -m pip install pipenv
-    virtualenv .venv
-    python -m pipenv install
-    python -m pipenv run pre-commit-install
-
-Setup Pycharm with the virtual environment you just created.
-
-::
-
-    Settings -> Project -> Project Interpreter -> Gear Icon -> Add -> Existing VEnv
-
+  python3 -m venv .venv --system-site-package
+  . .venv/bin/activate
+  python3 -m pip install - U pip setuptools uv
+  python3 -m pip install -r test/requirements-test.txt
+  python3 ./ci/dependency_installation.py
+  export PYTHONPATH=$(pwd)/qaequilibrae/packages:$PYTHONPATH
+  export QT_QPA_PLATFORM=offscreen
 
 Development Guidelines
 -----------------------
 
-AequilibraE development (tries) to follow a few standards. Since this is largely an after-the-fact concern, several
-portions of the code are still not up to such standards.
+QAequilibraE development (tries) to follow a few standards. A huge effort is being undertaken by the development
+team to update several portions of the code are still not up to such standards.
 
 Style
 ~~~~~~
@@ -138,7 +116,7 @@ function and configure it to return the context and the message.
       def tr(self, message):
         return trlt("TrafficAssignYAML", message)
 
-As for June 2024, QAequilibraE's translations are all hosted in 
+As for November 2024, QAequilibraE's translations are all hosted in 
 `Transifex <https://explore.transifex.com/aequilibrae/qaequilibrae/>`_. Currently, we are targeting translations
 in Brazilian Portuguese, Chinese, French, German, Italian, and Spanish. If you want to contribute to QAequilibraE 
 by translating the plugin to other languages or reviewing the existing translations, please let us know in our 
@@ -154,7 +132,7 @@ Contributing to AequilibraE for QGIS
 GitHub has a nice visual explanation on how collaboration is done `GitHub Flow
 <https://guides.github.com/introduction/flow>`_. (For us,) The most important points there are:
 
-* The master branch contains the latest working/release version of AequilibraE
+* The main branch contains the latest working/release version of QAequilibraE
 * Work is done in an issue/feature branch (or a fork) and then pushed to a new branch
 * Automated testing is run using Github Actions. All tests must pass:
 
@@ -162,14 +140,14 @@ GitHub has a nice visual explanation on how collaboration is done `GitHub Flow
   * Build/packaging tests
   * Documentation building test
 
-* If the tests pass, then a manual pull request can be approved to merge into master
+* If the tests pass, then a manual pull request can be approved to merge into main
 * The master branch is protected and therefore can only be written to after the code has been reviewed and approved
-* No individual has the privileges to push to the master branch
+* No individual has the privileges to push to the main branch
 
 Release versions
 ~~~~~~~~~~~~~~~~~
 
-AequilibraE uses the de-facto Python standard for `versioning
+QAequilibraE uses the de-facto Python standard for `versioning
 <http://the-hitchhikers-guide-to-packaging.readthedocs.io/en/latest/specification.html>`_
 
 ::
@@ -186,16 +164,18 @@ AequilibraE uses the de-facto Python standard for `versioning
 - Some software use a third level: MICRO. This level is used when the release cycle of minor release is quite long.
   In that case, micro releases are dedicated to bug fixes.
 
-AequilibraE's development is happening mostly within the Minor and Micro levels, as we are still in version 0
+QAequilibraE's development is happening mostly within the Minor and Micro levels.
 
 Testing
 ~~~~~~~~
 
-AequilibraE testing is done with three tools:
+QAequilibraE testing is done with some tools:
 
-* `flake8 <https://pypi.org/project/flake8/>`_, a tool to check Python code style
+* `Black <https://black.readthedocs.io/en/stable/index.html/>`_, the uncompromising code formatter
 * `pytest <http://pytest.org/latest/>`_, a Python testing tool
 * `pytest-cov <https://pytest-cov.readthedocs.io/en/latest/index.html>`_, a tool for measuring test code coverage
+* `pytest-qt <https://pytest-qt.readthedocs.io/en/latest/index.html>`_, a tool for testing PyQt5 applications
+* `pytest-qgis <https://pypi.org/project/pytest-qgis/>`_, a tool for writing QGIS tests
 
 To run the tests locally, you will need to figure out what to do...
 
@@ -220,22 +200,15 @@ standard-looking HTML pages, while also bringing the docstring documentation alo
 
 To build the documentation, first make sure the required packages are installed::
 
-    pip install sphinx pydata-sphinx-theme sphinx-gallery sphinx-design sphinx-panels sphinx-subfigure
+    pip install sphinx pydata-sphinx-theme sphinx-design sphinx-panels sphinx-subfigure
 
 Next, build the documentation in HTML format with the following commands run from the ``root`` folder::
 
     cd docs
     make html
 
-Releases
-~~~~~~~~~
-
-AequilibraE releases are manually (and not often) uploaded to the `Python Package Index
-<https://pypi.python.org/pypi/aequilibrae>`_ (pypi).
-
-
 Finally
-~~~~~~~~~
+~~~~~~~
 
 A LOT of the structure around the documentation was borrowed (copied) from the excellent project `ActivitySim
 <https://activitysim.github.io/>`_.

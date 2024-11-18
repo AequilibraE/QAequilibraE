@@ -1,7 +1,7 @@
 Getting Started
 ===============
 
-In this section we describe how you can install AequilibraE's QGIS plug-in.
+In this section we describe how you can install AequilibraE's QGIS plugin.
 
 .. note::
 
@@ -31,7 +31,7 @@ In the tab *All*, search for QAequilibraE.
     :align: center
     :alt: Second step
 
-After selecting the plug-in installation, you will be faced with the question of whether you
+After selecting the plugin installation, you will be faced with the question of whether you
 want to download its dependencies, which are required for using most of the
 features. This is necessary because AequilibraE's algorithms rely on compiled
 extensions, but it is against the QGIS's community guidelines to upload binaries
@@ -79,7 +79,7 @@ stored is automatically reopened by QAequilibraE.
 .. Quick Tour
 .. ----------
 
-.. After installing AequilibraE plug-in, you might enjoy this quick tour on QGIS interface.
+.. After installing AequilibraE plugin, you might enjoy this quick tour on QGIS interface.
 .. Latest versions of AequilibraE for QGIS have brought substantial changes over to the
 .. software operation and interface, which might cause some confusion to old users. For a brief overview
 .. of the new interface, we have prepared a little video tour.
