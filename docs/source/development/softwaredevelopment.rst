@@ -21,7 +21,7 @@ QAequilibraE also observes a strong requirement of only using libraries that are
 used by `QGIS <https://qgis.org/en/site/>`_ on Windows.
 
 We have not yet found an ideal source of recommendations for developing QAequilibraE, but a good initial take can be
-found in `this article <http://www.plosbiology.org/article/info%3Adoi%2F10.1371%2Fjournal.pbio.1001745>`_.
+found in `this article <https://doi.org/10.1371/journal.pbio.1001745>`_.
 
 Please notice that QAequilibraE installation MUST WORK at least in the most recent long-term release (LTR).
 
@@ -64,10 +64,10 @@ team to update several portions of the code are still not up to such standards.
 Style
 ~~~~~~
 
-* Python code should follow (mostly) the `pycodestyle style guide <https://pypi.python.org/pypi/pycodestyle>`_
-* Python docstrings should follow the `reStructuredText Docstring Format <https://www.python.org/dev/peps/pep-0287/>`_
-* We are big fans of auto-code formatting. For that, we use `Black <https://github.com/ambv/black>`_
-* Negating some of what we have said so far, we use maximum line length of 120 characters
+* Python code should follow (mostly) the `pycodestyle style guide <https://pycodestyle.pycqa.org/en/latest/>`_.
+* Python docstrings should follow the `reStructuredText Docstring Format <https://www.python.org/dev/peps/pep-0287/>`_.
+* We are big fans of auto-code formatting. For that, we use `Black <https://black.readthedocs.io/en/stable/>`_.
+* Negating some of what we have said so far, we use maximum line length of 120 characters.
 
 Imports
 ~~~~~~~
@@ -95,7 +95,7 @@ support the localization of strings.
     qgis.utils.iface.messageBar().pushMessage(self.tr("You need at least three centroids to route. "), "", level=3)
 
     # In case you have to insert any text into a string, the best way is to use string format
-    self.error = self.tr("ID {} is non unique in your selected field").format(str(i_d))
+    self.error = self.tr("ID {} is non unique in your selected field").format(str(id))
 
 Strings in QAequilibraE Processing Provider can also be translated. To indicate the strings, import the translation
 function and configure it to return the context and the message.
@@ -141,7 +141,7 @@ GitHub has a nice visual explanation on how collaboration is done `GitHub Flow
   * Documentation building test
 
 * If the tests pass, then a manual pull request can be approved to merge into main
-* The master branch is protected and therefore can only be written to after the code has been reviewed and approved
+* The main branch is protected and therefore can only be written to after the code has been reviewed and approved
 * No individual has the privileges to push to the main branch
 
 Release versions
@@ -171,7 +171,7 @@ Testing
 
 QAequilibraE testing is done with some tools:
 
-* `Black <https://black.readthedocs.io/en/stable/index.html/>`_, the uncompromising code formatter
+* `Black <https://black.readthedocs.io/en/stable/>`_, the uncompromising code formatter
 * `pytest <http://pytest.org/latest/>`_, a Python testing tool
 * `pytest-cov <https://pytest-cov.readthedocs.io/en/latest/index.html>`_, a tool for measuring test code coverage
 * `pytest-qt <https://pytest-qt.readthedocs.io/en/latest/index.html>`_, a tool for testing PyQt5 applications
@@ -180,7 +180,7 @@ QAequilibraE testing is done with some tools:
 To run the tests locally, you will need to figure out what to do...
 
 These same tests are run by GitHub Actions with each push to the repository. These tests need to pass in order to 
-somebody manually review the code before merging it into master (or returning for corrections).
+somebody manually review the code before merging it into main (or returning for corrections).
 
 In some cases, test targets need to be updated to match the new results produced by the code since these 
 are now the correct results. In order to update the test targets, first determine which tests are 
@@ -193,9 +193,9 @@ the tests.
 Documentation
 ~~~~~~~~~~~~~~
 
-All the AequilibraE documentation is (unfortunately) written in `reStructuredText
+All the QAequilibraE documentation is (unfortunately) written in `reStructuredText
 <http://docutils.sourceforge.net/rst.html>`_ and built with `Sphinx <http://www.sphinx-doc.org/en/stable/>`_.
-Although Restructured Text is often unnecessarily convoluted to write, Sphinx is capable of converting it to 
+Although reStructuredText is often unnecessarily convoluted to write, Sphinx is capable of converting it to 
 standard-looking HTML pages, while also bringing the docstring documentation along for the ride.
 
 To build the documentation, first make sure the required packages are installed::
