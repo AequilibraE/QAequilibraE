@@ -114,7 +114,7 @@ class DesireLinesDialog(QDialog, FORM_CLASS):
         return cell_widget
 
     def run_thread(self):
-        self.worker_thread.desire_lines.connect(self.signal_handler)
+        self.worker_thread.signal.connect(self.signal_handler)
         self.worker_thread.start()
         self.exec_()
 
@@ -128,19 +128,17 @@ class DesireLinesDialog(QDialog, FORM_CLASS):
 
     def signal_handler(self, val):
         # Signals that will come from traffic assignment
-        if val[0] == "zones finalized":
-            self.progressbar.setValue(val[1])
-        elif val[0] == "text AoN":
+        if val[0] == "set_text":
             self.progress_label.setText(val[1])
 
         # Signals that will come from desire lines procedure
-        elif val[0] == "job_size_dl":
-            self.progressbar.setRange(0, val[1])
-        elif val[0] == "jobs_done_dl":
-            self.progressbar.setValue(val[1])
-        elif val[0] == "text_dl":
-            self.progress_label.setText(val[1])
-        elif val[0] == "finished_desire_lines_procedure":
+        elif val[0] == "start":
+            self.progress_label.setText(val[2])
+            self.progressbar.setValue(0)
+            self.progressbar.setMaximum(val[1])
+        elif val[0] == "update":
+            self.progressbar.setValue(self.progressbar.value() + 1)
+        elif val[0] == "finished":
             self.job_finished_from_thread()
 
     def job_finished_from_thread(self):
@@ -212,7 +210,7 @@ class DesireLinesDialog(QDialog, FORM_CLASS):
                 self.tr("Inputs not loaded properly"),
                 self.tr("You need the layer and at least one matrix_procedures core"),
                 level=1,
-                duration=10
+                duration=10,
             )
 
     def throws_error(self, error_message):

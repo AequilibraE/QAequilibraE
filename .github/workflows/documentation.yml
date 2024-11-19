@@ -23,7 +23,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y --fix-missing latexmk texlive-latex-extra
-        python -m pip install --upgrade pip
+        python -m pip install -U pip
         pip install -r docs/requirements-docs.txt
 
     - name: Build documentation

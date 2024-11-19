@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QTimer, QVariant
 import numpy as np
+from PyQt5.QtCore import QTimer, QVariant
 from qgis.core import QgsProject, QgsVectorLayer, QgsField, QgsFeature
 
 from qaequilibrae.modules.matrix_procedures.load_matrix_dialog import LoadMatrixDialog
@@ -61,9 +61,9 @@ def test_save_matrix(ae_with_project, folder_path):
     dialog.field_to.setCurrentText("D")
     dialog.field_cells.setCurrentText("Ton")
     dialog.has_errors()
+    dialog.worker_thread.signal.connect(dialog.signal_handler)
     dialog.worker_thread.doWork()
     dialog.worker_thread.report = None
-    dialog.finished_threaded_procedure("LOADED-MATRIX")
     dialog.build_worker_thread()
     dialog.worker_thread.doWork()
 

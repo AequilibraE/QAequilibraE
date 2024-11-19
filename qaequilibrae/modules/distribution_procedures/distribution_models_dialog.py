@@ -1,33 +1,26 @@
-import importlib.util as iutil
 import os
+import numpy as np
+import pandas as pd
 from collections import OrderedDict
 from functools import partial
-from os.path import join
 
-import numpy as np
+from aequilibrae.context import get_logger
+from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.distribution import SyntheticGravityModel
 from aequilibrae.distribution.synthetic_gravity_model import valid_functions
-from aequilibrae.matrix import AequilibraeData, AequilibraeMatrix
 
-from qgis.PyQt.QtWidgets import QAbstractItemView
-from qaequilibrae.modules.matrix_procedures.matrix_lister import list_matrices
-from qaequilibrae.modules.common_tools import PandasModel
 import qgis
-from aequilibrae.context import get_logger
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QDoubleSpinBox, QAbstractItemView
+from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path
+from qaequilibrae.modules.common_tools import PandasModel, ReportDialog, GetOutputFileName
+from qaequilibrae.modules.distribution_procedures.ipf_procedure import IpfProcedure
 from qaequilibrae.modules.distribution_procedures.apply_gravity_procedure import ApplyGravityProcedure
 from qaequilibrae.modules.distribution_procedures.calibrate_gravity_procedure import CalibrateGravityProcedure
-from qaequilibrae.modules.distribution_procedures.ipf_procedure import IpfProcedure
-from qaequilibrae.modules.common_tools import GetOutputFileName
-from qaequilibrae.modules.common_tools import ReportDialog
-from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path
+from qaequilibrae.modules.matrix_procedures.matrix_lister import list_matrices
 from qaequilibrae.modules.matrix_procedures import LoadDatasetDialog, DisplayAequilibraEFormatsDialog
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_distribution.ui"))
-spec = iutil.find_spec("openmatrix")
-has_omx = spec is not None
-
 
 # TODO: Implement consideration of the "empty as zeros" for ALL distrbution models Should force inputs for trip distribution to be of FLOAT type
 
@@ -64,11 +57,14 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.but_load_data.clicked.connect(self.load_datasets)
         self.but_load_model.clicked.connect(self.load_model)
 
-        self.cob_prod_data.currentIndexChanged.connect(
-            partial(self.change_vector_field, self.cob_prod_data, self.cob_prod_field, "data")
+        self.cob_data.currentIndexChanged.connect(
+            partial(self.change_vector_field, self.cob_data, self.cob_index, "data")
         )
-        self.cob_atra_data.currentIndexChanged.connect(
-            partial(self.change_vector_field, self.cob_atra_data, self.cob_atra_field, "data")
+        self.cob_data.currentIndexChanged.connect(
+            partial(self.change_vector_field, self.cob_data, self.cob_prod_field, "data")
+        )
+        self.cob_data.currentIndexChanged.connect(
+            partial(self.change_vector_field, self.cob_data, self.cob_atra_field, "data")
         )
 
         self.cob_imped_mat.currentIndexChanged.connect(
@@ -205,15 +201,23 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         dlg2 = LoadDatasetDialog(self.iface)
         dlg2.show()
         dlg2.exec_()
-        if isinstance(dlg2.dataset, AequilibraeData):
-            dataset_name = dlg2.dataset.file_path
+        if isinstance(dlg2.dataset, pd.DataFrame):
+            dataset_name = dlg2.output_name
             if dataset_name is not None:
                 data_name = os.path.splitext(os.path.basename(dataset_name))[0]
                 data_name = self.find_non_conflicting_name(data_name, self.datasets)
                 self.datasets[data_name] = dlg2.dataset
                 self.add_to_table(self.datasets, self.table_datasets)
-                self.load_comboboxes(self.datasets.keys(), self.cob_prod_data)
-                self.load_comboboxes(self.datasets.keys(), self.cob_atra_data)
+                self.load_comboboxes(self.datasets.keys(), self.cob_data)
+            # To use a QGIS layer as input, we deactivate part of the widgets
+            self._has_idx = True if dlg2.radio_layer.isChecked() else False
+            if self._has_idx:
+                self.cob_index.clear()
+                self.cob_index.setEnabled(False)
+        else:
+            qgis.utils.iface.messageBar().pushMessage(
+                "Warning: ", self.tr("You need to load a dataset to proceed"), level=1, duration=10
+            )
 
     def load_model(self):
         file_name = self.browse_outfile("mod")
@@ -222,7 +226,7 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
             self.update_model_parameters()
         except Exception as e:
             qgis.utils.iface.messageBar().pushMessage(
-                "Error", self.tr("Could not load model. {}").format(e.args), level=3, duration=10
+                "Error: ", self.tr("Could not load model. {}").format(e.args), level=2, duration=10
             )
 
     def change_vector_field(self, cob_orig, cob_dest, dt):
@@ -230,15 +234,15 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         d = str(cob_orig.currentText())
         if len(d) > 0:
             if dt == "data":
-                for f in self.datasets[d].fields:
-                    if np.issubdtype(self.datasets[d].data[f].dtype, np.integer) or np.issubdtype(
-                        self.datasets[d].data[f].dtype, np.float64
+                for f in self.datasets[d].columns:
+                    if np.issubdtype(self.datasets[d][f].dtype, np.integer) or np.issubdtype(
+                        self.datasets[d][f].dtype, np.float64
                     ):
                         cob_dest.addItem(f)
             else:
                 file_name = self.matrices.at[cob_orig.currentIndex(), "file_name"]
                 mat = AequilibraeMatrix()
-                mat.load(join(self.project.matrices.fldr, file_name))
+                mat.load(os.path.join(self.project.matrices.fldr, file_name))
                 cob_dest.addItems(mat.names)
 
     def load_comboboxes(self, list_to_load, data_cob):
@@ -265,20 +269,16 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
 
         for i, data_name in enumerate(dictio.keys()):
             table.setItem(i, 0, QTableWidgetItem(data_name))
-            if isinstance(dictio[data_name], AequilibraeData):
-                table.setItem(i, 1, QTableWidgetItem(str(dictio[data_name].num_fields)))
+            if isinstance(dictio[data_name], pd.DataFrame):
+                table.setItem(i, 1, QTableWidgetItem(str(dictio[data_name].shape[1] - 1)))
             else:
                 table.setItem(i, 1, QTableWidgetItem(str(dictio[data_name].cores)))
 
     def browse_outfile(self, file_type):
         file_types = {
-            "aed": ["AequilibraE dataset", ["Aequilibrae dataset(*.aed)"], ".aed"],
             "mod": ["Model file", ["Model file(*.mod)"], ".mod"],
             "aem": ["Matrix", ["Aequilibrae matrix(*.aem)"], ".aem"],
         }
-
-        if has_omx:
-            file_types["aem"] = ["Matrix", ["Open Matrix(*.omx)", "Aequilibrae matrix(*.aem)"], ".omx"]
 
         ft = file_types[file_type]
         file_chosen, _ = GetOutputFileName(self, ft[0], ft[1], ft[2], self.path)
@@ -290,19 +290,20 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
             if self.job != "ipf":
                 imped_name = self.matrices.at[self.cob_imped_mat.currentIndex(), "file_name"]
                 imped_matrix = AequilibraeMatrix()
-                imped_matrix.load(join(self.project.matrices.fldr, imped_name))
+                imped_matrix.load(os.path.join(self.project.matrices.fldr, imped_name))
                 imped_matrix.computational_view([self.cob_imped_field.currentText()])
 
             if self.job != "apply":
                 seed_name = self.matrices.at[self.cob_seed_mat.currentIndex(), "file_name"]
                 seed_matrix = AequilibraeMatrix()
-                seed_matrix.load(join(self.project.matrices.fldr, seed_name))
+                seed_matrix.load(os.path.join(self.project.matrices.fldr, seed_name))
                 seed_matrix.computational_view([self.cob_seed_field.currentText()])
 
             if self.job != "calibrate":
-                prod_vec = self.datasets[self.cob_prod_data.currentText()]
+                vec = self.datasets[self.cob_data.currentText()]
+                if not self._has_idx:
+                    vec.set_index(self.cob_index.currentText(), inplace=True)
                 prod_field = self.cob_prod_field.currentText()
-                atra_vec = self.datasets[self.cob_atra_data.currentText()]
                 atra_field = self.cob_atra_field.currentText()
 
             if self.job == "ipf":
@@ -310,9 +311,8 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
                 if self.out_name is not None:
                     args = {
                         "matrix": seed_matrix,
-                        "rows": prod_vec,
+                        "vectors": vec,
                         "row_field": prod_field,
-                        "columns": atra_vec,
                         "column_field": atra_field,
                         "nan_as_zero": self.chb_empty_as_zero.isChecked(),
                     }
@@ -328,11 +328,10 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
                             self.model.beta = float(self.table_model.cellWidget(i, 1).value())
 
                     args = {
-                        "impedance": imped_matrix,
-                        "rows": prod_vec,
-                        "row_field": prod_field,
                         "model": self.model,
-                        "columns": atra_vec,
+                        "impedance": imped_matrix,
+                        "vectors": vec,
+                        "row_field": prod_field,
                         "column_field": atra_field,
                         "output": self.out_name,
                         "nan_as_zero": self.chb_empty_as_zero.isChecked(),
@@ -364,7 +363,7 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
                 return
             self.add_job_to_list(worker_thread, self.out_name)
         else:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Procedure error: "), self.error, level=3)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Procedure error: "), self.error, level=3, duration=10)
 
     def add_job_to_list(self, job, out_name):
         self.job_queue[out_name] = job
@@ -413,24 +412,25 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
             return True
 
     def run_thread(self):
-        self.worker_thread.jobFinished.connect(self.job_finished_from_thread)
-        self.worker_thread.doWork()
+        self.worker_thread.signal.connect(self.signal_handler)
+        self.worker_thread.start()
         self.show()
 
-    def job_finished_from_thread(self, success):
+    def signal_handler(self, val):
         error = self.worker_thread.error
         if error is not None:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Procedure error: "), error.args[0], level=3)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Procedure error: "), error.args[0], level=2, duration=10)
         self.report.extend(self.worker_thread.report)
 
-        if success == "calibrate":
-            self.worker_thread.model.save(self.outfile)
-
-        if success in ["apply_gravity", "finishedIPF"]:
-            self.worker_thread.output.export(self.outfile)
+        if val[0] == "finished":
+            if self.job == "calibrate":
+                self.worker_thread.model.save(self.outfile)
+            if self.job in ["apply", "ipf"]:
+                self.worker_thread.output.export(self.outfile)
         self.exit_procedure()
 
     def exit_procedure(self):
+        self.close()
         if self.report is not None:
             dlg2 = ReportDialog(self.iface, self.report)
             dlg2.show()

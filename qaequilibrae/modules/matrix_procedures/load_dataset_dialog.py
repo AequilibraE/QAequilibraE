@@ -1,8 +1,8 @@
 import os
+import pandas as pd
 from functools import partial
 
 import qgis
-from aequilibrae.matrix import AequilibraeData
 
 from qgis.PyQt import QtWidgets, uic, QtCore
 from qgis.PyQt.QtCore import Qt
@@ -34,8 +34,9 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
         self.ignore_fields = []
         self.single_use = single_use
 
-        self.radio_layer_matrix.clicked.connect(partial(self.size_it_accordingly, False))
-        self.radio_aequilibrae.clicked.connect(partial(self.size_it_accordingly, False))
+        self.radio_layer.clicked.connect(partial(self.size_it_accordingly, False))
+        self.radio_csv.clicked.connect(partial(self.size_it_accordingly, False))
+        self.radio_parquet.clicked.connect(partial(self.size_it_accordingly, False))
         self.chb_all_fields.clicked.connect(self.set_tables_with_fields)
         self.but_adds_to_links.clicked.connect(self.append_to_list)
 
@@ -43,7 +44,7 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
         self.cob_data_layer.currentIndexChanged.connect(self.load_fields_to_combo_boxes)
         self.but_removes_from_links.clicked.connect(self.removes_fields)
         # For adding skims
-        self.but_load.clicked.connect(self.load_from_aequilibrae_format)
+        self.but_load.clicked.connect(self.load_from_file)
         self.but_save_and_use.clicked.connect(self.load_the_vector)
         self.but_import_and_use.clicked.connect(self.load_just_to_use)
 
@@ -54,8 +55,9 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
                     self.cob_data_layer.addItem(layer.name())
 
         if not self.single_use:
-            self.radio_layer_matrix.setChecked(True)
-            self.radio_aequilibrae.setEnabled(False)
+            self.radio_layer.setChecked(True)
+            self.radio_csv.setEnabled(False)
+            self.radio_parquet.setEnabled(False)
             self.but_import_and_use.setEnabled(False)
             self.but_load.setEnabled(False)
             self.but_save_and_use.setText(self.tr("Import"))
@@ -86,11 +88,11 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
             self.setMaximumSize(QtCore.QSize(w, h))
             self.resize(w, h)
 
-        if self.radio_aequilibrae.isChecked():
-            set_size(154, 100)
+        if self.radio_csv.isChecked() or self.radio_parquet.isChecked():
+            set_size(154, 124)
         else:
             if final:
-                if self.radio_layer_matrix.isChecked():
+                if self.radio_layer.isChecked():
                     if self.chb_all_fields.isChecked():
                         set_size(498, 120)
                     self.progressbar.setMinimumHeight(100)
@@ -140,9 +142,7 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
         self.set_tables_with_fields()
 
     def run_thread(self):
-        self.worker_thread.ProgressValue.connect(self.progress_value_from_thread)
-        self.worker_thread.ProgressMaxValue.connect(self.progress_range_from_thread)
-        self.worker_thread.finished_threaded_procedure.connect(self.finished_threaded_procedure)
+        self.worker_thread.signal.connect(self.signal_handler)
 
         self.chb_all_fields.setEnabled(False)
         self.but_load.setEnabled(False)
@@ -150,50 +150,55 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
         self.worker_thread.start()
         self.exec_()
 
-    # VAL and VALUE have the following structure: (bar/text ID, value)
-    def progress_range_from_thread(self, val):
-        self.progressbar.setRange(0, val)
+    def signal_handler(self, val):
+        if val[0] == "start":
+            self.progressbar.setValue(0)
+            self.progressbar.setMaximum(val[1])
+        elif val[0] == "update":
+            self.progressbar.setValue(val[1])
+        elif val[0] == "set_text":
+            self.progressbar.setValue(val[1])
+        elif val[0] == "finished":
+            self.but_load.setEnabled(True)
+            self.but_save_and_use.setEnabled(True)
+            self.chb_all_fields.setEnabled(True)
+            if self.worker_thread.error is not None:
+                qgis.utils.iface.messageBar().pushMessage(
+                    self.tr("Error while loading vector:"), self.worker_thread.error, level=1
+                )
+            else:
+                self.dataset = self.worker_thread.output
+            self.exit_procedure()
 
-    def progress_value_from_thread(self, val):
-        self.progressbar.setValue(val)
-
-    def finished_threaded_procedure(self):
-        self.but_load.setEnabled(True)
-        self.but_save_and_use.setEnabled(True)
-        self.chb_all_fields.setEnabled(True)
-        if self.worker_thread.error is not None:
-            qgis.utils.iface.messageBar().pushMessage(
-                self.tr("Error while loading vector:"), self.worker_thread.error, level=1
-            )
-        else:
-            self.dataset = self.worker_thread.output
-        self.exit_procedure()
-
-    def load_from_aequilibrae_format(self):
-        out_name, _ = GetOutputFileName(self, "AequilibraE dataset", ["Aequilibrae dataset(*.aed)"], ".aed", self.path)
+    def load_from_file(self):
+        if self.radio_csv.isChecked():
+            out_name, _ = GetOutputFileName(self, "Load file", ["Comma-separated values (*.csv)"], ".csv", self.path)
+        elif self.radio_parquet.isChecked():
+            out_name, _ = GetOutputFileName(self, "Load file", ["Parquet (*.parquet)"], ".parquet", self.path)
         self.load_with_file_name(out_name)
 
     def load_with_file_name(self, out_name):
         try:
-            self.dataset = AequilibraeData()
-            self.dataset.load(out_name)
+            if ".csv" in out_name:
+                self.dataset = pd.read_csv(out_name)
+            elif ".parquet" in out_name:
+                self.dataset = pd.read_parquet(out_name)
+            self.output_name = out_name
         except Exception as e:
             self.error = self.tr(
-                "Could not load file. It might be corrupted or not a valid AequilibraE file. {}".format(e.args)
+                "Could not load file. It might be corrupted or not a valid file format. {}".format(e.args)
             )
         self.exit_procedure()
 
     def load_the_vector(self):
         self.set_output_name()
 
-        if self.radio_layer_matrix.isChecked() and self.error is None:
+        if self.radio_layer.isChecked() and self.error is None:
             self.output_name = self.layer.name()
             if self.cob_data_layer.currentIndex() < 0 or self.cob_index_field.currentIndex() < 0:
                 self.error = self.tr("Invalid field chosen")
 
             index_field = self.cob_index_field.currentText()
-            if index_field in self.selected_fields:
-                self.selected_fields.remove(index_field)
 
             if len(self.selected_fields) > 0:
                 self.worker_thread = LoadDataset(
@@ -216,10 +221,9 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
         if self.single_use:
             self.output_name = None
         else:
+            formats = ["Comma-separated values (*.csv)", "Parquet (*.parquet)"]
             self.error = None
-            self.output_name, _ = GetOutputFileName(
-                self, "AequilibraE dataset", ["Aequilibrae dataset(*.aed)"], ".aed", self.path
-            )
+            self.output_name, _ = GetOutputFileName(self, "Save layer vector", formats, ".csv", self.path)
             if self.output_name is None:
                 self.error = self.tr("No name provided for the output file")
 

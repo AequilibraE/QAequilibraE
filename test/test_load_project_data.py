@@ -18,6 +18,7 @@ def test_no_project(ae, mocker, qtbot):
     dialog.close()
 
 
+# TODO: Re-write the tests - they're really time consuming
 @pytest.mark.parametrize("button_clicked", [True, False])
 def test_project(run_assignment, mocker, qtbot, button_clicked):
     proj = run_assignment

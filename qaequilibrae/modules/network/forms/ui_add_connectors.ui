@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>AequilibraE - Add zoning layer to project</string>
+   <string>AequilibraE - Add centroid connectors</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
@@ -51,30 +51,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QRadioButton" name="rdo_network">
-        <property name="text">
-         <string>From network</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="rdo_zone">
-        <property name="text">
-         <string>Zone centers</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QRadioButton" name="rdo_layer">
-        <property name="text">
-         <string>Layer</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="2">
        <widget class="QSpinBox" name="sb_radius">
         <property name="minimumSize">
@@ -91,6 +67,13 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="2">
+       <widget class="QRadioButton" name="rdo_layer">
+        <property name="text">
+         <string>Layer</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QLabel" name="lbl_radius">
         <property name="layoutDirection">
@@ -104,6 +87,23 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="rdo_zone">
+        <property name="text">
+         <string>Zone centers</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="rdo_network">
+        <property name="text">
+         <string>From network</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -113,35 +113,53 @@
       <string>Configurations</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Allowed link types</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="3" column="0">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="connectors">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Modes to connect</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QListWidget" name="lst_link_types">
-        <property name="sortingEnabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QListWidget" name="lst_modes">
-        <property name="sortingEnabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <widget class="QPushButton" name="but_process">
         <property name="minimumSize">
          <size>
@@ -159,36 +177,31 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="connectors">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="value">
-         <number>1</number>
+      <item row="5" column="1">
+       <widget class="QListWidget" name="lst_modes">
+        <property name="sortingEnabled">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
+       <widget class="QCheckBox" name="chb_zone">
+        <property name="text">
+         <string>Limit connector creation to zone</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QListWidget" name="lst_link_types">
+        <property name="sortingEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
@@ -197,7 +210,7 @@
          <string>Connectors per centroid</string>
         </property>
         <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>

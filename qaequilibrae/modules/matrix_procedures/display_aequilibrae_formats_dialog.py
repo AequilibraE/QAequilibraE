@@ -4,7 +4,7 @@ import openmatrix as omx
 import numpy as np
 import pandas as pd
 from math import ceil
-from aequilibrae.matrix import AequilibraeMatrix, AequilibraeData
+from aequilibrae.matrix import AequilibraeMatrix
 
 import qgis
 from qgis.PyQt import QtWidgets, uic, QtCore
@@ -58,11 +58,8 @@ class DisplayAequilibraEFormatsDialog(QtWidgets.QDialog, FORM_CLASS):
     def continue_with_data(self):
         self.setWindowTitle(self.tr("File path: {}").format(self.data_path))
 
-        if self.data_type in ["AED", "AEM"]:
-            if self.data_type == "AED":
-                self.data_to_show = AequilibraeData()
-            elif self.data_type == "AEM":
-                self.data_to_show = AequilibraeMatrix()
+        if self.data_type == "AEM":
+            self.data_to_show = AequilibraeMatrix()
             if not self.from_proj:
                 self.qgis_project.matrices[self.data_path] = self.data_to_show
             try:
@@ -377,7 +374,7 @@ class DisplayAequilibraEFormatsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.data_to_show.matrix[field] = self.data_to_show.matrix_view[:, :]
 
     def get_file_name(self):
-        formats = ["Aequilibrae matrix(*.aem)", "Aequilibrae dataset(*.aed)", "OpenMatrix(*.omx)"]
+        formats = ["Aequilibrae matrix(*.aem)", "OpenMatrix(*.omx)"]
         dflt = ".aem"
 
         data_path, data_type = GetOutputFileName(

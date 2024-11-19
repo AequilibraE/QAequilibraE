@@ -36,21 +36,20 @@ class AddConnectors(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(2, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
         from aequilibrae import Project
 
+        feedback = QgsProcessingMultiStepFeedback(2, model_feedback)
+
         feedback.pushInfo(self.tr("Opening project"))
         project = Project()
         project.open(parameters["project_path"])
 
         nodes = project.network.nodes
-        centroids = nodes.data
-        centroids = centroids.loc[centroids["is_centroid"] == 1]
+        centroids = nodes.data[nodes.data["is_centroid"] == 1]
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(1)
@@ -62,7 +61,7 @@ class AddConnectors(QgsProcessingAlgorithm):
 
         for _, node in centroids.iterrows():
             cnt = nodes.get(node.node_id)
-            cnt.connect_mode(cnt.geometry.buffer(0.01), mode_id=mode, connectors=num_connectors)
+            cnt.connect_mode(mode_id=mode, connectors=num_connectors)
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)

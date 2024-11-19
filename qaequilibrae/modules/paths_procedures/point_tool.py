@@ -5,7 +5,7 @@ from PyQt5.QtCore import pyqtSignal
 
 
 class PointTool(QgsMapTool):
-    clicked = pyqtSignal(object)
+    signal = pyqtSignal(object)
 
     def __init__(self, canvas):
         QgsMapTool.__init__(self, canvas)
@@ -29,7 +29,7 @@ class PointTool(QgsMapTool):
         y = event.pos().y()
 
         self.point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-        self.clicked.emit(1)
+        self.signal.emit(1)
 
     def activate(self):
         pass

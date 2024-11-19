@@ -1,20 +1,25 @@
 import shapely.wkb
 from shapely.geometry import Point
 
-from aequilibrae.project.database_connection import database_connection
-from aequilibrae.utils.db_utils import commit_and_close
-from aequilibrae.utils.worker_thread import WorkerThread
+from aequilibrae.utils.interface.worker_thread import WorkerThread
 from PyQt5.QtCore import pyqtSignal
 
 
 class AddsConnectorsProcedure(WorkerThread):
-    ProgressValue = pyqtSignal(object)
-    ProgressText = pyqtSignal(object)
-    ProgressMaxValue = pyqtSignal(object)
-    finished_threaded_procedure = pyqtSignal(object)
+    signal = pyqtSignal(object)
 
     def __init__(
-        self, parentThread, qgis_project, link_types, modes, num_connectors, source, radius=None, layer=None, field=None
+        self,
+        parentThread,
+        qgis_project,
+        link_types,
+        modes,
+        num_connectors,
+        source,
+        limit_to_zone=True,
+        radius=None,
+        layer=None,
+        field=None,
     ):
         WorkerThread.__init__(self, parentThread)
         self.qgis_project = qgis_project
@@ -26,6 +31,7 @@ class AddsConnectorsProcedure(WorkerThread):
         self.source = source
         self.layer = layer
         self.field = field
+        self.limit_to_zone = limit_to_zone
 
     def doWork(self):
         if self.source == "zone":
@@ -35,55 +41,52 @@ class AddsConnectorsProcedure(WorkerThread):
         else:
             self.do_from_layer()
 
-        self.ProgressText.emit("DONE")
+        self.project.network.nodes.refresh()
+        self.project.network.links.refresh()
+        self.signal.emit(["finished"])
 
     def do_from_zones(self):
         zoning = self.project.zoning
 
-        with commit_and_close(database_connection("network")) as conn:
-            tot_zones = [x[0] for x in conn.execute("select count(*) from zones")][0]
-            self.ProgressMaxValue.emit(tot_zones)
-
-            zones = [x[0] for x in conn.execute("select zone_id from zones")]
-
-        for counter, zone_id in enumerate(zones):
-            zone = zoning.get(zone_id)
+        self.signal.emit(["start", len(zoning.all_zones()), "Adding connectors from zones"])
+        for idx, (zone_id, zone) in enumerate(zoning.all_zones().items()):
             zone.add_centroid(None)
             for mode_id in self.modes:
-                zone.connect_mode(mode_id=mode_id, link_types=self.link_types, connectors=self.num_connectors)
-            self.ProgressValue.emit(counter + 1)
+                zone.connect_mode(
+                    mode_id=mode_id,
+                    link_types=self.link_types,
+                    connectors=self.num_connectors,
+                    limit_to_zone=self.limit_to_zone,
+                )
+            self.signal.emit(["update", idx + 1, f"Connector from zone: {zone_id}"])
 
     def do_from_network(self):
         nodes = self.project.network.nodes
         nodes.refresh()
-        self.ProgressMaxValue.emit(self.project.network.count_centroids())
 
-        with commit_and_close(database_connection("network")) as conn:
-            centroids = [x[0] for x in conn.execute("select node_id from nodes where is_centroid=1")]
+        centroids = nodes.data[nodes.data["is_centroid"] == 1].node_id.tolist()
+
+        self.signal.emit(["start", self.project.network.count_centroids(), "Adding connectors from nodes"])
         for counter, zone_id in enumerate(centroids):
             node = nodes.get(zone_id)
             geo = self.polygon_from_radius(node.geometry)
             for mode_id in self.modes:
                 node.connect_mode(area=geo, mode_id=mode_id, link_types=self.link_types, connectors=self.num_connectors)
-            self.ProgressValue.emit(counter + 1)
+            self.signal.emit(["update", counter + 1, f"Connector from node: {zone_id}"])
 
     def do_from_layer(self):
-        fields = self.layer.fields()
-        idx = fields.indexOf(self.field)
-        features = list(self.layer.getFeatures())
-        self.ProgressMaxValue.emit(len(features))
-
         nodes = self.project.network.nodes
         nodes.refresh()
-        for counter, feat in enumerate(features):
-            zone_id = feat.attributes()[idx]
-            node = nodes.new_centroid(zone_id)
+
+        self.signal.emit(["start", self.layer.featureCount(), "Adding connectors from layer"])
+        for counter, feat in enumerate(self.layer.getFeatures()):
+            node = nodes.new_centroid(feat.id())
             node.geometry = shapely.wkb.loads(feat.geometry().asWkb().data())
             node.save()
             geo = self.polygon_from_radius(node.geometry)
             for mode_id in self.modes:
                 node.connect_mode(area=geo, mode_id=mode_id, link_types=self.link_types, connectors=self.num_connectors)
-            self.ProgressValue.emit(counter + 1)
+            self.signal.emit(["update", counter + 1, f"Connector from layer feature: {feat.id()}"])
 
     def polygon_from_radius(self, point: Point):
         # We approximate with the radius of the Earth at the equator

@@ -19,7 +19,7 @@ def test_display_data_no_path(ae, mocker):
 
 
 @pytest.mark.parametrize("has_project", [True, False])
-@pytest.mark.parametrize("path", ("matrices/demand.aem", "matrices/SiouxFalls.omx", "synthetic_future_vector.aed"))
+@pytest.mark.parametrize("path", ("matrices/demand.aem", "matrices/SiouxFalls.omx"))
 def test_display_data_with_path(tmpdir, ae_with_project, mocker, has_project, path):
     file_path = f"test/data/SiouxFalls_project/{path}"
     name, extension = path.split(".")
@@ -35,15 +35,9 @@ def test_display_data_with_path(tmpdir, ae_with_project, mocker, has_project, pa
     dialog.export()
     dialog.exit_procedure()
 
-    if extension in ["aem", "omx"]:
-        assert np.sum(dialog.data_to_show.matrix["matrix"]) == 360600
-        assert "matrix" in dialog.list_cores
-        assert "taz" in dialog.list_indices
-    elif extension == "aed":
-        assert dialog.list_cores == ["origins", "destinations"]
-        assert sum(dialog.data_to_show.data["origins"]) == 436740
-        assert sum(dialog.data_to_show.data["destinations"]) == 436740
-
+    assert np.sum(dialog.data_to_show.matrix["matrix"]) == 360600
+    assert "matrix" in dialog.list_cores
+    assert "taz" in dialog.list_indices
     assert dialog.error is None
     assert dialog.data_type == extension.upper()
     assert os.path.isfile(f"{tmpdir}/{name}.csv")
