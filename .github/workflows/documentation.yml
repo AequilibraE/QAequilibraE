@@ -43,7 +43,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'docs/build/html/'      # optional: defaults to entire repository
-        DEST_DIR: 'qgis/dev'      # optional: defaults to entire repository
+        DEST_DIR: 'dev/${{ github.event.number}}/qgis'      # optional: defaults to entire repository
 
     - name: Upload documentation to the latest folder
       if: ${{ (github.event_name == 'release')}}
@@ -56,7 +56,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'docs/build/html/'      # optional: defaults to entire repository
-        DEST_DIR: 'qgis/latest/'      # optional: defaults to entire repository
+        DEST_DIR: 'latest/qgis'      # optional: defaults to entire repository
 
     - name: Upload documentation to the version folder
       if: ${{ (github.event_name == 'release')}}
@@ -69,4 +69,4 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'docs/build/html/'      # optional: defaults to entire repository
-        DEST_DIR: 'qgis/github.event.release.tag_name'      # optional: defaults to entire repository
+        DEST_DIR: 'docs/qgis/github.event.release.tag_name'      # optional: defaults to entire repository

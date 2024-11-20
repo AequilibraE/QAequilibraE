@@ -14,7 +14,7 @@ Editing an AequilibraE network is editing any other node and link layer in QGIS.
 Before doing so, however, take a look at the discussion of the network triggers
 behind the AequilibraE network, particularly the section on
 `network consistency behavior
-<https://aequilibrae.com/python/latest/modeling_with_aequilibrae/project_database/network.html#network-consistency-behaviour>`_.
+<https://aequilibrae.com/latest/python/modeling_with_aequilibrae/project_database/network.html#network-consistency-behaviour>`_.
 
 Snapping to node
 ----------------
