@@ -12,7 +12,7 @@ tracker=https://github.com/aequilibrae/QAequilibraE/issues
 icon=icon.png
 hasProcessingProvider=yes
 experimental=False
-homepage=https://www.aequilibrae.com/latest/qgis.html
+homepage=https://www.aequilibrae.com/test/qgis/qgis.html
 
 
 # tags are comma-separated with spaces allowed
