@@ -1,14 +1,17 @@
 import pytest
+
 from qgis.core import QgsProject
 
-from qaequilibrae.modules.gis.set_color_ramps_dialog import LoadColorRampSelector
+from .utilities import create_links_with_matrix
 from qaequilibrae.modules.gis.create_bandwidths_dialog import CreateBandwidthsDialog
+from qaequilibrae.modules.gis.set_color_ramps_dialog import LoadColorRampSelector
 
 
 line_layer = "lines"
 
 
-def test_bandwidth(ae, create_links_with_matrix):
+def test_bandwidth(ae):
+    create_links_with_matrix()
 
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
     assert line_layer in prj_layers
@@ -26,12 +29,10 @@ def test_bandwidth(ae, create_links_with_matrix):
     assert f"{line_layer} (Color)" in prj_layers
     assert f"{line_layer} (Width)" in prj_layers
 
-    # Clear layers
-    QgsProject.instance().clear()
-
 
 @pytest.mark.parametrize("dual_fields", [True, False])
-def test_color_ramp(ae, dual_fields, create_links_with_matrix):
+def test_color_ramp(ae, dual_fields):
+    create_links_with_matrix()
 
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
     assert line_layer in prj_layers
@@ -73,6 +74,3 @@ def test_color_ramp(ae, dual_fields, create_links_with_matrix):
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
     assert f"{line_layer} (Color)" in prj_layers
     assert f"{line_layer} (Width)" in prj_layers
-
-    # Clear layers
-    QgsProject.instance().clear()

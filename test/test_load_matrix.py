@@ -1,6 +1,6 @@
 import numpy as np
 from PyQt5.QtCore import QTimer, QVariant
-from qgis.core import QgsProject, QgsVectorLayer, QgsField, QgsFeature
+from qgis.core import QgsFeature, QgsField, QgsProject, QgsVectorLayer
 
 from qaequilibrae.modules.matrix_procedures.load_matrix_dialog import LoadMatrixDialog
 

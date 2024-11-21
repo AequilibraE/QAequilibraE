@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from qgis.core import QgsProject
+
 from qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog import DisplayAequilibraEFormatsDialog
 
 

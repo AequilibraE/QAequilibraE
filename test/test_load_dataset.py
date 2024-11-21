@@ -1,11 +1,14 @@
 import pytest
-
 from qgis.core import QgsProject
+
+from .utilities import load_synthetic_future_vector
 from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
 
 
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
-def test_load_dialog(ae_with_project, method, folder_path, load_synthetic_future_vector, timeoutDetector):
+def test_load_dialog(ae_with_project, method, folder_path, timeoutDetector):
+    load_synthetic_future_vector()
+
     dialog = LoadDatasetDialog(ae_with_project)
     dialog.path = folder_path
 

@@ -1,10 +1,12 @@
 import pytest
-from aequilibrae.utils.db_utils import commit_and_close
-from aequilibrae.project.database_connection import database_connection
-from qgis.core import QgsProject, QgsVectorLayer, QgsField, QgsFeature
-from qgis.core import QgsPointXY, QgsGeometry
-from qgis.PyQt.QtCore import QVariant
 
+from aequilibrae.project.database_connection import database_connection
+from aequilibrae.utils.db_utils import commit_and_close
+
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import QgsFeature, QgsField, QgsGeometry, QgsPointXY, QgsProject, QgsVectorLayer
+
+from .utilities import create_polygons_layer
 from qaequilibrae.modules.gis.simple_tag_dialog import SimpleTagDialog
 from qaequilibrae.modules.gis.simple_tag_procedure import SimpleTAG
 
@@ -106,8 +108,7 @@ def create_links_layer(index):
 
 @pytest.mark.parametrize("ops", ["ENCLOSED", "TOUCHING", "CLOSEST"])
 @pytest.mark.parametrize("to_layer", ["polygon", "linestring", "point"])
-@pytest.mark.parametrize("create_polygons_layer", [[97, 98, 99]], indirect=True)
-def test_simple_tag_polygon(coquimbo_project, to_layer, ops, create_polygons_layer):
+def test_simple_tag_polygon(coquimbo_project, to_layer, ops):
     if to_layer == "point" and ops == "TOUCHING":
         pytest.skip(f"'{ops}' does not apply to polygon-{to_layer}")
 
@@ -121,7 +122,7 @@ def test_simple_tag_polygon(coquimbo_project, to_layer, ops, create_polygons_lay
         conn.execute("DELETE FROM zones WHERE name IS NULL;")
 
     if to_layer == "polygon":
-        layer = create_polygons_layer
+        layer = create_polygons_layer(zones)
     elif to_layer == "linestring":
         layer = create_links_layer(zones)
     else:
@@ -167,8 +168,7 @@ def test_simple_tag_polygon(coquimbo_project, to_layer, ops, create_polygons_lay
 
 @pytest.mark.parametrize("ops", ["ENCLOSED", "TOUCHING", "CLOSEST"])
 @pytest.mark.parametrize("to_layer", ["polygon", "linestring", "point"])
-@pytest.mark.parametrize("create_polygons_layer", [[21, 121, 1021]], indirect=True)
-def test_simple_tag_linestring(coquimbo_project, to_layer, ops, create_polygons_layer):
+def test_simple_tag_linestring(coquimbo_project, to_layer, ops):
     if to_layer != "polygon" and ops == "ENCLOSED":
         pytest.skip(f"'{ops}' does not apply to linestring-{to_layer}")
     if to_layer == "point" and ops == "TOUCHING":
@@ -179,7 +179,7 @@ def test_simple_tag_linestring(coquimbo_project, to_layer, ops, create_polygons_
     nodes = [21, 121, 1021]
 
     if to_layer == "polygon":
-        layer = create_polygons_layer
+        layer = create_polygons_layer(nodes)
     elif to_layer == "linestring":
         layer = create_links_layer(nodes)
     else:
@@ -221,8 +221,7 @@ def test_simple_tag_linestring(coquimbo_project, to_layer, ops, create_polygons_
 
 @pytest.mark.parametrize("ops", ["ENCLOSED", "CLOSEST"])
 @pytest.mark.parametrize("to_layer", ["polygon", "linestring", "point"])
-@pytest.mark.parametrize("create_polygons_layer", [[21, 121, 12321]], indirect=True)
-def test_simple_tag_point(coquimbo_project, to_layer, ops, create_polygons_layer):
+def test_simple_tag_point(coquimbo_project, to_layer, ops):
     if to_layer != "polygon" and ops == "ENCLOSED":
         pytest.skip(f"'{ops}' does not apply to point-{to_layer}")
 
@@ -231,7 +230,7 @@ def test_simple_tag_point(coquimbo_project, to_layer, ops, create_polygons_layer
     coquimbo_project.load_layer_by_name("nodes")
 
     if to_layer == "polygon":
-        layer = create_polygons_layer
+        layer = create_polygons_layer(nodes)
     elif to_layer == "linestring":
         layer = create_links_layer(nodes)
     else:

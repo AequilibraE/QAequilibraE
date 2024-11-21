@@ -1,10 +1,12 @@
-from uuid import uuid4
 from os.path import join
 from shutil import copytree
+from uuid import uuid4
 
 from aequilibrae import Project
+
 from qgis.PyQt import QtWidgets
 from qgis.core import QgsProject, QgsVectorLayer
+
 from qaequilibrae.modules.project_procedures.creates_transponet_dialog import CreatesTranspoNetDialog
 from qaequilibrae.modules.project_procedures.creates_transponet_procedure import CreatesTranspoNetProcedure
 
