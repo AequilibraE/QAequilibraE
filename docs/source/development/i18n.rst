@@ -1,3 +1,5 @@
+:orphan:
+
 .. _plugin_i18n:
 
 Plugin internationalization (i18n)
@@ -9,7 +11,7 @@ translation.
 Creating account
 ~~~~~~~~~~~~~~~~
 
-To translate QAequilibraE's QGIS plug-in, we use Transifex, a web-based platform that
+To translate QAequilibraE's QGIS plugin, we use Transifex, a web-based platform that
 hosts translations. Before joining our project, you must create an account. Direct yourself
 to `Transifex login page <https://app.transifex.com/signin/?next=/home/>`_ and follow the
 instructions. The process is straightforward and does not take a lot of time.

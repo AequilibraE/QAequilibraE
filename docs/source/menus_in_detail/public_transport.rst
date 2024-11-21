@@ -9,10 +9,10 @@ into its public transport database.
     :alt: tab public transport
 
 More details on the **public_transport.sqlite** are discussed on a 
-*per-table* basis in `AequilibraE's documentation <https://www.aequilibrae.com/python/latest/modeling_with_aequilibrae/transit_database/data_model/datamodel.html>`_, 
+*per-table* basis in `AequilibraE's documentation <https://www.aequilibrae.com/latest/python/modeling_with_aequilibrae/transit_database/data_model/datamodel.html>`_, 
 and we recommend understanding the role of each table before 
 setting an AequilibraE model you intend to use. If you don't know much about GTFS, we strongly encourage you to take
-a look at the documentation provided by `Google <https://developers.google.com/transit/gtfs>`_.
+a look at the documentation provided by `Mobility Data <https://gtfs.org/documentation/schedule/reference/>`_.
 
 Import GTFS
 -----------
@@ -24,7 +24,6 @@ until the database is created in the project folder. In the GTFS importer window
 *Add Feed* and point to the location in your machine where the GTFS data is.
 
 .. image:: ../images/gtfs_1.png
-    :width: 60 %
     :align: center
     :alt: gtfs importer
 
@@ -49,7 +48,6 @@ A window with a progress bar will open and once it is finished, you can check ou
 imported in your project folder.
 
 .. image:: ../images/gtfs_4.png
-    :width: 60 %
     :align: center
     :alt: gtfs loaded
 
@@ -60,7 +58,6 @@ For any of these options, you follow the same steps previously presented to add 
 project.
 
 .. image:: ../images/gtfs_5.png
-    :width: 60 %
     :align: center
     :alt: gtfs already exists
 

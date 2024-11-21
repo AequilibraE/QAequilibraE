@@ -68,12 +68,12 @@ topologically first point of the line, and *b_node* the last. Topology in GIS
 involves a LOT of stuff, but you can look at an
 `intro <https://www.gaia-gis.it/fossil/libspatialite/wiki?name=topo-intro>`_.
 
-If you prefer a video tutorial, you can access:
+.. If you prefer a video tutorial, you can access:
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/oFi02QWYwn8" frameborder="0" allow="accelerometer;
-    autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+..     <iframe width="560" height="315" src="https://www.youtube.com/embed/oFi02QWYwn8" frameborder="0" allow="accelerometer;
+..     autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Direction
 ---------

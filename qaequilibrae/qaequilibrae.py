@@ -253,7 +253,7 @@ class AequilibraEMenu:
             self.toolbar.addWidget(itemButton)
 
     def run_help(self):
-        url = "http://aequilibrae.com/qgis"
+        url = "http://aequilibrae.com/latest/qgis.html"
         if sys.platform == "darwin":  # in case of OS X
             subprocess.Popen(["open", url])
         else:

@@ -58,6 +58,7 @@ aequilibrae/paths/build/*
 qaequilibrae/packages
 .coverage
 docs/build
+docs/source/_static
 
 __pycache__/
 

@@ -14,20 +14,25 @@ jobs:
       max-parallel: 4
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: '3.10'
+
     - name: Install dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install -y --fix-missing latexmk texlive-latex-extra
         python -m pip install -U pip
         pip install -r docs/requirements-docs.txt
 
     - name: Build documentation
       run: |
+        cp qaequilibrae/large_icon.png docs/source/_static/large_icon.png
+        sphinx-build -M latexpdf docs/source docs/source/_static
         cd docs
         make html
-
+  
     - name: Upload documentation to dev
       uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
       with:
@@ -38,7 +43,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'docs/build/html/'      # optional: defaults to entire repository
-        DEST_DIR: 'qgis/dev'      # optional: defaults to entire repository
+        DEST_DIR: 'dev/${{ github.event.number}}/qgis'      # optional: defaults to entire repository
 
     - name: Upload documentation to the latest folder
       if: ${{ (github.event_name == 'release')}}
@@ -51,7 +56,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'docs/build/html/'      # optional: defaults to entire repository
-        DEST_DIR: 'qgis/latest/'      # optional: defaults to entire repository
+        DEST_DIR: 'latest/qgis'      # optional: defaults to entire repository
 
     - name: Upload documentation to the version folder
       if: ${{ (github.event_name == 'release')}}
@@ -64,4 +69,4 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'docs/build/html/'      # optional: defaults to entire repository
-        DEST_DIR: 'qgis/github.event.release.tag_name'      # optional: defaults to entire repository
+        DEST_DIR: 'docs/qgis/github.event.release.tag_name'      # optional: defaults to entire repository
