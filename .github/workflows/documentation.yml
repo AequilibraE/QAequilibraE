@@ -43,8 +43,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-east-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'docs/build/html/'      # optional: defaults to entire repository
-        DEST_DIR: 'test/qgis/'
-        # DEST_DIR: 'dev/${{ github.event.number}}/qgis/'      # optional: defaults to entire repository  
+        DEST_DIR: 'dev/${{ github.event.number}}/qgis/'      # optional: defaults to entire repository  
 
     - name: Upload documentation to DEVELOP
       if: ${{ (github.ref == 'refs/heads/develop') && (github.event_name == 'push')}}
