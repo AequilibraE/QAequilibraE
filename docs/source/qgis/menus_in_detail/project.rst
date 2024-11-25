@@ -5,7 +5,7 @@ AequilibraE Project
 
 This page is dedicated to a practical implementation of the AequilibraE project. In case you
 are interested in better understanding its structure, please visit its 
-`documentation <https://www.aequilibrae.com/latest/python/modeling_with_aequilibrae/project.html>`_
+`documentation <https://www.aequilibrae.com/test/python/modeling_with_aequilibrae/project.html>`_
 webpage.
 
 Under the project tab, there are some options to choose from and the following sections
@@ -51,7 +51,7 @@ Parameters
 
 The parameters file is part of the AequilibraE package for Python, so all the
 reference documentation for this section can be found in its
-`documentation page <https://aequilibrae.com/latest/python/modeling_with_aequilibrae/parameter_file.html>`_.
+`documentation page <https://aequilibrae.com/test/python/modeling_with_aequilibrae/parameter_file.html>`_.
 
 The QGIS plugin, however, has a nice interface to view and edit the parameters
 file, which can be accessed through **Project > Parameters**. This
