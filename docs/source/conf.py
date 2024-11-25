@@ -101,10 +101,10 @@ htmlhelp_basename = "AequilibraEdoc"
 latex_documents = [("_latex/index", "qaequilibrae.tex", "AequilibraE for QGIS", author, "manual")]
 
 latex_appendices = [
-    "qgis/development/softwaredevelopment",
-    "qgis/development/i18n",
-    "qgis/development/support",
-    "qgis/development/citation",
+    "development/softwaredevelopment",
+    "development/i18n",
+    "development/support",
+    "development/citation",
 ]
 
 # -- Options for manual page output ------------------------------------------
