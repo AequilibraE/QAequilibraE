@@ -5,7 +5,7 @@ AequilibraE Project
 
 This page is dedicated to a practical implementation of the AequilibraE project. In case you
 are interested in better understanding its structure, please visit its 
-`documentation <https://www.aequilibrae.com/python/latest/modeling_with_aequilibrae/project.html>`_
+`documentation <https://www.aequilibrae.com/latest/python/modeling_with_aequilibrae/project.html>`_
 webpage.
 
 Under the project tab, there are some options to choose from and the following sections
@@ -51,7 +51,7 @@ Parameters
 
 The parameters file is part of the AequilibraE package for Python, so all the
 reference documentation for this section can be found in its
-`documentation page <https://aequilibrae.com/python/latest/modeling_with_aequilibrae/parameter_file.html>`_.
+`documentation page <https://aequilibrae.com/latest/python/modeling_with_aequilibrae/parameter_file.html>`_.
 
 The QGIS plugin, however, has a nice interface to view and edit the parameters
 file, which can be accessed through **Project > Parameters**. This
@@ -80,14 +80,14 @@ using the **save to disk** button in the lower left corner of the log file box.
     :align: center
     :alt: proj logfile
 
-Video tutorial
---------------
+.. Video tutorial
+.. --------------
 
-If you want a summary of everything that was presented on this page, you can
-head over to YouTube to see a demonstration of how to download these projects.
+.. If you want a summary of everything that was presented on this page, you can
+.. head over to YouTube to see a demonstration of how to download these projects.
 
-.. raw:: html
+.. .. raw:: html
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/9PF2qHs2hUc"
-     frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope;
-     picture-in-picture" allowfullscreen></iframe>
+..     <iframe width="560" height="315" src="https://www.youtube.com/embed/9PF2qHs2hUc"
+..      frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope;
+..      picture-in-picture" allowfullscreen></iframe>

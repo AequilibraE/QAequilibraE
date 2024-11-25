@@ -1,11 +1,8 @@
-This Add-on for QGIS is developed with the intention to provide transportation planning tools in a GIS environment
-This add-on is FREE and open source.
-It can also be used on a Python shell. For initial instruction on how to do it, access https://github.com/AequilibraE/examples_api
+QAequilibraE is the GUI for AequilibraE, a transportation modeling package designed to be an open-source alternative to
+traditional commercial packages. 
 
-For more details: www.aequilibrae.com/qgis
+It is a comprehensive set of tools for modeling and visualization, including incredibly fast equilibrium traffic 
+assignment, synthetic gravity models, network editing, and GTFS importer. 
 
-
-
-Youtube playlist: https://www.youtube.com/playlist?list=PLdiSu_6yrzc5OtDnPXZ1PEAw2bEeEUJoY
-
-Plugin Page: www.aequilibrae.com
+If you want to go further, explore [AequilibraE](https://github.com/AequilibraE/aequilibrae), the open-source Python 
+package for transportation modeling.    

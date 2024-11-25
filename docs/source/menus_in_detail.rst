@@ -27,11 +27,11 @@ Got a bigger instance we could use as an example? Send it over!
    :hidden:
    :maxdepth: 1
 
-   project
-   build_model
-   data
-   tripdistribution
-   pathscomputation
-   routing
-   public_transport
-   gistools
+   menus_in_detail/project
+   menus_in_detail/build_model
+   menus_in_detail/data
+   menus_in_detail/tripdistribution
+   menus_in_detail/pathscomputation
+   menus_in_detail/routing
+   menus_in_detail/public_transport
+   menus_in_detail/gistools

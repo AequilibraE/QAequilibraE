@@ -21,7 +21,7 @@ The first feature is the capability of importing networks directly from
 `Open Street Maps <https://www.openstreetmap.org/>`_ into AequilibraE's efficient
 TranspoNet format. This is also time to give a HUGE shout out to
 `Geoff Boeing <http://www.geoffboeing.com/>`_, creator of the widely used Python
-package `OSMNx <https://github.com/gboeing/osmnx>`_. For several weeks I
+package `OSMNx <https://osmnx.readthedocs.io/en/stable/>`_. For several weeks I
 worked with Geoff in refactoring the entire OSMNx code base so I could include
 it as a submodule or dependency for AequilibraE, but its deep integration with
 `GeoPandas <https://geopandas.org/en/stable/index.html>`_ and all the packages it depends on (Pandas,
@@ -122,28 +122,28 @@ Network preparation
 
 When preparing your project network, you might face there are two distinct situations:
 
-1. **User has only the network links**
+1. **User has only the network links**: This is the case when one exports only links 
+   from a transportation package or downloads a link layer from Open Street Maps or a 
+   government open data portal and want to use such network for path computation. 
+   This tool then does the following:
 
-This is the case when one exports only links from a transportation package or
-downloads a link layer from Open Street Maps or a government open data portal
-and want to use such network for path computation. This tool then does the
-following:
+   * Duplicates the pre-existing network in order to edit it without risk of data corruption
+   * Creates nodes at the extremities of all links in the network (no duplicate nodes at the 
+     same latitude/longitude)
+   * Adds the fields *a_node* and *b_node* to the new link layer, and populate them with the 
+     *IDs* generated for the nodes layer
 
-* Duplicates the pre-existing network in order to edit it without risk of data corruption
-* Creates nodes at the extremities of all links in the network (no duplicate nodes at the same latitude/longitude)
-* Adds the fields *A_Node* and *B_Node* to the new link layer, and populate them with the *IDs* generated for the nodes layer
+2. **User has the network links and nodes but no database field linking them**: In case one 
+   has both the complete sets of nodes and links and nodes for a
+   certain network (commercial packages would allow you to export them separately),
+   you can use this tool to associate those links and nodes (if that information
+   was not exported from the package). In that case, the steps would be the following:
 
-2. **User has the network links and nodes but no database field linking them**
-
-In case one has both the complete sets of nodes and links and nodes for a
-certain network (commercial packages would allow you to export them separately),
-you can use this tool to associate those links and nodes (if that information
-was not exported from the package). In that case, the steps would be the
-following:
-
-* Duplicates the pre-existing network in order to edit it without risk of data corruption
-* Checks if the nodes provided cover both extremities of all links from the layer provided. Node IDs are also checked for uniqueness
-* Adds the fields *A_Node* and *B_Node* to the new link layer, and populate them with the *IDs* chosen among the fields from the nodes layer
+   * Duplicates the pre-existing network in order to edit it without risk of data corruption
+   * Checks if the nodes provided cover both extremities of all links from the layer provided.
+     Node IDs are also checked for uniqueness
+   * Adds the fields *a_node* and *b_node* to the new link layer, and populate them with the 
+     *IDs* chosen among the fields from the nodes layer
 
 The *GUI* for these two processes can be accessed in the AequilibraE menu **Model
 Building > Network Preparation**, and it looks like this:
@@ -165,7 +165,7 @@ Adding centroids
 
 Starting in version 0.6 of AequilibraE, centroid connectors can now only be
 added to
-`AequilibraE projects <https://aequilibrae.com/python/latest/modeling_with_aequilibrae/project.html>`_,
+`AequilibraE projects <https://aequilibrae.com/latest/python/modeling_with_aequilibrae/project.html>`_,
 and no longer generates new layers during the process.
 
 Before we describe what this tool can do for you, however, let's just remember

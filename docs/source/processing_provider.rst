@@ -10,7 +10,7 @@ installed.
 To find AequilibraE's processing plugin, click on the **Processing** panel and select **Toolbox**.
 You can also use the available QGIS shortcut to open the Toolbox window.
 
-.. image:: ../images/processing_provider_init.png
+.. image:: images/processing_provider_init.png
     :align: center
     :alt: Processing provider menu
 
@@ -21,10 +21,10 @@ menu. Notice that not all AequilibraE functionalities are available for processi
 .. subfigure:: AB
     :align: center
 
-    .. image:: ../images/processing_provider_toolbox-1.png
+    .. image:: images/processing_provider_toolbox-1.png
         :alt: Toolbox General
 
-    .. image:: ../images/processing_provider_toolbox-2.png
+    .. image:: images/processing_provider_toolbox-2.png
         :alt: Toolbox Detailed
 
 In the following subsections, we'll go over all functionalities.
@@ -39,7 +39,7 @@ Its usage is straightforward: select the matrix you want to export, specify the 
 on your machine to store the file, and select its output format. Only \*.aem and \*.omx files can 
 be used as input, and the output format can be either one of \*.aem, \*.omx, or \*.csv.
 
-.. image:: ../images/processing_provider_export_matrices.png
+.. image:: images/processing_provider_export_matrices.png
     :align: center
     :alt: Processing provider export matrices
 
@@ -50,7 +50,7 @@ This tool is analogous to the widget menu :ref:`importing_matrices`, but it does
 require an open AequilibraE project to work. To use the tool, the user must have an open layer
 loaded in QGIS, and the menus are the ones presented in the figure below.
 
-.. image:: ../images/processing_provider_import_matrices.png
+.. image:: images/processing_provider_import_matrices.png
     :align: center
     :alt: Processing provider import matrices
 
@@ -67,7 +67,7 @@ AequilibraE's processing tool can also add centroid connectors to a project's ne
 needs to specify the number of centroids, the modes to be connected, and the project folder.
 The default connection mode is **c** (car).
 
-.. image:: ../images/processing_provider_centroids.png
+.. image:: images/processing_provider_centroids.png
     :align: center
     :alt: Processing provider add centroid connectors
 
@@ -79,7 +79,7 @@ project directly from a link layer, without requiring a node layer. With a geome
 QGIS, select it in the *Links* button, and add the required data in the subsequent menus. Choose the project's
 name and specify the location where you want to save it on your machine.
 
-.. image:: ../images/processing_provider_project_from_links.png
+.. image:: images/processing_provider_project_from_links.png
     :align: center
     :alt: Processing provider create project from link layer
 
@@ -89,7 +89,7 @@ One can also add or renumber nodes in an AequilibraE project to match a layer of
 Just select or import the centroids layer, specify the node ID you want to match, and the output
 folder.
 
-.. image:: ../images/processing_provider_nodes_from_centroids.png
+.. image:: images/processing_provider_nodes_from_centroids.png
     :align: center
     :alt: Processing provider update nodes from centroids
 
@@ -102,7 +102,7 @@ information. The process is straightforward: create a valid YAML file with your 
 required matrices, and valid parameters, and load it into AequilibraE. The code block below contains
 an example of a valid YAML configuration.
 
-.. image:: ../images/processing_provider_traffic_assignment.png
+.. image:: images/processing_provider_traffic_assignment.png
     :align: center
     :alt: Processing provider traffic assignment from file
 
