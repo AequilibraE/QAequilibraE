@@ -34,7 +34,6 @@ jobs:
         make html
   
     - name: Remove current files from DEV
-      if: ${{ (github.event_name == 'pull_request') && (env.HAS_SECRETS == 'true') }}
       run: |
         aws s3 rm s3://${{ secrets.AWS_S3_BUCKET }}/test/qgis --recursive
         aws s3 rm s3://${{ secrets.AWS_S3_BUCKET }}/test/qgis.html
@@ -56,8 +55,7 @@ jobs:
         SOURCE_DIR: 'docs/build/html/'      # optional: defaults to entire repository
         DEST_DIR: 'test/qgis/'      # optional: defaults to entire repository
 
-    - name: Upload landing page to DEV on S3
-      if: ${{ (github.event_name == 'pull_request') && (env.HAS_SECRETS == 'true') }}
+    - name: Upload home page to DEV
       run: |
         aws s3 cp docs/build/html/qgis.html s3://${{ secrets.AWS_S3_BUCKET }}/test/qgis.html --acl public-read
       env:
