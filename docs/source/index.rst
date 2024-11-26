@@ -49,4 +49,4 @@ QGIS
 
    qgis/getting_started
    qgis/menus_in_detail
-   qgis/rocessing_provider
+   qgis/processing_provider
