@@ -51,7 +51,7 @@ def test_provider_exists(qgis_app):
 @pytest.mark.parametrize("format", [0, 1, 2])
 @pytest.mark.parametrize("source_file", ["sfalls_skims.omx", "demand.aem"])
 def test_export_matrix(folder_path, source_file, format):
-    makedirs(folder_path)
+    os.makedirs(folder_path)
     action = ExportMatrix()
 
     parameters = {
@@ -69,7 +69,7 @@ def test_export_matrix(folder_path, source_file, format):
 
 
 def test_matrix_from_layer(folder_path):
-    makedirs(folder_path)
+    os.makedirs(folder_path)
 
     df = pd.read_csv("test/data/SiouxFalls_project/SiouxFalls_od.csv")
     layer = layer_from_dataframe(df, "SiouxFalls_od")
@@ -107,7 +107,7 @@ def test_matrix_from_layer(folder_path):
 
 
 def test_project_from_layer(folder_path):
-    load_sfalls_from_layer("tmp")
+    load_sfalls_from_layer(folder_path)
 
     linkslayer = QgsProject.instance().mapLayersByName("Links layer")[0]
 

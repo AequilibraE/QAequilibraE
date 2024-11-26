@@ -7,7 +7,8 @@ from os.path import basename, isfile, splitext
 from aequilibrae.matrix import AequilibraeMatrix
 from qgis.core import QgsProject
 
-from .utilities import load_synthetic_future_vector, run_assignment
+from .utilities import run_assignment
+from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.distribution_procedures.distribution_models_dialog import DistributionModelsDialog
 from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
 
@@ -15,7 +16,8 @@ from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatas
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
 def test_ipf(ae_with_project, folder_path, mocker, method):
 
-    load_synthetic_future_vector()
+    df = pd.read_csv("test/data/SiouxFalls_project/synthetic_future_vector.csv")
+    _ = layer_from_dataframe(df, "synthetic_future_vector")
 
     file_path = f"{folder_path}/demand_ipf_D.aem"
     mocker.patch(

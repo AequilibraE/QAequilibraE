@@ -5,7 +5,7 @@ from .utilities import load_sfalls_from_layer
 from qaequilibrae.modules.gis.desire_lines_dialog import DesireLinesDialog
 
 
-def test_click_create_without_layers(ae_with_project, qtbot):
+def test_click_create_without_layers(ae_with_project, qtbot, timeoutDetector):
     dialog = DesireLinesDialog(ae_with_project)
     dialog.show()
     qtbot.addWidget(dialog)

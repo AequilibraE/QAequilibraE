@@ -15,27 +15,6 @@ def folder_path(tmp_path):
 
 
 @pytest.fixture(scope="function")
-def ae(qgis_iface) -> AequilibraEMenu:
-    ae = AequilibraEMenu(qgis_iface)
-    yield ae
-    qgis_iface.messageBar().messages = {0: [], 1: [], 2: [], 3: []}
-    QgsProject.instance().removeAllMapLayers()
-
-
-@pytest.fixture(scope="function")
-def ae_with_project(qgis_iface, folder_path) -> AequilibraEMenu:
-    ae = AequilibraEMenu(qgis_iface)
-    from qaequilibrae.modules.menu_actions.load_project_action import _run_load_project_from_path
-
-    copytree("test/data/SiouxFalls_project", folder_path)
-    _run_load_project_from_path(ae, folder_path)
-    yield ae
-    ae.run_close_project()
-    qgis_iface.messageBar().messages = {0: [], 1: [], 2: [], 3: []}
-    QgsProject.instance().removeAllMapLayers()
-
-
-@pytest.fixture(scope="function")
 def timeoutDetector(qgis_iface) -> None:
     def handle_trigger():
         # Check if a report window has openned
@@ -54,6 +33,27 @@ def timeoutDetector(qgis_iface) -> None:
     timer.start(3000)
     yield timer
     timer.stop()
+
+
+@pytest.fixture(scope="function")
+def ae(qgis_iface) -> AequilibraEMenu:
+    ae = AequilibraEMenu(qgis_iface)
+    yield ae
+    qgis_iface.messageBar().messages = {0: [], 1: [], 2: [], 3: []}
+    QgsProject.instance().removeAllMapLayers()
+
+
+@pytest.fixture(scope="function")
+def ae_with_project(qgis_iface, folder_path) -> AequilibraEMenu:
+    ae = AequilibraEMenu(qgis_iface)
+    from qaequilibrae.modules.menu_actions.load_project_action import _run_load_project_from_path
+
+    copytree("test/data/SiouxFalls_project", folder_path)
+    _run_load_project_from_path(ae, folder_path)
+    yield ae
+    ae.run_close_project()
+    qgis_iface.messageBar().messages = {0: [], 1: [], 2: [], 3: []}
+    QgsProject.instance().removeAllMapLayers()
 
 
 @pytest.fixture(scope="function")

@@ -5,34 +5,19 @@ from uuid import uuid4
 from aequilibrae import Project
 
 from qgis.PyQt import QtWidgets
-from qgis.core import QgsProject, QgsVectorLayer
+from qgis.core import QgsProject
 
+from .utilities import load_test_layer
 from qaequilibrae.modules.project_procedures.creates_transponet_dialog import CreatesTranspoNetDialog
 from qaequilibrae.modules.project_procedures.creates_transponet_procedure import CreatesTranspoNetProcedure
-
-
-def load_test_layer(path):
-    for file_name in ["link", "node"]:
-        csv_path = f"/{path}/{file_name}.csv"
-
-        if file_name == "link":
-            uri = "file://{}?delimiter=,&crs=epsg:4326&wktField={}".format(csv_path, "geometry")
-        else:
-            uri = "file://{}?delimiter=,&crs=epsg:4326&xField={}&yField={}".format(csv_path, "x", "y")
-
-        layer = QgsVectorLayer(uri, file_name, "delimitedtext")
-
-        if not layer.isValid():
-            print(f"{file_name} layer failed to load!")
-        else:
-            QgsProject.instance().addMapLayer(layer)
 
 
 def test_dialog(ae, tmp_path):
     path = join(tmp_path, uuid4().hex)
     copytree("test/data/NetworkPreparation", path)
 
-    load_test_layer(path)
+    load_test_layer(path, "node")
+    load_test_layer(path, "link")
 
     dialog = CreatesTranspoNetDialog(ae)
     dialog.project_destination.setText(path)
@@ -99,7 +84,8 @@ def test_procedure(ae, tmp_path):
     path = join(tmp_path, uuid4().hex)
     copytree("test/data/NetworkPreparation", path)
 
-    load_test_layer(path)
+    load_test_layer(path, "node")
+    load_test_layer(path, "link")
 
     nodes = QgsProject.instance().mapLayersByName("node")[0]
     links = QgsProject.instance().mapLayersByName("link")[0]

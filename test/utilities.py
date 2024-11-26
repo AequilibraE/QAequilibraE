@@ -4,9 +4,8 @@
 import logging
 import os
 import sys
-from shutil import copyfile, copytree
+from shutil import copyfile
 from os.path import abspath, dirname, exists, join
-from uuid import uuid4
 
 from PyQt5.QtCore import QVariant
 from qgis.core import (
@@ -111,42 +110,6 @@ def load_points_vector():
         QgsProject.instance().addMapLayer(nodes_layer)
 
 
-def load_synthetic_future_vector():
-    """Created a data layer in memory named 'synthetic_future_vector' to be used with
-    Sioux Falls data. Contains an unbalanced future vector to be balanced with IPF."""
-
-    import csv
-
-    path_to_csv = "test/data/SiouxFalls_project/synthetic_future_vector.csv"
-
-    datalayer = QgsVectorLayer("None?delimiter=,", "synthetic_future_vector", "memory")
-
-    fields = [
-        QgsField("index", QVariant.Int),
-        QgsField("origins", QVariant.Double),
-        QgsField("destinations", QVariant.Double),
-    ]
-    datalayer.dataProvider().addAttributes(fields)
-    datalayer.updateFields()
-
-    with open(path_to_csv, "r") as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            origin = float(row["origins"])
-            destination = float(row["destinations"])
-            index = int(row["index"])
-
-            feature = QgsFeature()
-            feature.setAttributes([index, origin, destination])
-
-            datalayer.dataProvider().addFeature(feature)
-
-    if not datalayer.isValid():
-        print("Open layer failed to load!")
-    else:
-        QgsProject.instance().addMapLayer(datalayer)
-
-
 def create_links_with_matrix():
     """Creates a vector layer in memory which consists in a square with coordinates
     ((0, 0), (0, 1), (1, 1), (1, 0)), and a line which corresponds to one of its
@@ -242,7 +205,7 @@ def create_polygons_layer(parameters):
 
 
 def load_sfalls_from_layer(path):
-    """Creates links and nodes layers from Sioux Falls."""
+    """Creates Sioux Falls links and nodes layers"""
 
     fldr_pth = "test/data/SiouxFalls_project" if path == None else path
 
@@ -311,13 +274,14 @@ def run_assignment(aeq_from_qgis):
     return aeq_from_qgis
 
 
-def load_test_layer(path, file_name):
-    """Loads a generic network"""
+def load_test_layer(folder, file_name):
+    """Loads generic links and nodes layers."""
 
-    folder = join(path, uuid4().hex)
-    copytree("test/data/NetworkPreparation", folder)
+    if not exists(folder):
+        os.makedirs(folder)
+    copyfile(f"test/data/NetworkPreparation/{file_name}.csv", f"{folder}/{file_name}.csv")
 
-    csv_path = f"/{path}/{file_name}.csv"
+    csv_path = f"{folder}/{file_name}.csv"
 
     if file_name == "link":
         uri = "file://{}?delimiter=,&crs=epsg:4326&wktField={}".format(csv_path, "geometry")

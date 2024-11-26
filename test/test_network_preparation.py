@@ -7,11 +7,11 @@ from qaequilibrae.modules.network.Network_preparation_procedure import NetworkPr
 
 
 @pytest.mark.parametrize("is_node", [True, False])
-def test_prepare_network(tmp_path, ae, is_node):
+def test_prepare_network(folder_path, ae, is_node):
 
-    load_test_layer(tmp_path, "link")
+    load_test_layer(folder_path, "link")
     if is_node:
-        load_test_layer(tmp_path, "node")
+        load_test_layer(folder_path, "node")
 
     dialog = NetworkPreparationDialog(ae)
     dialog.cbb_line_layer.setCurrentText("link")
