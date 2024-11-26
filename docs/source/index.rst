@@ -38,7 +38,7 @@ QGIS
       Dive in our processing provider tools!
 
    .. grid-item-card:: :material-outlined:`arrow_forward;1.5em` Want to go further?
-      :link: https://aequilibrae.com/test/python.html
+      :link: https://aequilibrae.com/test/python/index.html
       :text-align: center
       
       Explore our Python library!
