@@ -65,7 +65,7 @@ Style
 ~~~~~~
 
 * Python code should follow (mostly) the `pycodestyle style guide <https://pycodestyle.pycqa.org/en/latest/>`_.
-* Python docstrings should follow the `reStructuredText Docstring Format <https://www.python.org/dev/peps/pep-0287/>`_.
+* Python docstrings should follow the `reStructuredText Docstring Format <https://www.python.org/latest/peps/pep-0287/>`_.
 * We are big fans of auto-code formatting. For that, we use `Black <https://black.readthedocs.io/en/stable/>`_.
 * Negating some of what we have said so far, we use maximum line length of 120 characters.
 
