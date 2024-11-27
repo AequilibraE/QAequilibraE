@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from qgis.core import QgsProject
 from qgis.PyQt.QtWidgets import QTabWidget
 
-from .utilities import run_assignment
+from .utilities import run_sfalls_assignment
 from qaequilibrae.modules.matrix_procedures.load_project_data import LoadProjectDataDialog
 
 
@@ -22,7 +22,7 @@ def test_no_project(ae, mocker, qtbot):
 # TODO: Re-write the tests - they're really time consuming
 @pytest.mark.parametrize("button_clicked", [True, False])
 def test_project(ae_with_project, mocker, qtbot, button_clicked):
-    proj = run_assignment(ae_with_project)
+    proj = run_sfalls_assignment(ae_with_project)
 
     function = "qaequilibrae.modules.matrix_procedures.load_project_data.DisplayAequilibraEFormatsDialog"
     mocker.patch(function)

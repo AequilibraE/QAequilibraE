@@ -22,7 +22,7 @@ def test_click_create_without_layers(ae_with_project, qtbot, timeoutDetector):
 
 
 def test_click_create_with_layers(ae_with_project, qtbot, timeoutDetector):
-    load_sfalls_from_layer(None)
+    load_sfalls_from_layer(ae_with_project.project.project_base_path)
 
     dialog = DesireLinesDialog(ae_with_project)
     dialog.show()
@@ -39,7 +39,7 @@ def test_click_create_with_layers(ae_with_project, qtbot, timeoutDetector):
 
 
 def test_click_create_with_layers_desired_selected(ae_with_project, qtbot, timeoutDetector):
-    load_sfalls_from_layer(None)
+    load_sfalls_from_layer(ae_with_project.project.project_base_path)
 
     dialog = DesireLinesDialog(ae_with_project)
     dialog.show()
@@ -58,7 +58,7 @@ def test_click_create_with_layers_desired_selected(ae_with_project, qtbot, timeo
 # For example, one would expect something like this:
 @pytest.mark.skip(reason="Error handling implementation is required for this test")
 def test_click_create_with_layers_with_wrong_id_param(ae_with_project, qtbot):
-    load_sfalls_from_layer(None)
+    load_sfalls_from_layer(ae_with_project.project.project_base_path)
 
     dialog = DesireLinesDialog(ae_with_project)
     dialog.show()

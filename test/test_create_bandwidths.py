@@ -2,23 +2,23 @@ import pytest
 
 from qgis.core import QgsProject
 
-from .utilities import create_links_with_matrix
+from .utilities import load_test_layer
 from qaequilibrae.modules.gis.create_bandwidths_dialog import CreateBandwidthsDialog
 from qaequilibrae.modules.gis.set_color_ramps_dialog import LoadColorRampSelector
 
 
-line_layer = "lines"
+link_layer = "link"
 
 
-def test_bandwidth(ae):
-    create_links_with_matrix()
+def test_bandwidth(ae, folder_path):
+    load_test_layer(folder_path, "link")
 
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
-    assert line_layer in prj_layers
+    assert link_layer in prj_layers
 
     # Create stacked bandwidth
     dialog = CreateBandwidthsDialog(ae)
-    dialog.layer = QgsProject.instance().mapLayersByName(line_layer)[0]
+    dialog.layer = QgsProject.instance().mapLayersByName(link_layer)[0]
     dialog.ab_FieldComboBox.setCurrentText("matrix_ab")
     dialog.ba_FieldComboBox.setCurrentText("matrix_ba")
     dialog.add_to_bands_list()
@@ -26,19 +26,19 @@ def test_bandwidth(ae):
 
     # Test if bandwidth layers were created
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
-    assert f"{line_layer} (Color)" in prj_layers
-    assert f"{line_layer} (Width)" in prj_layers
+    assert f"{link_layer} (Color)" in prj_layers
+    assert f"{link_layer} (Width)" in prj_layers
 
 
 @pytest.mark.parametrize("dual_fields", [True, False])
-def test_color_ramp(ae, dual_fields):
-    create_links_with_matrix()
+def test_color_ramp(ae, folder_path, dual_fields):
+    load_test_layer(folder_path, "link")
 
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
-    assert line_layer in prj_layers
+    assert link_layer in prj_layers
 
     dialog = CreateBandwidthsDialog(ae)
-    dialog.layer = QgsProject.instance().mapLayersByName(line_layer)[0]
+    dialog.layer = QgsProject.instance().mapLayersByName(link_layer)[0]
     dialog.rdo_ramp.setChecked(True)
     # dialog.ramps = None
 
@@ -72,5 +72,5 @@ def test_color_ramp(ae, dual_fields):
     dialog.add_bands_to_map()
 
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
-    assert f"{line_layer} (Color)" in prj_layers
-    assert f"{line_layer} (Width)" in prj_layers
+    assert f"{link_layer} (Color)" in prj_layers
+    assert f"{link_layer} (Width)" in prj_layers

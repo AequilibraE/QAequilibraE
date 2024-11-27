@@ -74,6 +74,4 @@ def test_select_elements(ae_with_project, mocker, element):
     metrics = [round(feat["metrics_data"], 0) for feat in layer.getFeatures()]
     assert metrics == [0.0, 6.0, 4.0]
 
-    QgsProject.instance().removeAllMapLayers()
-
     dialog.omx.close()

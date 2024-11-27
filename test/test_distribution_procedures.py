@@ -7,7 +7,7 @@ from os.path import basename, isfile, splitext
 from aequilibrae.matrix import AequilibraeMatrix
 from qgis.core import QgsProject
 
-from .utilities import run_assignment
+from .utilities import run_sfalls_assignment
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.distribution_procedures.distribution_models_dialog import DistributionModelsDialog
 from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
@@ -83,7 +83,7 @@ def test_ipf(ae_with_project, folder_path, mocker, method):
 
 @pytest.mark.parametrize("method", ["negative_exponential", "inverse_power", "both"])
 def test_calibrate_gravity(ae_with_project, method, folder_path, mocker):
-    proj = run_assignment(ae_with_project)
+    proj = run_sfalls_assignment(ae_with_project)
 
     file_path = f"{folder_path}/mod_{method}.mod"
     mocker.patch(

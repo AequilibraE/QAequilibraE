@@ -6,7 +6,7 @@ from aequilibrae.utils.db_utils import read_and_close
 
 from qgis.core import QgsProject
 
-from .utilities import load_points_vector
+from .utilities import create_centroids_layer
 from qaequilibrae.modules.network.adds_connectors_dialog import AddConnectorsDialog
 from qaequilibrae.modules.network.adds_connectors_procedure import AddsConnectorsProcedure
 
@@ -125,7 +125,7 @@ def test_add_connectors_from_network_procedure(
 
 
 def test_add_connectors_from_layer_dialog(pt_no_feed):
-    load_points_vector()
+    create_centroids_layer()
 
     dialog = AddConnectorsDialog(pt_no_feed)
     dialog.rdo_layer.setChecked(True)
@@ -145,7 +145,7 @@ def test_add_connectors_from_layer_dialog(pt_no_feed):
 
 
 def test_add_connectors_from_layer_procedure(pt_no_feed):
-    load_points_vector()
+    create_centroids_layer()
 
     nodes_layer = QgsProject.instance().mapLayersByName("Centroids")[0]
 

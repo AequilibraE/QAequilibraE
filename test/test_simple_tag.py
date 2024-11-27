@@ -3,10 +3,9 @@ import pytest
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import commit_and_close
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsFeature, QgsField, QgsGeometry, QgsPointXY, QgsProject, QgsVectorLayer
+from qgis.core import QgsProject
 
-from .utilities import create_polygons_layer
+from .utilities import create_links_layer, create_nodes_layer, create_polygons_layer
 from qaequilibrae.modules.gis.simple_tag_dialog import SimpleTagDialog
 from qaequilibrae.modules.gis.simple_tag_procedure import SimpleTAG
 
@@ -36,74 +35,6 @@ point_assertions = {
 }
 
 places = ["Valparaiso", "Santiago", "Antofagasta"]
-
-
-def create_nodes_layer(index):
-    layer = QgsVectorLayer("Point?crs=epsg:4326", "point", "memory")
-    if not layer.isValid():
-        print("Nodes layer failed to load!")
-    else:
-        field_id = QgsField("ID", QVariant.Int)
-        field_zone_id = QgsField("zone_id", QVariant.Int)
-        nickname = QgsField("name", QVariant.String)
-
-        layer.dataProvider().addAttributes([field_id, field_zone_id, nickname])
-        layer.updateFields()
-
-        points = [
-            QgsPointXY(-71.2489, -29.8936),
-            QgsPointXY(-71.2355, -29.8947),
-            QgsPointXY(-71.2350, -29.8875),
-        ]
-
-        attributes = (index, [None, None, None])
-
-        features = []
-        for i, (point, zone_id, name) in enumerate(zip(points, *attributes)):
-            feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPointXY(point))
-            feature.setAttributes([i + 1, zone_id, name])
-            features.append(feature)
-
-        layer.dataProvider().addFeatures(features)
-
-        QgsProject.instance().addMapLayer(layer)
-
-    return layer
-
-
-def create_links_layer(index):
-    layer = QgsVectorLayer("Linestring?crs=epsg:4326", "linestring", "memory")
-    if not layer.isValid():
-        print("linestring layer failed to load!")
-    else:
-        field_id = QgsField("ID", QVariant.Int)
-        field_zone_id = QgsField("zone_id", QVariant.Int)
-        nickname = QgsField("name", QVariant.String)
-
-        layer.dataProvider().addAttributes([field_id, field_zone_id, nickname])
-        layer.updateFields()
-
-        lines = [
-            [QgsPointXY(-71.2517, -29.8880), QgsPointXY(-71.2498, -29.8944)],
-            [QgsPointXY(-71.2389, -29.8943), QgsPointXY(-71.2342, -29.8933)],
-            [QgsPointXY(-71.2397, -29.8836), QgsPointXY(-71.2341, -29.8805)],
-        ]
-
-        attributes = (index, [None, None, None])
-
-        features = []
-        for i, (line, zone_id, name) in enumerate(zip(lines, *attributes)):
-            feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPolylineXY(line))
-            feature.setAttributes([i + 1, zone_id, name])
-            features.append(feature)
-
-        layer.dataProvider().addFeatures(features)
-
-        QgsProject.instance().addMapLayer(layer)
-
-    return layer
 
 
 @pytest.mark.parametrize("ops", ["ENCLOSED", "TOUCHING", "CLOSEST"])

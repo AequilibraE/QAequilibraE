@@ -1,6 +1,4 @@
 from os.path import join
-from shutil import copytree
-from uuid import uuid4
 
 from aequilibrae import Project
 
@@ -12,15 +10,12 @@ from qaequilibrae.modules.project_procedures.creates_transponet_dialog import Cr
 from qaequilibrae.modules.project_procedures.creates_transponet_procedure import CreatesTranspoNetProcedure
 
 
-def test_dialog(ae, tmp_path):
-    path = join(tmp_path, uuid4().hex)
-    copytree("test/data/NetworkPreparation", path)
-
-    load_test_layer(path, "node")
-    load_test_layer(path, "link")
+def test_dialog(ae, folder_path):
+    load_test_layer(folder_path, "node")
+    load_test_layer(folder_path, "link")
 
     dialog = CreatesTranspoNetDialog(ae)
-    dialog.project_destination.setText(path)
+    dialog.project_destination.setText(folder_path)
 
     links_columns = [
         "link_id",
@@ -44,7 +39,7 @@ def test_dialog(ae, tmp_path):
     links_chd = []
     nodes_chd = []
     for chd in child:
-        if chd.count() == 8:
+        if chd.count() == 11:
             links_chd.append(chd)
         elif chd.count() == 4:
             nodes_chd.append(chd)
@@ -59,14 +54,12 @@ def test_dialog(ae, tmp_path):
 
     dialog.create_net()
 
-    QgsProject.instance().removeAllMapLayers()
-
     # Test assertions
     project = Project()
     project.open(dialog.worker_thread.proj_folder)
 
     project_links = project.network.links.data
-    assert project_links.shape[0] == 4
+    assert project_links.shape[0] == 5
 
     project_nodes = project.network.nodes.data
     assert project_nodes.shape[0] == 4
@@ -80,12 +73,9 @@ def test_dialog(ae, tmp_path):
         assert mode in modes.all_modes().keys()
 
 
-def test_procedure(ae, tmp_path):
-    path = join(tmp_path, uuid4().hex)
-    copytree("test/data/NetworkPreparation", path)
-
-    load_test_layer(path, "node")
-    load_test_layer(path, "link")
+def test_procedure(ae, folder_path):
+    load_test_layer(folder_path, "node")
+    load_test_layer(folder_path, "link")
 
     nodes = QgsProject.instance().mapLayersByName("node")[0]
     links = QgsProject.instance().mapLayersByName("link")[0]
@@ -114,16 +104,17 @@ def test_procedure(ae, tmp_path):
     }
     nodes_fields = {"node_id": 0, "is_centroid": 1}
 
-    proj_folder = join(path, "project")
+    proj_folder = join(folder_path, "project")
     parent = CreatesTranspoNetDialog(ae)
     dialog = CreatesTranspoNetProcedure(parent, proj_folder, nodes, nodes_fields, links, links_fields)
+
     dialog.doWork()
 
     project = Project()
     project.open(proj_folder)
 
     project_links = project.network.links.data
-    assert project_links.shape[0] == 4
+    assert project_links.shape[0] == 5
 
     project_nodes = project.network.nodes.data
     assert project_nodes.shape[0] == 4

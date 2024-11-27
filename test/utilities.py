@@ -76,7 +76,7 @@ def get_qgis_app():
     return QGIS_APP, CANVAS, IFACE, PARENT
 
 
-def load_points_vector():
+def create_centroids_layer():
     """Creates a vector layer in memory named 'Centroids' to be used with Coquimbo data."""
 
     nodes_layer = QgsVectorLayer("Point?crs=epsg:4326", "Centroids", "memory")
@@ -110,49 +110,78 @@ def load_points_vector():
         QgsProject.instance().addMapLayer(nodes_layer)
 
 
-def create_links_with_matrix():
-    """Creates a vector layer in memory which consists in a square with coordinates
-    ((0, 0), (0, 1), (1, 1), (1, 0)), and a line which corresponds to one of its
-    diagonals ((0, 0), (1, 1)). The layer has four attributes: field ID (fid), matrix_ab,
-    matrix_ba, and total. It is used to test GIS plots."""
-
-    layer = QgsVectorLayer("Linestring?crs=epsg:4326", "lines", "memory")
+def create_nodes_layer(index):
+    """Creates a point layer in memory to be used with Coquimbo data."""
+    layer = QgsVectorLayer("Point?crs=epsg:4326", "point", "memory")
     if not layer.isValid():
-        print("lines layer failed to load!")
+        print("Nodes layer failed to load!")
     else:
-        field_id = QgsField("link_id", QVariant.Int)
-        matrix_ab = QgsField("matrix_ab", QVariant.Int)
-        matrix_ba = QgsField("matrix_ba", QVariant.Int)
-        matrix_tot = QgsField("matrix_tot", QVariant.Int)
+        field_id = QgsField("ID", QVariant.Int)
+        field_zone_id = QgsField("zone_id", QVariant.Int)
+        nickname = QgsField("name", QVariant.String)
 
-        layer.dataProvider().addAttributes([field_id, matrix_ab, matrix_ba, matrix_tot])
+        layer.dataProvider().addAttributes([field_id, field_zone_id, nickname])
         layer.updateFields()
 
-        lines = [
-            [QgsPointXY(1, 0), QgsPointXY(1, 1)],
-            [QgsPointXY(1, 0), QgsPointXY(0, 0)],
-            [QgsPointXY(0, 0), QgsPointXY(0, 1)],
-            [QgsPointXY(0, 1), QgsPointXY(1, 1)],
-            [QgsPointXY(0, 0), QgsPointXY(1, 1)],
+        points = [
+            QgsPointXY(-71.2489, -29.8936),
+            QgsPointXY(-71.2355, -29.8947),
+            QgsPointXY(-71.2350, -29.8875),
         ]
 
-        attributes = ([1, 2, 3, 4, 5], [50, 42, 17, 32, 19], [50, 63, 18, 32, 11], [100, 105, 35, 64, 30])
+        attributes = (index, [None, None, None])
 
         features = []
-        for i, (line, fid, ab, ba, tot) in enumerate(zip(lines, *attributes)):
+        for i, (point, zone_id, name) in enumerate(zip(points, *attributes)):
             feature = QgsFeature()
-            feature.setGeometry(QgsGeometry.fromPolylineXY(line))
-            feature.setAttributes([fid, ab, ba, tot])
+            feature.setGeometry(QgsGeometry.fromPointXY(point))
+            feature.setAttributes([i + 1, zone_id, name])
             features.append(feature)
 
         layer.dataProvider().addFeatures(features)
 
         QgsProject.instance().addMapLayer(layer)
 
+    return layer
 
-def create_polygons_layer(parameters):
-    """Creates
-    To be used with Coquimbo data."""
+
+def create_links_layer(index):
+    """Creates a line layer in memory to be used with Coquimbo data."""
+    layer = QgsVectorLayer("Linestring?crs=epsg:4326", "linestring", "memory")
+    if not layer.isValid():
+        print("linestring layer failed to load!")
+    else:
+        field_id = QgsField("ID", QVariant.Int)
+        field_zone_id = QgsField("zone_id", QVariant.Int)
+        nickname = QgsField("name", QVariant.String)
+
+        layer.dataProvider().addAttributes([field_id, field_zone_id, nickname])
+        layer.updateFields()
+
+        lines = [
+            [QgsPointXY(-71.2517, -29.8880), QgsPointXY(-71.2498, -29.8944)],
+            [QgsPointXY(-71.2389, -29.8943), QgsPointXY(-71.2342, -29.8933)],
+            [QgsPointXY(-71.2397, -29.8836), QgsPointXY(-71.2341, -29.8805)],
+        ]
+
+        attributes = (index, [None, None, None])
+
+        features = []
+        for i, (line, zone_id, name) in enumerate(zip(lines, *attributes)):
+            feature = QgsFeature()
+            feature.setGeometry(QgsGeometry.fromPolylineXY(line))
+            feature.setAttributes([i + 1, zone_id, name])
+            features.append(feature)
+
+        layer.dataProvider().addFeatures(features)
+
+        QgsProject.instance().addMapLayer(layer)
+
+    return layer
+
+
+def create_polygons_layer(index):
+    """Creates a polygon layer in memory to be used with Coquimbo data."""
     layer = QgsVectorLayer("Polygon?crs=epsg:4326", "polygon", "memory")
     if not layer.isValid():
         print("Polygon layer failed to load!")
@@ -188,7 +217,7 @@ def create_polygons_layer(parameters):
             ],
         ]
 
-        attributes = (parameters, [None, None, None])
+        attributes = (index, [None, None, None])
 
         features = []
         for i, (poly, zone_id, name) in enumerate(zip(polys, *attributes)):
@@ -207,14 +236,11 @@ def create_polygons_layer(parameters):
 def load_sfalls_from_layer(path):
     """Creates Sioux Falls links and nodes layers"""
 
-    fldr_pth = "test/data/SiouxFalls_project" if path == None else path
+    path_to_gpkg = f"{path}/SiouxFalls.gpkg"
 
-    if fldr_pth == path:
-        if not exists(fldr_pth):
-            os.makedirs(fldr_pth)
-        copyfile("test/data/SiouxFalls_project/SiouxFalls.gpkg", f"{fldr_pth}/SiouxFalls.gpkg")
-
-    path_to_gpkg = f"{fldr_pth}/SiouxFalls.gpkg"
+    if not exists(path):
+        os.makedirs(path)
+    copyfile("test/data/SiouxFalls_project/SiouxFalls.gpkg", path_to_gpkg)
 
     # append the layername part
     gpkg_links_layer = path_to_gpkg + "|layername=links"
@@ -238,7 +264,7 @@ def load_sfalls_from_layer(path):
             var[0].setCrs(crs)
 
 
-def run_assignment(aeq_from_qgis):
+def run_sfalls_assignment(aeq_from_qgis):
     """Runs traffic assignment with Sioux Falls data."""
 
     from aequilibrae.paths import TrafficAssignment, TrafficClass

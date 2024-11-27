@@ -49,5 +49,3 @@ def test_prepare_network(folder_path, ae, is_node):
         layer = QgsProject.instance().mapLayersByName("net_nodes")[0]
         for f in layer.getFeatures():
             assert f.attributes()[0] >= 1001
-
-    QgsProject.instance().removeAllMapLayers()
