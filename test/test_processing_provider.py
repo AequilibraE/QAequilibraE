@@ -141,8 +141,6 @@ def test_project_from_layer(folder_path):
 
     assert result[0]["Output"] == join(folder_path, parameters["project_name"])
 
-    QgsProject.instance().clear()
-
     project = Project()
     project.open(join(folder_path, parameters["project_name"]))
 

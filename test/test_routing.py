@@ -26,8 +26,6 @@ def test_create_from_centroids(ae_with_project, in_selection):
     else:
         assert len(dialog.worker_thread.node_sequence) == 25
 
-    QgsProject.instance().clear()
-
     ae_with_project.run_close_project()
 
 

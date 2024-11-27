@@ -94,8 +94,6 @@ def test_simple_tag_polygon(coquimbo_project, to_layer, ops):
     elif ops in ["CLOSEST"] or to_layer == "point":
         assert "Antofagasta" in feats
 
-    QgsProject.instance().clear()
-
 
 @pytest.mark.parametrize("ops", ["ENCLOSED", "TOUCHING", "CLOSEST"])
 @pytest.mark.parametrize("to_layer", ["polygon", "linestring", "point"])
@@ -147,8 +145,6 @@ def test_simple_tag_linestring(coquimbo_project, to_layer, ops):
     feats = [f["name"] for f in layer.getFeatures()]
     assert feats == linestring_assertions[to_layer][ops]
 
-    QgsProject.instance().clear()
-
 
 @pytest.mark.parametrize("ops", ["ENCLOSED", "CLOSEST"])
 @pytest.mark.parametrize("to_layer", ["polygon", "linestring", "point"])
@@ -197,5 +193,3 @@ def test_simple_tag_point(coquimbo_project, to_layer, ops):
 
     feats = [f["name"] for f in layer.getFeatures()]
     assert feats == point_assertions[to_layer][ops]
-
-    QgsProject.instance().clear()
