@@ -6,8 +6,7 @@ from aequilibrae.project import Project
 from qgis._core import QgsProject, QgsVectorLayer, QgsSpatialIndex
 
 import qgis
-from qgis.PyQt import QtCore
-from qgis.PyQt import QtWidgets, uic
+from qgis.PyQt import QtCore, QtWidgets, uic
 from qgis.utils import iface
 from qaequilibrae.modules.paths_procedures.point_tool import PointTool
 from qaequilibrae.modules.common_tools import LoadGraphLayerSettingDialog
