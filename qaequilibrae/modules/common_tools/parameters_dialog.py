@@ -64,10 +64,8 @@ class ParameterDialog(QtWidgets.QDialog, FORM_CLASS):
         if self.error:
             self.but_save.setEnabled(False)
             self.iface.messageBar().pushMessage(
-                "Error", self.tr("Parameter structure was compromised. Please reset to defaults"), level=3, duration=10
+                "Error", self.tr("Parameter structure was compromised. Please reset to default."), level=2, duration=10
             )
-            # qgis.utils.iface.messageBar().pushMessage("Error", "Parameter structure was compromised. Please reset "
-            #                                                    "to defaults", level=3, duration=10)
         else:
             self.but_save.setEnabled(True)
 

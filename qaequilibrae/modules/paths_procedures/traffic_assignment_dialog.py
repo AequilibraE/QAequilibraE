@@ -11,14 +11,11 @@ from aequilibrae.paths.vdf import all_vdf_functions
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 from tempfile import gettempdir
-import time
 
 import qgis
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QLineEdit, QComboBox, QCheckBox, QPushButton, QAbstractItemView
-from qaequilibrae.modules.common_tools import PandasModel
-from qaequilibrae.modules.common_tools import ReportDialog
-from qaequilibrae.modules.common_tools import standard_path
+from qaequilibrae.modules.common_tools import PandasModel, ReportDialog, standard_path
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_traffic_assignment.ui"))
