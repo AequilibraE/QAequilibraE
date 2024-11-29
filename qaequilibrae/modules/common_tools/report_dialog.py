@@ -19,12 +19,12 @@
  -----------------------------------------------------------------------------------------------------------
  """
 
+import os
 from qgis.core import *
 from qgis.PyQt import QtWidgets, uic
-from .get_output_file_name import GetOutputFileName
 
-import os
 from .auxiliary_functions import standard_path
+from .get_output_file_name import GetOutputFileName
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_report.ui"))
 

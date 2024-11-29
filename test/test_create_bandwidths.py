@@ -1,5 +1,4 @@
 import pytest
-
 from qgis.core import QgsProject
 
 from .utilities import load_test_layer
@@ -13,14 +12,17 @@ link_layer = "link"
 def test_bandwidth(ae, folder_path):
     load_test_layer(folder_path, "link")
 
+    layer = QgsProject.instance().mapLayersByName(link_layer)[0]
+    ae.iface.setActiveLayer(layer)
+
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
     assert link_layer in prj_layers
 
     # Create stacked bandwidth
     dialog = CreateBandwidthsDialog(ae)
-    dialog.layer = QgsProject.instance().mapLayersByName(link_layer)[0]
-    dialog.ab_FieldComboBox.setCurrentText("matrix_ab")
-    dialog.ba_FieldComboBox.setCurrentText("matrix_ba")
+    dialog.add_fields_to_cboxes()
+    dialog.ab_FieldComboBox.setCurrentIndex(8)
+    dialog.ba_FieldComboBox.setCurrentIndex(9)
     dialog.add_to_bands_list()
     dialog.add_bands_to_map()
 
@@ -33,20 +35,21 @@ def test_bandwidth(ae, folder_path):
 @pytest.mark.parametrize("dual_fields", [True, False])
 def test_color_ramp(ae, folder_path, dual_fields):
     load_test_layer(folder_path, "link")
+    
+    layer = QgsProject.instance().mapLayersByName(link_layer)[0]
+    ae.iface.setActiveLayer(layer)
 
     prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
     assert link_layer in prj_layers
 
     dialog = CreateBandwidthsDialog(ae)
-    dialog.layer = QgsProject.instance().mapLayersByName(link_layer)[0]
+    dialog.add_fields_to_cboxes()
     dialog.rdo_ramp.setChecked(True)
-    # dialog.ramps = None
 
     # Create color ramps
     color_ramp = LoadColorRampSelector(dialog.iface, dialog.layer)
     color_ramp.chk_dual_fields.setChecked(dual_fields)
     color_ramp.cbb_ab_color.setCurrentText("Blues")
-
     color_ramp.set_dual_fields()
 
     if dual_fields:
