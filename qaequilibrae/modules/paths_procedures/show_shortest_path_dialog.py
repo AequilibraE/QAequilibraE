@@ -154,7 +154,7 @@ class ShortestPathDialog(QtWidgets.QDialog, FORM_CLASS):
                     self.create_path_with_scratch_layer()
             else:
                 msg = self.tr("No path between {} and {}").format(self.path_from.text(), self.path_to.text())
-                qgis.utils.iface.messageBar().pushMessage(msg, "", level=3)
+                qgis.utils.iface.messageBar().pushMessage(msg, "", level=2)
 
     def create_path_with_selection(self):
         f = "link_id"

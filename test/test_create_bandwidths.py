@@ -35,7 +35,7 @@ def test_bandwidth(ae, folder_path):
 @pytest.mark.parametrize("dual_fields", [True, False])
 def test_color_ramp(ae, folder_path, dual_fields):
     load_test_layer(folder_path, "link")
-    
+
     layer = QgsProject.instance().mapLayersByName(link_layer)[0]
     ae.iface.setActiveLayer(layer)
 
