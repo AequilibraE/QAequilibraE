@@ -690,7 +690,7 @@
 <context>
     <name>DisplayAequilibraEFormatsDialog</name>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="380"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="372"/>
         <source>AequilibraE custom formats</source>
         <translation type="unfinished"></translation>
     </message>
@@ -705,42 +705,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="73"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="70"/>
         <source>Could not load dataset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="102"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="99"/>
         <source>Thousands separator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="111"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="108"/>
         <source>Decimal places</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="176"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="171"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="171"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="166"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="148"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="143"/>
         <source>No mapping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="152"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="147"/>
         <source>By origin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="156"/>
+        <location filename="../modules/matrix_procedures/display_aequilibrae_formats_dialog.py" line="151"/>
         <source>By destination</source>
         <translation type="unfinished"></translation>
     </message>
