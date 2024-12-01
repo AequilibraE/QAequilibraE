@@ -4,7 +4,6 @@ from .get_output_file_name import GetOutputFolderName
 from .load_graph_layer_setting_dialog import LoadGraphLayerSettingDialog
 from .numpy_model import NumpyModel
 from .pandas_model import PandasModel
-from .database_model import DatabaseModel
 from .parameters_dialog import ParameterDialog
 from .report_dialog import ReportDialog
 from .all_layers_from_toc import all_layers_from_toc

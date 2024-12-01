@@ -13,7 +13,7 @@ from qgis.PyQt.QtWidgets import QHBoxLayout, QTableView, QPushButton, QVBoxLayou
 from qgis.PyQt.QtWidgets import QRadioButton, QAbstractItemView
 from qgis._core import QgsVectorLayer, QgsVectorLayerJoinInfo, QgsSymbol, QgsApplication
 from qgis._core import QgsRendererRange, QgsGraduatedSymbolRenderer, QgsProject, QgsStyle
-from qaequilibrae.modules.common_tools import DatabaseModel, NumpyModel, GetOutputFileName
+from qaequilibrae.modules.common_tools import NumpyModel, GetOutputFileName
 from qaequilibrae.modules.common_tools import layer_from_dataframe
 from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path
 
@@ -64,11 +64,8 @@ class DisplayAequilibraEFormatsDialog(QtWidgets.QDialog, FORM_CLASS):
                 self.qgis_project.matrices[self.data_path] = self.data_to_show
             try:
                 self.data_to_show.load(self.data_path)
-                if self.data_type == "AED":
-                    self.list_cores = self.data_to_show.fields
-                elif self.data_type == "AEM":
-                    self.list_cores = self.data_to_show.names
-                    self.list_indices = self.data_to_show.index_names
+                self.list_cores = self.data_to_show.names
+                self.list_indices = self.data_to_show.index_names
             except Exception as e:
                 self.error = self.tr("Could not load dataset")
                 self.logger.error(e.args)
@@ -119,26 +116,24 @@ class DisplayAequilibraEFormatsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.show_layout.addWidget(self.decimals)
         self._layout.addItem(self.show_layout)
 
-        # differentiates between matrix and dataset
-        if self.data_type in ["AEM", "OMX"]:
-            # Matrices need cores and indices to be set as well
-            self.mat_layout = QHBoxLayout()
-            self.mat_list = QComboBox()
+        # Matrices need cores and indices to be set as well
+        self.mat_layout = QHBoxLayout()
+        self.mat_list = QComboBox()
 
-            for n in self.list_cores:
-                self.mat_list.addItem(n)
+        for n in self.list_cores:
+            self.mat_list.addItem(n)
 
-            self.mat_list.currentIndexChanged.connect(self.change_matrix_cores)
-            self.mat_layout.addWidget(self.mat_list)
+        self.mat_list.currentIndexChanged.connect(self.change_matrix_cores)
+        self.mat_layout.addWidget(self.mat_list)
 
-            self.idx_list = QComboBox()
-            for i in self.list_indices:
-                self.idx_list.addItem(i)
+        self.idx_list = QComboBox()
+        for i in self.list_indices:
+            self.idx_list.addItem(i)
 
-            self.idx_list.currentIndexChanged.connect(self.change_matrix_cores)
-            self.mat_layout.addWidget(self.idx_list)
-            self._layout.addItem(self.mat_layout)
-            self.change_matrix_cores()
+        self.idx_list.currentIndexChanged.connect(self.change_matrix_cores)
+        self.mat_layout.addWidget(self.idx_list)
+        self._layout.addItem(self.mat_layout)
+        self.change_matrix_cores()
 
         if self.from_proj:
             default_style = QgsStyle().defaultStyle()
@@ -322,10 +317,7 @@ class DisplayAequilibraEFormatsDialog(QtWidgets.QDialog, FORM_CLASS):
             return
         decimals = self.decimals.value()
         separator = self.thousand_separator.isChecked()
-        if isinstance(self.data_to_show, AequilibraeMatrix):
-            m = NumpyModel(self.data_to_show, separator, decimals)
-        else:
-            m = DatabaseModel(self.data_to_show, separator, decimals)
+        m = NumpyModel(self.data_to_show, separator, decimals)
         self.table.clearSpans()
         self.table.setModel(m)
 

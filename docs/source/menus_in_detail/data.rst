@@ -27,7 +27,7 @@ Lines, and that are saved in a **results_database.sqlite**.
     :alt: project data results
 
 The tab *non-project data* allows you to open and visualize matrices and datasets in the following extensions: 
-\*.omx, \*.aem, and \*.aed. **This is the only tab available if no AequilibraE project is open**. Suppose you 
+\*.omx and \*.aem. **This is the only tab available if no AequilibraE project is open**. Suppose you 
 want to check a skim matrix from a previous project. When clicking the **Load data** button, you can point 
 AequilibraE the location of the file and its visualization is displayed.
 
