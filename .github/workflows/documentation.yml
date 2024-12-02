@@ -38,8 +38,9 @@ jobs:
       uses: bluwy/substitute-string-action@v3
       id: sub
       with:
-        _input-text: 'www.aequilibrae.com/latest/'
-        latest: 'test'
+        _input-text: 'www.aequilibrae.com/%%folder%%/'
+        _format-key: '%%key%%'
+        folder: 'test'
 
     - name: Upload to DEV on S3
       uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
