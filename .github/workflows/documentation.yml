@@ -34,7 +34,7 @@ jobs:
         make html
 
     - name: Replace string
-      if: ${{ (github.event_name == 'pull_request')
+      if: ${{ (github.event_name == 'pull_request') }}
       uses: bluwy/substitute-string-action@v3
       id: sub
       with:
