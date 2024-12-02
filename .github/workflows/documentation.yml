@@ -36,7 +36,6 @@ jobs:
     - name: Replace string
       if: ${{ (github.event_name == 'pull_request') }}
       uses: bluwy/substitute-string-action@v3
-      id: sub
       with:
         _input-text: 'www.aequilibrae.com/latest/'
         latest: test
@@ -57,7 +56,6 @@ jobs:
     - name: Replace string
       if: ${{ (github.ref == 'refs/heads/develop') && (github.event_name == 'push')}}
       uses: bluwy/substitute-string-action@v3
-      id: sub
       with:
         _input-text: 'www.aequilibrae.com/latest/'
         latest: develop
