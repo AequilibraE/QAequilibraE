@@ -165,7 +165,7 @@ Adding centroids
 
 Starting in version 0.6 of AequilibraE, centroid connectors can now only be
 added to
-`AequilibraE projects <https://aequilibrae.com/latest/python/modeling_with_aequilibrae/project.html>`_,
+`AequilibraE projects <https://www.aequilibrae.com/latest/python/modeling_with_aequilibrae/project.html>`_,
 and no longer generates new layers during the process.
 
 Before we describe what this tool can do for you, however, let's just remember
