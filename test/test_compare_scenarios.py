@@ -4,22 +4,44 @@ import pandas as pd
 from aequilibrae.distribution import Ipf
 from aequilibrae.paths import TrafficAssignment, TrafficClass
 
+from qgis.core import QgsProject
 from .utilities import run_sfalls_assignment
+from qaequilibrae.modules.menu_actions.load_project_action import _run_load_project_from_path
 from qaequilibrae.modules.gis.compare_scenarios_dialog import CompareScenariosDialog
 
 
-def test_compare_scenarios(ae_with_project, qtbot):
+@pytest.fixture
+def model_path(ae_with_project):
+    path = ae_with_project.project.project_base_path
     proj = run_sfalls_assignment(ae_with_project)
     proj = future_assignment(proj)
 
-    dialog = CompareScenariosDialog(proj)
-    print(dialog.results)
+    proj.project.close()
+
+    yield path
+
+
+# TODO: time-consuming. Will let only True by now
+@pytest.mark.parametrize("composite", [True])
+def test_compare_scenarios(ae, model_path, composite):
+
+    _run_load_project_from_path(ae, model_path)
+
+    dialog = CompareScenariosDialog(ae)
     dialog.cob_alternative_scenario.setCurrentText("future_assignment")
+    dialog.radio_compo.setChecked(composite)
+    dialog.radio_diff.setChecked(not composite)
 
     dialog.execute_comparison()
 
-    path = qtbot.screenshot(dialog)
-    print(path)
+    prj_layers = [lyr.name() for lyr in QgsProject.instance().mapLayers().values()]
+    assert prj_layers == ["assignment", "future_assignment", "links"]
+
+    link_layer = QgsProject.instance().mapLayersByName("links")[0]
+    field_names = link_layer.fields().names()
+    fields = ["base_matrix_ab", "base_matrix_ba", "alternative_matrix_ab", "alternative_matrix_ba"]
+    for f in fields:
+        assert f in field_names
 
 
 def future_assignment(aeq_from_qgis):
@@ -45,7 +67,7 @@ def future_assignment(aeq_from_qgis):
     intrazonals = np.amin(imped.matrix_view, where=imped.matrix_view > 0, initial=imped.matrix_view.max(), axis=1)
     intrazonals *= 0.75
     np.fill_diagonal(imped.matrix_view, intrazonals)
-    
+
     imped.save(names=["final_time_with_intrazonals"])
 
     # Adjust future demand with IPF
@@ -55,19 +77,19 @@ def future_assignment(aeq_from_qgis):
     dest = destinations * (1 + np.random.rand(origins.shape[0]) / 10)
     dest *= orig.sum() / dest.sum()
 
-    vectors = pd.DataFrame({"origins":orig, "destinations":dest}, index=demand.index[:])
+    vectors = pd.DataFrame({"origins": orig, "destinations": dest}, index=demand.index[:])
 
     args = {
-    "matrix": demand,
-    "vectors": vectors,
-    "column_field": "destinations",
-    "row_field": "origins",
-    "nan_as_zero": True,
+        "matrix": demand,
+        "vectors": vectors,
+        "column_field": "destinations",
+        "row_field": "origins",
+        "nan_as_zero": True,
     }
 
     ipf = Ipf(**args)
     ipf.fit()
-    
+
     ipf.save_to_project(name="demand_ipfd", file_name="demand_ipfd.aem")
     ipf.save_to_project(name="demand_ipfd_omx", file_name="demand_ipfd.omx")
 
