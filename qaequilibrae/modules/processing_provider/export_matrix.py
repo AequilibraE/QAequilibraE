@@ -39,30 +39,28 @@ class ExportMatrix(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
+
+        src_path = parameters["src"]
+        file_format = [".csv", ".omx", ".aem"]
+        format = file_format[parameters["output_format"]]
+        dst_path = join(parameters["dst"], f"{Path(src_path).stem}.{format}")
+
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
         from aequilibrae.matrix import AequilibraeMatrix
 
-        file_format = ["csv", "omx", "aem"]
-        format = file_format[parameters["output_format"]]
-        file_name, ext = parameters["src"].split("/")[-1].split(".")
-        dst_path = join(parameters["dst"], f"{file_name}.{format}")
-
-        kwargs = {"file_path": dst_path, "memory_only": False}
+        if src_path[-3:] == "omx":
+            tmpmat = AequilibraeMatrix()
+            tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".aem").name
+            tmpmat.create_from_omx(tmp, src_path)
+            tmpmat.export(tmp)
+            src_path = tmp
+            tmpmat.close()
         mat = AequilibraeMatrix()
-
-        if ext == "omx":
-            if format == "omx":
-                mat.create_from_omx(omx_path=parameters["src"], **kwargs)
-            elif format in ["csv", "aem"]:
-                mat.create_from_omx(parameters["src"])
-                mat.export(dst_path)
-        elif ext == "aem":
-            mat.load(parameters["src"])
-            mat.export(dst_path)
-
+        mat.load(src_path)
+        mat.export(dst_path)
         mat.close()
 
         return {"Output": dst_path}
@@ -74,10 +72,10 @@ class ExportMatrix(QgsProcessingAlgorithm):
         return self.tr("Export matrices")
 
     def group(self):
-        return self.tr("Data")
+        return "02-" + self.tr("Data")
 
     def groupId(self):
-        return self.tr("Data")
+        return "02-" + self.tr("Data")
 
     def shortHelpString(self):
         return self.tr("Export an existing *.omx or *.aem matrix file into *.csv, *.aem or *.omx")
