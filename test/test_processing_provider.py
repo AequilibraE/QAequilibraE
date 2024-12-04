@@ -24,6 +24,7 @@ from qaequilibrae.modules.processing_provider.project_from_layer import ProjectF
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
 from qaequilibrae.modules.processing_provider.create_pt_graph import CreatePTGraph
 from qaequilibrae.modules.processing_provider.assign_pt_from_yaml import ptAssignYAML
+from qaequilibrae.modules.processing_provider.import_gtfs import ImportGTFS
 
 
 def qgis_app():
@@ -134,45 +135,45 @@ def test_export_matrix(folder_path, source_file, format):
 
 #     result = action.run(parameters, context, feedback)
 
-    # assert result[0]["Output"] == join(folder_path, parameters["project_name"])
+#     assert result[0]["Output"] == join(folder_path, parameters["project_name"])
 
-    # QgsProject.instance().clear()
+#     QgsProject.instance().clear()
 
-    # project = Project()
-    # project.open(join(folder_path, parameters["project_name"]))
+#     project = Project()
+#     project.open(join(folder_path, parameters["project_name"]))
 
-    # assert project.network.count_links() == 76
-    # assert project.network.count_nodes() == 24
+#     assert project.network.count_links() == 76
+#     assert project.network.count_nodes() == 24
 
 
-# def test_add_centroid_connector(pt_no_feed):
-#     project = pt_no_feed.project
-#     project_folder = project.project_base_path
+def test_add_centroid_connector(pt_no_feed):
+    project = pt_no_feed.project
+    project_folder = project.project_base_path
 
-#     nodes = project.network.nodes
+    nodes = project.network.nodes
 
-#     cnt = nodes.new_centroid(100_000)
-#     cnt.geometry = Point(-71.34, -29.95)
-#     cnt.save()
+    cnt = nodes.new_centroid(100_000)
+    cnt.geometry = Point(-71.34, -29.95)
+    cnt.save()
 
-#     action = AddConnectors()
+    action = AddConnectors()
 
-#     parameters = {"num_connectors": 3, "mode": "c", "project_path": project_folder}
+    parameters = {"num_connectors": 3, "mode": "c", "project_path": project_folder}
 
-#     context = QgsProcessingContext()
-#     feedback = QgsProcessingFeedback()
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
 
-#     result = action.processAlgorithm(parameters, context, feedback)
+    result = action.processAlgorithm(parameters, context, feedback)
 
-#     assert result["Output"] == project_folder
+    assert result["Output"] == project_folder
 
-#     node_qry = "select count(node_id) from nodes where is_centroid=1"
-#     node_count = project.conn.execute(node_qry).fetchone()[0]
-#     assert node_count == 1
+    node_qry = "select count(node_id) from nodes where is_centroid=1"
+    node_count = project.conn.execute(node_qry).fetchone()[0]
+    assert node_count == 1
 
-#     link_qry = "select count(name) from links where name like 'centroid connector%'"
-#     link_count = project.conn.execute(link_qry).fetchone()[0]
-#     assert link_count == 3
+    link_qry = "select count(name) from links where name like 'centroid connector%'"
+    link_count = project.conn.execute(link_qry).fetchone()[0]
+    assert link_count == 3
 
 
 @pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
@@ -263,13 +264,29 @@ def test_create_pt_graph(coquimbo_project):
     feedback = QgsProcessingFeedback()
 
     result = action.run(parameters, context, feedback)
-    print(result)
-
     assert result[0]["Output"] == "PT graph successfully created"
 
     periods = project.network.periods
     assert periods.data.shape[0] == 1
 
 
-def test_pt_assign_yaml():
-    pass
+@pytest.mark.parametrize("allow_map_match", [True, False])
+def test_import_gtfs(pt_no_feed, allow_map_match):
+    project = pt_no_feed.project
+    project_folder = project.project_base_path
+
+    action = ImportGTFS()
+
+    parameters = {
+        "project_path": project_folder,
+        "gtfs_file": "test/data/coquimbo_project/gtfs_coquimbo.zip",
+        "gtfs_agency": "Lisanco",
+        "gtfs_date": "2016-04-16",
+        "allow_map_match": allow_map_match,
+    }
+
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
+
+    result = action.run(parameters, context, feedback)
+    assert result[0]["Output"] == "Traffic assignment successfully completed"
