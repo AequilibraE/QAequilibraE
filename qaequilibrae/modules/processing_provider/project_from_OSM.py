@@ -1,9 +1,6 @@
 import importlib.util as iutil
-import pandas as pd
 import sys
 from os.path import join
-from string import ascii_lowercase
-from shapely.wkt import loads as load_wkt
 
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
 from qgis.core import QgsProcessingParameterString

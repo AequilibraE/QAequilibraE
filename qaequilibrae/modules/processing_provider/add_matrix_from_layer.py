@@ -2,15 +2,13 @@ import importlib.util as iutil
 import sys
 import numpy as np
 import pandas as pd
-from os.path import join
 import os
 from scipy.sparse import coo_matrix
 
-from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessingParameterString, QgsProcessingParameterDefinition
+from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterField, QgsProcessingParameterMapLayer, QgsProcessingParameterFile
 from qgis.core import QgsProcessingAlgorithm
 
-from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt
 
 
