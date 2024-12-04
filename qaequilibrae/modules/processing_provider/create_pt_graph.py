@@ -10,7 +10,7 @@ from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt
 
 
-class create_pt_graph(QgsProcessingAlgorithm):
+class CreatePTGraph(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -48,9 +48,7 @@ class create_pt_graph(QgsProcessingAlgorithm):
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
 
-    def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(3, model_feedback)
-
+    def processAlgorithm(self, parameters, context, feedback):
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
@@ -65,8 +63,6 @@ class create_pt_graph(QgsProcessingAlgorithm):
         data = Transit(project)
 
         feedback.pushInfo(" ")
-        feedback.setCurrentStep(1)
-
         feedback.pushInfo(self.tr("Creating graph"))
         # Creating graph
         if not parameters["has_zones"]:
@@ -77,7 +73,6 @@ class create_pt_graph(QgsProcessingAlgorithm):
                 connector_method="overlapping_regions",
             )
         feedback.pushInfo(" ")
-        feedback.setCurrentStep(2)
 
         # Connector matching
         project.network.build_graphs()
@@ -88,33 +83,28 @@ class create_pt_graph(QgsProcessingAlgorithm):
         data.save_graphs()
 
         feedback.pushInfo(" ")
-        feedback.setCurrentStep(3)
 
         project.close()
 
         return {"Output": "PT graph successfully created"}
 
     def name(self):
-        return self.tr("Create PT graph before PT assignment")
+        return "createptgraph"
 
     def displayName(self):
-        return self.tr("Create PT graph before PT assignment")
+        return self.tr("Create PT graph")
 
     def group(self):
-        return "04-" + self.tr("Public transport")
+        return "04-" + self.tr("Public Transport")
 
     def groupId(self):
-        return "04-" + self.tr("Public transport")
+        return "publictransport"
 
     def shortHelpString(self):
-        return textwrap.dedent("\n".join([self.string_order(1)]))
+        return "Creates a graph to be used with PT Assignment"
 
     def createInstance(self):
-        return create_pt_graph()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Create a PT graph.")
+        return CreatePTGraph()
 
     def tr(self, message):
-        return trlt("create_pt_graph", message)
+        return trlt("CreatePTGraph", message)

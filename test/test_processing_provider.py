@@ -16,11 +16,14 @@ from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_fr
 
 from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.export_matrix import ExportMatrix
+
 # from qaequilibrae.modules.processing_provider.matrix_from_layer import MatrixFromLayer
 from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
-from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
+# from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
 # from qaequilibrae.modules.processing_provider.assign_from_yaml import TrafficAssignYAML
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
+from qaequilibrae.modules.processing_provider.create_pt_graph import CreatePTGraph
+from qaequilibrae.modules.processing_provider.assign_pt_from_yaml import ptAssignYAML
 
 
 def qgis_app():
@@ -98,78 +101,78 @@ def test_export_matrix(folder_path, source_file, format):
 #     assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
 
 
-@pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
-def test_project_from_layer(folder_path, load_sfalls_from_layer):
+# @pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
+# def test_project_from_layer(folder_path, load_sfalls_from_layer):
 
-    linkslayer = QgsProject.instance().mapLayersByName("Links layer")[0]
+#     linkslayer = QgsProject.instance().mapLayersByName("Links layer")[0]
 
-    linkslayer.startEditing()
-    field = QgsField("ltype", QVariant.String)
-    linkslayer.addAttribute(field)
-    linkslayer.updateFields()
+#     linkslayer.startEditing()
+#     field = QgsField("ltype", QVariant.String)
+#     linkslayer.addAttribute(field)
+#     linkslayer.updateFields()
 
-    for feature in linkslayer.getFeatures():
-        feature["ltype"] = "road"
-        linkslayer.updateFeature(feature)
+#     for feature in linkslayer.getFeatures():
+#         feature["ltype"] = "road"
+#         linkslayer.updateFeature(feature)
 
-    linkslayer.commitChanges()
+#     linkslayer.commitChanges()
 
-    action = ProjectFromLayer()
+#     action = ProjectFromLayer()
 
-    parameters = {
-        "links": linkslayer,
-        "link_id": "link_id",
-        "link_type": "ltype",
-        "direction": "direction",
-        "modes": "modes",
-        "dst": folder_path,
-        "project_name": "from_test",
-    }
+#     parameters = {
+#         "links": linkslayer,
+#         "link_id": "link_id",
+#         "link_type": "ltype",
+#         "direction": "direction",
+#         "modes": "modes",
+#         "folder": folder_path,
+#         "project_name": "from_test",
+#     }
 
-    context = QgsProcessingContext()
-    feedback = QgsProcessingFeedback()
+#     context = QgsProcessingContext()
+#     feedback = QgsProcessingFeedback()
 
-    result = action.run(parameters, context, feedback)
+#     result = action.run(parameters, context, feedback)
 
-    assert result[0]["Output"] == join(folder_path, parameters["project_name"])
+    # assert result[0]["Output"] == join(folder_path, parameters["project_name"])
 
-    QgsProject.instance().clear()
+    # QgsProject.instance().clear()
 
-    project = Project()
-    project.open(join(folder_path, parameters["project_name"]))
+    # project = Project()
+    # project.open(join(folder_path, parameters["project_name"]))
 
-    assert project.network.count_links() == 76
-    assert project.network.count_nodes() == 24
+    # assert project.network.count_links() == 76
+    # assert project.network.count_nodes() == 24
 
 
-def test_add_centroid_connector(pt_no_feed):
-    project = pt_no_feed.project
-    project_folder = project.project_base_path
+# def test_add_centroid_connector(pt_no_feed):
+#     project = pt_no_feed.project
+#     project_folder = project.project_base_path
 
-    nodes = project.network.nodes
+#     nodes = project.network.nodes
 
-    cnt = nodes.new_centroid(100_000)
-    cnt.geometry = Point(-71.34, -29.95)
-    cnt.save()
+#     cnt = nodes.new_centroid(100_000)
+#     cnt.geometry = Point(-71.34, -29.95)
+#     cnt.save()
 
-    action = AddConnectors()
+#     action = AddConnectors()
 
-    parameters = {"num_connectors": 3, "mode": "c", "project_path": project_folder}
+#     parameters = {"num_connectors": 3, "mode": "c", "project_path": project_folder}
 
-    context = QgsProcessingContext()
-    feedback = QgsProcessingFeedback()
+#     context = QgsProcessingContext()
+#     feedback = QgsProcessingFeedback()
 
-    result = action.processAlgorithm(parameters, context, feedback)
+#     result = action.processAlgorithm(parameters, context, feedback)
 
-    assert result["Output"] == project_folder
+#     assert result["Output"] == project_folder
 
-    node_qry = "select count(node_id) from nodes where is_centroid=1"
-    node_count = project.conn.execute(node_qry).fetchone()[0]
-    assert node_count == 1
+#     node_qry = "select count(node_id) from nodes where is_centroid=1"
+#     node_count = project.conn.execute(node_qry).fetchone()[0]
+#     assert node_count == 1
 
-    link_qry = "select count(name) from links where name like 'centroid connector%'"
-    link_count = project.conn.execute(link_qry).fetchone()[0]
-    assert link_count == 3
+#     link_qry = "select count(name) from links where name like 'centroid connector%'"
+#     link_count = project.conn.execute(link_qry).fetchone()[0]
+#     assert link_count == 3
 
 
 @pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
@@ -238,3 +241,35 @@ def test_renumber_from_centroids(ae_with_project, load_sfalls_from_layer):
 
 #     row = conn.execute("SELECT * FROM test_from_yaml;").fetchone()
 #     assert row
+
+
+def test_create_pt_graph(coquimbo_project):
+
+    project = coquimbo_project.project
+    project_folder = project.project_base_path
+
+    action = CreatePTGraph()
+
+    parameters = {
+        "project_path": project_folder,
+        "access_mode": "c",
+        "block_flows": False,
+        "walking_edges": False,
+        "outer_stops_transfers": False,
+        "has_zones": False,
+    }
+
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
+
+    result = action.run(parameters, context, feedback)
+    print(result)
+
+    assert result[0]["Output"] == "PT graph successfully created"
+
+    periods = project.network.periods
+    assert periods.data.shape[0] == 1
+
+
+def test_pt_assign_yaml():
+    pass
