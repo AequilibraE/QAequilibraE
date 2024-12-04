@@ -16,7 +16,7 @@ class Provider(QgsProcessingProvider):
 
     def loadAlgorithms(self):
         from .project_from_layer import ProjectFromLayer
-        from .project_from_OSM import ProjectFromOSM
+        from .project_from_osm import ProjectFromOSM
         from .add_connectors import AddConnectors
         from .assign_traffic_from_yaml import TrafficAssignYAML
         from .export_matrix import ExportMatrix

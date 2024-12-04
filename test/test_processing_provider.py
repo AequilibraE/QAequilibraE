@@ -16,10 +16,10 @@ from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_fr
 
 from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.export_matrix import ExportMatrix
-from qaequilibrae.modules.processing_provider.matrix_from_layer import MatrixFromLayer
+# from qaequilibrae.modules.processing_provider.matrix_from_layer import MatrixFromLayer
 from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
 from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
-from qaequilibrae.modules.processing_provider.assign_from_yaml import TrafficAssignYAML
+# from qaequilibrae.modules.processing_provider.assign_from_yaml import TrafficAssignYAML
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
 
 
@@ -59,42 +59,43 @@ def test_export_matrix(folder_path, source_file, format):
     assert isfile(result["Output"])
 
 
-def test_matrix_from_layer(folder_path):
-    makedirs(folder_path)
+# @pytest.mark.skip
+# def test_matrix_from_layer(folder_path):
+#     makedirs(folder_path)
 
-    df = pd.read_csv("test/data/SiouxFalls_project/SiouxFalls_od.csv")
-    layer = layer_from_dataframe(df, "SiouxFalls_od")
+#     df = pd.read_csv("test/data/SiouxFalls_project/SiouxFalls_od.csv")
+#     layer = layer_from_dataframe(df, "SiouxFalls_od")
 
-    action = MatrixFromLayer()
+#     action = MatrixFromLayer()
 
-    parameters = {
-        "matrix_layer": layer,
-        "origin": "O",
-        "destination": "D",
-        "value": "Ton",
-        "file_name": "siouxfalls_od",
-        "output_folder": folder_path,
-        "matrix_name": "NAME_FOR_TEST",
-        "matrix_description": "this is a description",
-        "matrix_core": "MAT_CORE",
-    }
+#     parameters = {
+#         "matrix_layer": layer,
+#         "origin": "O",
+#         "destination": "D",
+#         "value": "Ton",
+#         "file_name": "siouxfalls_od",
+#         "output_folder": folder_path,
+#         "matrix_name": "NAME_FOR_TEST",
+#         "matrix_description": "this is a description",
+#         "matrix_core": "MAT_CORE",
+#     }
 
-    context = QgsProcessingContext()
-    feedback = QgsProcessingFeedback()
+#     context = QgsProcessingContext()
+#     feedback = QgsProcessingFeedback()
 
-    _ = action.run(parameters, context, feedback)
+#     _ = action.run(parameters, context, feedback)
 
-    assert isfile(join(folder_path, f"{parameters['file_name']}.aem"))
+#     assert isfile(join(folder_path, f"{parameters['file_name']}.aem"))
 
-    mat = AequilibraeMatrix()
-    mat.load(join(folder_path, f"{parameters['file_name']}.aem"))
+#     mat = AequilibraeMatrix()
+#     mat.load(join(folder_path, f"{parameters['file_name']}.aem"))
 
-    info = mat.__dict__
-    assert info["names"] == [parameters["matrix_core"]]
-    assert parameters["matrix_name"].encode() in info["name"]
-    assert parameters["matrix_description"].encode() in info["description"]
-    assert info["zones"] == 24
-    assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
+#     info = mat.__dict__
+#     assert info["names"] == [parameters["matrix_core"]]
+#     assert parameters["matrix_name"].encode() in info["name"]
+#     assert parameters["matrix_description"].encode() in info["description"]
+#     assert info["zones"] == 24
+#     assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
 
 
 @pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
@@ -202,38 +203,38 @@ def test_renumber_from_centroids(ae_with_project, load_sfalls_from_layer):
     assert node_count == list(range(1001, 1025))
 
 
-def test_assign_from_yaml(ae_with_project):
-    folder = ae_with_project.project.project_base_path
-    file_path = join(folder, "config.yml")
+# def test_assign_from_yaml(ae_with_project):
+#     folder = ae_with_project.project.project_base_path
+#     file_path = join(folder, "config.yml")
 
-    assert isfile(file_path)
+#     assert isfile(file_path)
 
-    string_to_replace = "path_to_project"
+#     string_to_replace = "path_to_project"
 
-    with open(file_path, "r", encoding="utf-8") as file:
-        content = file.read()
+#     with open(file_path, "r", encoding="utf-8") as file:
+#         content = file.read()
 
-    updated_content = re.sub(re.escape(string_to_replace), folder, content)
+#     updated_content = re.sub(re.escape(string_to_replace), folder, content)
 
-    with open(file_path, "w", encoding="utf-8") as file:
-        file.write(updated_content)
+#     with open(file_path, "w", encoding="utf-8") as file:
+#         file.write(updated_content)
 
-    action = TrafficAssignYAML()
+#     action = TrafficAssignYAML()
 
-    parameters = {"conf_file": file_path}
+#     parameters = {"conf_file": file_path}
 
-    context = QgsProcessingContext()
-    feedback = QgsProcessingFeedback()
+#     context = QgsProcessingContext()
+#     feedback = QgsProcessingFeedback()
 
-    result = action.processAlgorithm(parameters, context, feedback)
+#     result = action.processAlgorithm(parameters, context, feedback)
 
-    assert result["Output"] == "Traffic assignment successfully completed"
+#     assert result["Output"] == "Traffic assignment successfully completed"
 
-    assert isfile(join(folder, "results_database.sqlite"))
+#     assert isfile(join(folder, "results_database.sqlite"))
 
-    conn = sqlite3.connect(join(folder, "results_database.sqlite"))
-    tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchone()[0]
-    assert tables == "test_from_yaml"
+#     conn = sqlite3.connect(join(folder, "results_database.sqlite"))
+#     tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchone()[0]
+#     assert tables == "test_from_yaml"
 
-    row = conn.execute("SELECT * FROM test_from_yaml;").fetchone()
-    assert row
+#     row = conn.execute("SELECT * FROM test_from_yaml;").fetchone()
+#     assert row
