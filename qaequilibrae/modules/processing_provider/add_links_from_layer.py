@@ -164,7 +164,7 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
         return self.tr("Add links from layer to project")
 
     def group(self):
-        return 
+        return self.tr("1. Model Building")
 
     def groupId(self):
         return "modelbuilding"

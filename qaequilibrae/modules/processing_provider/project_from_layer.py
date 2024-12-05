@@ -178,7 +178,7 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
         return self.tr("Create project from link layer")
 
     def group(self):
-        return "01-" + self.tr("Model Building")
+        return self.tr("1. Model Building")
 
     def groupId(self):
         return "modelbuilding"

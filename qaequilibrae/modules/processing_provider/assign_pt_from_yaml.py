@@ -124,7 +124,7 @@ class ptAssignYAML(QgsProcessingAlgorithm):
         return self.tr("PT assignment from file")
 
     def group(self):
-        return "04-" + self.tr("Public Transport")
+        return self.tr("4. Public Transport")
 
     def groupId(self):
         return "publictransport"

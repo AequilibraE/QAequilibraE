@@ -89,7 +89,7 @@ class ImportGTFS(QgsProcessingAlgorithm):
         return self.tr("Import GTFS")
 
     def group(self):
-        return "04-" + self.tr("Public Transport")
+        return self.tr("4. Public Transport")
 
     def groupId(self):
         return "publictransport"

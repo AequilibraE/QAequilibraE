@@ -159,7 +159,7 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
         return self.tr("Add matrix from layer to aem file")
 
     def group(self):
-        return "02-" + self.tr("Data")
+        return self.tr("2. Data")
 
     def groupId(self):
         return "data"

@@ -165,7 +165,7 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
         return self.tr("Traffic assignment from file")
 
     def group(self):
-        return "03-" + self.tr("Paths and assignment")
+        return self.tr("3. Paths and assignment")
 
     def groupId(self):
         return "pathsandassignment"

@@ -169,7 +169,7 @@ np.fill_diagonal(null_diag, 0)""",
         return self.tr("Matrix calculator")
 
     def group(self):
-        return "02-" + self.tr("Data")
+        return self.tr("2. Data")
 
     def groupId(self):
         return "data"

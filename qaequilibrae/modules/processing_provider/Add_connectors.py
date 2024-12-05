@@ -151,7 +151,7 @@ class AddConnectors(QgsProcessingAlgorithm):
         return self.tr("Add centroid connectors")
 
     def group(self):
-        return "01-" + self.tr("Model Building")
+        return self.tr("1. Model Building")
 
     def groupId(self):
         return "modelbuilding"

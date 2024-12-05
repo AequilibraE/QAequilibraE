@@ -158,7 +158,7 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
         return self.tr("Create aem matrix file from layer")
 
     def group(self):
-        return "02-" + self.tr("Data")
+        return self.tr("2. Data")
 
     def groupId(self):
         return "data"
