@@ -15,34 +15,33 @@ if str(provider_path) not in sys.path:
 class Provider(QgsProcessingProvider):
 
     def loadAlgorithms(self):
-        from .project_from_layer import ProjectFromLayer
-        from .project_from_osm import ProjectFromOSM
-
         # from .Add_connectors import AddConnectors
-        from .assign_traffic_from_yaml import TrafficAssignYAML
-        from .export_matrix import ExportMatrix
-        from .create_matrix_from_layer import CreateMatrixFromLayer
-        from .add_matrix_from_layer import AddMatrixFromLayer
         from .add_links_from_layer import AddLinksFromLayer
-        from .renumber_nodes_from_layer import RenumberNodesFromLayer
-        from .matrix_calculator import MatrixCalculator
-        from .import_gtfs import ImportGTFS
+        from .add_matrix_from_layer import AddMatrixFromLayer
+        from .assign_pt_from_yaml import TransitAssignYAML
+        from .assign_traffic_from_yaml import TrafficAssignYAML
+        from .create_matrix_from_layer import CreateMatrixFromLayer
         from .create_pt_graph import CreatePTGraph
-        from .assign_pt_from_yaml import ptAssignYAML
+        from .export_matrix import ExportMatrix
+        from .import_gtfs import ImportGTFS
+        from .matrix_calculator import MatrixCalculator
+        from .project_from_layer import ProjectFromLayer
+        from .project_from_OSM import ProjectFromOSM
+        from .renumber_nodes_from_layer import RenumberNodesFromLayer
 
-        self.addAlgorithm(ProjectFromOSM())
-        self.addAlgorithm(ProjectFromLayer())
-        self.addAlgorithm(CreateMatrixFromLayer())
-        self.addAlgorithm(AddMatrixFromLayer())
-        self.addAlgorithm(MatrixCalculator())
-        self.addAlgorithm(ExportMatrix())
-        self.addAlgorithm(AddLinksFromLayer())
-        self.addAlgorithm(RenumberNodesFromLayer())
         # self.addAlgorithm(AddConnectors())
+        self.addAlgorithm(AddLinksFromLayer())
+        self.addAlgorithm(AddMatrixFromLayer())
+        self.addAlgorithm(TransitAssignYAML())
         self.addAlgorithm(TrafficAssignYAML())
-        self.addAlgorithm(ImportGTFS())
+        self.addAlgorithm(CreateMatrixFromLayer())
         self.addAlgorithm(CreatePTGraph())
-        self.addAlgorithm(ptAssignYAML())
+        self.addAlgorithm(ExportMatrix())
+        self.addAlgorithm(ImportGTFS())
+        self.addAlgorithm(MatrixCalculator())
+        self.addAlgorithm(ProjectFromLayer())
+        self.addAlgorithm(ProjectFromOSM())
+        self.addAlgorithm(RenumberNodesFromLayer())
 
     def id(self):
         """The ID used for identifying the provider.

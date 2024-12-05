@@ -1,16 +1,14 @@
 import importlib.util as iutil
 import sys
 import textwrap
-
-from datetime import datetime as dt
+import yaml
 
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
-from qgis.core import QgsProcessingParameterDefinition, QgsProcessingParameterBoolean
 
 from qaequilibrae.i18n.translate import trlt
 
 
-class ptAssignYAML(QgsProcessingAlgorithm):
+class TransitAssignYAML(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
@@ -23,30 +21,18 @@ class ptAssignYAML(QgsProcessingAlgorithm):
             )
         )
 
-        advparameters = [
-            QgsProcessingParameterBoolean(
-                "datetime_to_resultname", self.tr("Include current datetime to result name"), defaultValue=True
-            )
-        ]
-
-        for param in advparameters:
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-            self.addParameter(param)
-
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
-        from aequilibrae.paths import TransitAssignment, TransitClass
-        from aequilibrae.project import Project
+        from aequilibrae import Project
         from aequilibrae.matrix import AequilibraeMatrix
+        from aequilibrae.paths import TransitAssignment, TransitClass
         from aequilibrae.project.database_connection import database_connection
         from aequilibrae.transit.transit_graph_builder import TransitGraphBuilder
-        import yaml
 
+        feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
         feedback.pushInfo(self.tr("Getting parameters from YAML"))
 
         pathfile = parameters["conf_file"]
@@ -100,14 +86,15 @@ class ptAssignYAML(QgsProcessingAlgorithm):
 
         # Running assignment
         feedback.pushInfo(self.tr("Running assignment"))
+
         assig.execute()
+
         feedback.pushInfo(" ")
         feedback.setCurrentStep(4)
 
         # Saving outputs
         feedback.pushInfo(self.tr("Saving outputs"))
-        if str(parameters["datetime_to_resultname"]) == "True":
-            params["result_name"] = params["result_name"] + dt.now().strftime("_%Y-%m-%d_%Hh%M")
+
         assig.save_results(params["result_name"])
 
         feedback.pushInfo(" ")
@@ -133,7 +120,7 @@ class ptAssignYAML(QgsProcessingAlgorithm):
         return textwrap.dedent("\n".join([self.string_order(1), self.string_order(2), self.string_order(3)]))
 
     def createInstance(self):
-        return ptAssignYAML()
+        return TransitAssignYAML()
 
     def string_order(self, order):
         if order == 1:

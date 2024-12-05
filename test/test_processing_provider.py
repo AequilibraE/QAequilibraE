@@ -19,7 +19,7 @@ from qaequilibrae.modules.processing_provider.provider import Provider
 # from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
 from qaequilibrae.modules.processing_provider.add_links_from_layer import AddLinksFromLayer
 from qaequilibrae.modules.processing_provider.add_matrix_from_layer import AddMatrixFromLayer
-from qaequilibrae.modules.processing_provider.assign_pt_from_yaml import ptAssignYAML
+from qaequilibrae.modules.processing_provider.assign_pt_from_yaml import TransitAssignYAML
 from qaequilibrae.modules.processing_provider.assign_traffic_from_yaml import TrafficAssignYAML
 from qaequilibrae.modules.processing_provider.create_matrix_from_layer import CreateMatrixFromLayer
 from qaequilibrae.modules.processing_provider.create_pt_graph import CreatePTGraph
@@ -27,6 +27,7 @@ from qaequilibrae.modules.processing_provider.export_matrix import ExportMatrix
 from qaequilibrae.modules.processing_provider.import_gtfs import ImportGTFS
 from qaequilibrae.modules.processing_provider.matrix_calculator import MatrixCalculator
 from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
+from qaequilibrae.modules.processing_provider.project_from_OSM import ProjectFromOSM
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
 
 
@@ -286,3 +287,33 @@ def test_import_gtfs(pt_no_feed, allow_map_match):
 
     result = action.run(parameters, context, feedback)
     assert result[0]["Output"] == "Traffic assignment successfully completed"
+
+
+def test_add_links_from_layer():
+
+    action = AddLinksFromLayer()
+    pass
+
+
+def test_assign_transit_from_yaml():
+
+    action = TransitAssignYAML()
+    pass
+
+
+def test_create_matrix_from_layer():
+
+    action = CreateMatrixFromLayer()
+    pass
+
+
+def test_matrix_calc():
+
+    action = MatrixCalculator()
+    pass
+
+
+def test_project_from_osm():
+
+    action = ProjectFromOSM()
+    pass

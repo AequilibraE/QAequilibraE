@@ -1,16 +1,13 @@
 import importlib.util as iutil
-import pandas as pd
 import sys
-from os.path import join
-from string import ascii_lowercase
+from string import ascii_letters
 
-from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProcessingAlgorithm
+from qgis.core import QgsProcessingAlgorithm
 from qgis.core import QgsProcessing, QgsProcessingMultiStepFeedback, QgsProcessingParameterVectorLayer
-from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFile, QgsProcessingParameterString
-from qgis.core import QgsProject, QgsFeature, QgsVectorLayer, QgsDataSourceUri
+from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFile
 
-from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt
+from qaequilibrae.modules.common_tools import geodataframe_from_layer, standard_path
 
 
 class AddLinksFromLayer(QgsProcessingAlgorithm):
@@ -61,99 +58,79 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
         from aequilibrae import Project
 
-        aeq_crs = QgsCoordinateReferenceSystem("EPSG:4326")
-
+        feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
         feedback.pushInfo(self.tr("Opening project"))
+
         project_path = parameters["project_path"]
+        project = Project()
+        project.open(project_path)
 
-        # Import links layer
-        uri = QgsDataSourceUri()
-        uri.setDatabase(join(project_path, "project_database.sqlite"))
-        uri.setDataSource("", "links", "geometry")
-        links_layer = QgsVectorLayer(uri.uri(), "links_layer", "spatialite")
+        feedback.pushInfo(self.tr("Importing links layer"))
 
-        # Get current max link_id
-        cols = ["link_id", "ogc_fid"]
-        datagen = ([f[col] for col in cols] for f in links_layer.getFeatures())
-        links_ids = pd.DataFrame.from_records(data=datagen, columns=cols)
-        ogc_id = links_ids["ogc_fid"].max() + 1
-        link_id = links_ids["link_id"].max() + 1
-
-        # Import QGIS layer as a panda dataframe and storing features for future copy
+        # Load layer as GeoDataFrame
         layer = self.parameterAsVectorLayer(parameters, "links", context)
-        columns = [parameters["modes"], parameters["link_type"]]
-        feature_list = []
-        row_list = []
-        for f in layer.getFeatures():
-            geom = f.geometry()
-            geom.transform(QgsCoordinateTransform(layer.crs(), aeq_crs, QgsProject.instance()))
-            nf = QgsFeature(links_layer.fields())
-            nf.setGeometry(geom)
-            nf["ogc_fid"] = int(ogc_id)
-            nf["link_id"] = int(link_id)
-            nf["a_node"] = 0
-            nf["b_node"] = 0
-            nf["direction"] = f[parameters["direction"]]
-            nf["link_type"] = f[parameters["link_type"]]
-            nf["modes"] = f[parameters["modes"]]
-            ogc_id = ogc_id + 1
-            link_id = link_id + 1
-            feature_list.append(nf)
-            row_list.append([f[parameters["modes"]], f[parameters["link_type"]]])
-        df = pd.DataFrame(row_list, columns=columns)
-        feedback.pushInfo(" ")
-        feedback.setCurrentStep(1)
+        gdf = geodataframe_from_layer(layer).infer_objects()
 
-        feedback.pushInfo(self.tr("Getting parameters from layer"))
+        columns = [parameters["link_type"], parameters["direction"], parameters["modes"], "geometry"]
 
-        # Updating link types
-        link_types = df[parameters["link_type"]].unique()
-        lt = project.network.link_types
-        lt_dict = lt.all_types()
+        gdf = gdf[columns]
+        gdf.columns = ["link_type", "direction", "modes", "geometry"]
 
-        existing_types = [ltype.link_type for ltype in lt_dict.values()]
-        types_to_add = [ltype for ltype in link_types if ltype not in existing_types]
-        for i, ltype in enumerate(types_to_add):
-            new_type = lt.new(ascii_lowercase[i])
-            new_type.link_type = ltype
-            new_type.save()
-
-        # Updating modes
-        md = project.network.modes
-        md_dict = md.all_modes()
-        existing_modes = {k: v.mode_name for k, v in md_dict.items()}
-
-        all_modes = set("".join(df[parameters["modes"]].unique()))
-        modes_to_add = [mode for mode in all_modes if mode not in existing_modes]
-        for i, mode_id in enumerate(modes_to_add):
-            new_mode = md.new(mode_id)
-            new_mode.mode_name = f"Mode_from_original_data_{mode_id}"
-            project.network.modes.add(new_mode)
+        # We check if all modes exist in the project
+        all_modes = set("".join(gdf["modes"].unique()))
+        modes = project.network.modes
+        current_modes = list(modes.all_modes().keys())
+        all_modes = [x for x in all_modes if x not in current_modes]
+        for md in all_modes:
+            new_mode = modes.new(md)
+            new_mode.mode_name = md
+            new_mode.description = "Mode automatically added during project creation from layers"
+            modes.add(new_mode)
             new_mode.save()
-        project.close()
+
+        # We check if all link types exist in the project
+        all_link_types = gdf["link_type"].unique()
+        link_types = project.network.link_types
+        current_lt = [lt.link_type for lt in link_types.all_types().values()]
+        letters = [x for x in list(ascii_letters) if x not in link_types.all_types().keys()]
+        all_link_types = [lt for lt in all_link_types if lt not in current_lt]
+        for lt in all_link_types:
+            new_link_type = link_types.new(letters[0])
+            letters = letters[1:]
+            new_link_type.link_type = lt
+            new_link_type.description = "Link type automatically added during project creation from layers"
+            new_link_type.save()
+
+        feedback.pushInfo(" ")
+        feedback.setCurrentStep(2)
+
+        links = project.network.links
+
+        # Now let's add all the fields we had
+        for _, record in gdf.iterrows():
+            new_link = links.new()
+
+            new_link.direction = record.direction
+            new_link.modes = record.modes
+            new_link.link_type = record.link_type
+            new_link.geometry = record.geometry
+            new_link.save()
+
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
 
         feedback.pushInfo(self.tr("Adding links"))
 
-        # Adding links all at once
-        links_layer.startEditing()
-        links_layer.addFeatures(feature_list)
-        links_layer.commitChanges()
-
         feedback.pushInfo(" ")
         feedback.setCurrentStep(3)
-
+        project.close()
         feedback.pushInfo(self.tr("Closing project"))
-        del df, row_list, feature_list
 
         return {"Output": project_path}
 
