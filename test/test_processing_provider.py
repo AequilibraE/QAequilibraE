@@ -66,7 +66,6 @@ def test_export_matrix(folder_path, source_file, format):
     assert isfile(result["Output"])
 
 
-@pytest.mark.skip
 def test_matrix_from_layer(folder_path):
     makedirs(folder_path)
 
@@ -80,10 +79,7 @@ def test_matrix_from_layer(folder_path):
         "origin": "O",
         "destination": "D",
         "value": "Ton",
-        "file_name": "siouxfalls_od",
-        "output_folder": folder_path,
-        "matrix_name": "NAME_FOR_TEST",
-        "matrix_description": "this is a description",
+        "matrix_file": join(folder_path, "siouxfalls_od.aem"),
         "matrix_core": "MAT_CORE",
     }
 
@@ -92,15 +88,13 @@ def test_matrix_from_layer(folder_path):
 
     _ = action.run(parameters, context, feedback)
 
-    assert isfile(join(folder_path, f"{parameters['file_name']}.aem"))
+    assert isfile(parameters["matrix_file"])
 
     mat = AequilibraeMatrix()
-    mat.load(join(folder_path, f"{parameters['file_name']}.aem"))
+    mat.load(parameters["matrix_file"])
 
     info = mat.__dict__
     assert info["names"] == [parameters["matrix_core"]]
-    assert parameters["matrix_name"].encode() in info["name"]
-    assert parameters["matrix_description"].encode() in info["description"]
     assert info["zones"] == 24
     assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
 

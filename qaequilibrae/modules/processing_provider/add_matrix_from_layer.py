@@ -2,7 +2,6 @@ import importlib.util as iutil
 import sys
 import numpy as np
 import pandas as pd
-import os
 from scipy.sparse import coo_matrix
 
 from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessingParameterString
@@ -49,7 +48,7 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFile(
                 "matrix_file",
-                self.tr("Existing .aem file"),
+                self.tr("Output name"),
                 behavior=QgsProcessingParameterFile.File,
                 fileFilter="",
                 defaultValue=None,
@@ -61,96 +60,65 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(3, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
         from aequilibrae.matrix import AequilibraeMatrix
 
+        feedback = QgsProcessingMultiStepFeedback(3, model_feedback)
+
         origin = parameters["origin"]
         destination = parameters["destination"]
         value = parameters["value"]
-
-        core_name = [parameters["matrix_core"]]
-
-        matrix_file = parameters["matrix_file"]
+        list_cores = [parameters["matrix_core"]]
+        path_to_file = parameters["matrix_file"]
 
         # Import layer as a pandas df
         feedback.pushInfo(self.tr("Importing layer"))
         layer = self.parameterAsVectorLayer(parameters, "matrix_layer", context)
-        cols = [origin, destination, value]
-        datagen = ([f[col] for col in cols] for f in layer.getFeatures())
-        matrix = pd.DataFrame.from_records(data=datagen, columns=cols)
+
+        columns = [origin, destination, value]
+        data = [feat.attributes() for feat in layer.getFeatures()]
+
+        trip_df = pd.DataFrame(data=data, columns=columns)
         feedback.pushInfo("")
         feedback.setCurrentStep(1)
 
-        # Getting all zones
-        all_zones = np.array(sorted(list(set(list(matrix[origin].unique()) + list(matrix[destination].unique())))))
-        num_zones = all_zones.shape[0]
-        idx = np.arange(num_zones)
+        # Borrowed from AequilibraE's "create_from_trip_list"
+        zones_list = sorted(set(list(trip_df[origin].unique()) + list(trip_df[destination].unique())))
+        zones_df = pd.DataFrame({"zone": zones_list, "idx": list(np.arange(len(zones_list)))})
 
-        # Creates the indexing dataframes
-        origs = pd.DataFrame({"from_index": all_zones, "from": idx})
-        dests = pd.DataFrame({"to_index": all_zones, "to": idx})
+        trip_df = trip_df.merge(
+            zones_df.rename(columns={"zone": origin, "idx": origin + "_idx"}), on=origin, how="left"
+        ).merge(zones_df.rename(columns={"zone": destination, "idx": destination + "_idx"}), on=destination, how="left")
 
-        # adds the new index columns to the pandas dataframe
-        matrix = matrix.merge(origs, left_on=origin, right_on="from_index", how="left")
-        matrix = matrix.merge(dests, left_on=destination, right_on="to_index", how="left")
+        nb_of_zones = len(zones_list)
+        feedback.pushInfo(self.tr("{}x{} matrix imported ").format(nb_of_zones, nb_of_zones))
+        feedback.pushInfo(" ")
+        feedback.setCurrentStep(2)
 
-        agg_matrix = matrix.groupby(["from", "to"]).sum()
-
-        # returns the indices
-        agg_matrix.reset_index(inplace=True)
-
-        # Creating the aequilibrae matrix file
         mat = AequilibraeMatrix()
-        mat.load(matrix_file)
-
-        cores = mat.names
-        cores.append(core_name[0])
-
-        output = AequilibraeMatrix()
-        output.create_empty(
-            file_name=matrix_file[-4] + "_temp.aem",
-            zones=mat.zones,
-            matrix_names=cores,
-            memory_only=False,
+        mat.create_empty(
+            file_name=path_to_file[:-4] + ".aem", zones=nb_of_zones, matrix_names=list_cores, memory_only=False
         )
 
         m = (
-            coo_matrix((agg_matrix[value], (agg_matrix["from"], agg_matrix["to"])), shape=(num_zones, num_zones))
+            coo_matrix(
+                (trip_df[value], (trip_df[origin + "_idx"], trip_df[destination + "_idx"])),
+                shape=(nb_of_zones, nb_of_zones),
+            )
             .toarray()
             .astype(np.float64)
         )
 
-        output.index[:] = mat.index[:]
-
-        for core in cores:
-            if core == core_name[0]:
-                output.matrix[core][:, :] = m[:, :]
-            else:
-                output.matrix[core][:, :] = mat.matrix[core][:, :]
-        output.setName(mat.name)
-        output.setDescription(mat.description.decode("utf-8"))
-
-        feedback.pushInfo(self.tr("{}x{} matrix imported ").format(num_zones, num_zones))
-        feedback.pushInfo(" ")
-        feedback.setCurrentStep(2)
-
-        output.save()
-        output.close()
-        mat.close()
-
-        os.remove(matrix_file)
-        os.rename(matrix_file[-4] + "_temp.aem", matrix_file)
-        del agg_matrix, matrix, m
+        mat.matrix[mat.names[0]][:, :] = m[:, :]
+        mat.save()
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(3)
 
-        return {"Output": f"{mat.name}, {mat.description} ({matrix_file})"}
+        return {"Output": f"{mat.name}, {mat.description} ({path_to_file})"}
 
     def name(self):
         return "exportmatrixasaem"
