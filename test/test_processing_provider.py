@@ -99,48 +99,47 @@ def test_matrix_from_layer(folder_path):
     assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
 
 
-# @pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
-# def test_project_from_layer(folder_path, load_sfalls_from_layer):
+@pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
+def test_project_from_layer(folder_path, load_sfalls_from_layer):
 
-#     linkslayer = QgsProject.instance().mapLayersByName("Links layer")[0]
+    linkslayer = QgsProject.instance().mapLayersByName("Links layer")[0]
 
-#     linkslayer.startEditing()
-#     field = QgsField("ltype", QVariant.String)
-#     linkslayer.addAttribute(field)
-#     linkslayer.updateFields()
+    linkslayer.startEditing()
+    field = QgsField("ltype", QVariant.String)
+    linkslayer.addAttribute(field)
+    linkslayer.updateFields()
 
-#     for feature in linkslayer.getFeatures():
-#         feature["ltype"] = "road"
-#         linkslayer.updateFeature(feature)
+    for feature in linkslayer.getFeatures():
+        feature["ltype"] = "road"
+        linkslayer.updateFeature(feature)
 
-#     linkslayer.commitChanges()
+    linkslayer.commitChanges()
 
-#     action = ProjectFromLayer()
+    action = ProjectFromLayer()
 
-#     parameters = {
-#         "links": linkslayer,
-#         "link_id": "link_id",
-#         "link_type": "ltype",
-#         "direction": "direction",
-#         "modes": "modes",
-#         "folder": folder_path,
-#         "project_name": "from_test",
-#     }
+    parameters = {
+        "links": linkslayer,
+        "link_id": "link_id",
+        "link_type": "ltype",
+        "direction": "direction",
+        "modes": "modes",
+        "folder": folder_path,
+        "project_name": "from_test",
+    }
 
-#     context = QgsProcessingContext()
-#     feedback = QgsProcessingFeedback()
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
 
-#     result = action.run(parameters, context, feedback)
+    result = action.run(parameters, context, feedback)
+    assert result[0]["Output"] == join(folder_path, parameters["project_name"])
 
-#     assert result[0]["Output"] == join(folder_path, parameters["project_name"])
+    QgsProject.instance().clear()
 
-#     QgsProject.instance().clear()
+    project = Project()
+    project.open(join(folder_path, parameters["project_name"]))
 
-#     project = Project()
-#     project.open(join(folder_path, parameters["project_name"]))
-
-#     assert project.network.count_links() == 76
-#     assert project.network.count_nodes() == 24
+    assert project.network.count_links() == 76
+    assert project.network.count_nodes() == 24
 
 
 # def test_add_centroid_connector(pt_no_feed):
