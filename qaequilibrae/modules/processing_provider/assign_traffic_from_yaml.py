@@ -1,11 +1,9 @@
 import importlib.util as iutil
 import sys
 import textwrap
-
-from datetime import datetime as dt
+import yaml
 
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
-from qgis.core import QgsProcessingParameterDefinition, QgsProcessingParameterBoolean
 
 from qaequilibrae.i18n.translate import trlt
 
@@ -23,36 +21,26 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
             )
         )
 
-        advparams = [
-            QgsProcessingParameterBoolean(
-                "datetime_to_resultname", self.tr("Include current datetime to result name"), defaultValue=True
-            )
-        ]
-
-        for param in advparams:
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-            self.addParameter(param)
-
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
-        from aequilibrae.paths import TrafficAssignment, TrafficClass
-        from aequilibrae.project import Project
+        from aequilibrae import Project
         from aequilibrae.matrix import AequilibraeMatrix
-        import yaml
+        from aequilibrae.paths import TrafficAssignment, TrafficClass
 
+        feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
         feedback.pushInfo(self.tr("Getting parameters from YAML"))
+
         pathfile = parameters["conf_file"]
         with open(pathfile, "r") as f:
             params = yaml.safe_load(f)
+
         feedback.pushInfo(" ")
         feedback.setCurrentStep(1)
-
         feedback.pushInfo(self.tr("Opening project"))
+
         # Opening project
         project = Project()
         project.open(params["project"])
@@ -63,17 +51,12 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
         # Creating traffic classes
         traffic_classes = []
         feedback.pushInfo(self.tr("{} traffic classes have been found").format(len(params["traffic_classes"])))
-        select_links = "select_links" in params and params["select_links"]
+        select_links = True if "select_links" in params and params["select_links"] is not None else False
         if select_links:
             selection_dict = {}
             for selections in params["select_links"]:
-                for name in selections:
-                    link_list = ""
-                    for text in selections[name]:
-                        link_list = link_list + "," + text
-                    link_list = "[" + link_list[1:] + "]"
-                    link_list = eval(link_list)
-                    selection_dict[name] = link_list
+                for name, pairs in selections.items():
+                    selection_dict[name] = [tuple(p) for p in pairs]
 
         for classes in params["traffic_classes"]:
             for traffic in classes:
@@ -86,12 +69,9 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
                 # Getting graph
                 graph = project.network.graphs[classes[traffic]["network_mode"]]
                 graph.set_graph(params["assignment"]["time_field"])
-                if str(classes[traffic]["blocked_centroid_flows"]) == "True":
-                    graph.set_blocked_centroid_flows(True)
-                else:
-                    graph.set_blocked_centroid_flows(False)
+                graph.set_blocked_centroid_flows(classes[traffic]["blocked_centroid_flows"])
 
-                if "skims" in classes[traffic] and classes[traffic]["skims"]:
+                if classes[traffic]["skims"] is not None:
                     skims = [sk.strip() for sk in classes[traffic]["skims"].split(",")]
                     graph.set_skimming(skims)
 
@@ -99,21 +79,21 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
                 assigclass = TrafficClass(name=traffic, graph=graph, matrix=demand)
                 assigclass.set_pce(classes[traffic]["pce"])
 
-                if "fixed_cost" in classes[traffic] and classes[traffic]["fixed_cost"]:
+                if "fixed_cost" in classes[traffic] and classes[traffic]["fixed_cost"] is not None:
                     if isinstance(classes[traffic]["vot"], (int, float)):
                         assigclass.set_fixed_cost(classes[traffic]["fixed_cost"])
                         assigclass.set_vot(classes[traffic]["vot"])
                     else:
-                        sys.exit("error: fixed_cost must come with a correct value of time")
+                        sys.exit("Error: fixed_cost must come with a correct value of time")
 
                 # Adding select links analysis
                 if select_links:
                     assigclass.set_select_links(selection_dict)
 
                 # Adding class
+                traffic_classes.append(assigclass)
                 feedback.pushInfo(f"\t- {traffic} ' ' {str(classes[traffic])}")
 
-                traffic_classes.append(assigclass)
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
 
@@ -137,20 +117,19 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
 
         # Running assignment
         feedback.pushInfo(self.tr("Running assignment"))
-        assig.execute()
         feedback.pushInfo(" ")
         feedback.setCurrentStep(4)
+        assig.execute()
 
         # Saving outputs
         feedback.pushInfo(self.tr("Saving outputs"))
-        feedback.pushInfo(str(assig.report()))
-        if str(parameters["datetime_to_resultname"]) == "True":
-            params["result_name"] = params["result_name"] + dt.now().strftime("_%Y-%m-%d_%Hh%M")
         assig.save_results(params["result_name"])
-        assig.save_skims(params["result_name"], which_ones="all", format="aem")
+        assig.save_skims(params["result_name"], which_ones="all", format="omx")
+
         if select_links:
-            assig.procedure_id = assig.procedure_id + "_S"
-            assig.save_select_link_results(params["result_name"])
+            assig.procedure_id += "SLA"
+            sl_name = f"{params["result_name"]}_select_link_analysis"
+            assig.save_select_link_results(sl_name)
         feedback.pushInfo(" ")
         feedback.setCurrentStep(5)
 
@@ -185,7 +164,7 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
             return textwrap.dedent(
                 """\
                 project: D:/AequilibraE/Project/
-                result_name: sce_from_yaml
+                result_name: your_result_name
                 traffic_classes:
                     - car:
                         matrix_path: D:/AequilibraE/Project/matrices/demand.aem
@@ -211,9 +190,9 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
                     time_field: travel_time
                     max_iter: 250
                     rgap: 0.00001
-                select_links: #optionnal, name with a list of tuples as [(link_id, link_direction)]
-                    - survey_site_1: [(23,0)]
-                    - est-west-transit: [(12, 1),(402, 1)]
+                select_links: # optional, name with a list of lists as [[link_id, link_direction]]
+                    - from_node_1: [[1, 1], [2, 1]]
+                    - random_nodes: [[3, 1], [5, 1]]
                 """
             )
 
