@@ -7,8 +7,9 @@ from qgis.core import QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsP
 from qgis.core import QgsProcessing, QgsProcessingMultiStepFeedback, QgsProcessingAlgorithm
 from qgis.core import QgsProcessingParameterVectorLayer, QgsProcessingParameterField, QgsProcessingParameterFile
 
-from qaequilibrae.modules.common_tools import standard_path
+from .group_string_match import translate_group
 from qaequilibrae.i18n.translate import trlt
+from qaequilibrae.modules.common_tools import standard_path
 
 
 class RenumberNodesFromLayer(QgsProcessingAlgorithm):
@@ -122,16 +123,16 @@ class RenumberNodesFromLayer(QgsProcessingAlgorithm):
         return {"Output": parameters["project_path"]}
 
     def name(self):
-        return self.tr("Add/Renumber nodes from layer")
+        return "renumbernodes"
 
     def displayName(self):
         return self.tr("Add/Renumber nodes from layer")
 
     def group(self):
-        return "01-" + self.tr("Model Building")
+        return translate_group("RenumberNodesFromLayer", self.groupId)
 
     def groupId(self):
-        return "01-" + self.tr("Model Building")
+        return "modelbuilding"
 
     def shortHelpString(self):
         return f"{self.string_order(1)}\n{self.string_order(2)} {self.string_order(3)}"

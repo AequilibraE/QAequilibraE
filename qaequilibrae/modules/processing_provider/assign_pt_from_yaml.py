@@ -118,16 +118,16 @@ class ptAssignYAML(QgsProcessingAlgorithm):
         return {"Output": "PT assignment successfully completed"}
 
     def name(self):
-        return self.tr("PT assignment from file")
+        return "ptassignfromyaml"
 
     def displayName(self):
         return self.tr("PT assignment from file")
 
     def group(self):
-        return "04-" + self.tr("Public transport")
+        return "04-" + self.tr("Public Transport")
 
     def groupId(self):
-        return "04-" + self.tr("Public transport")
+        return "publictransport"
 
     def shortHelpString(self):
         return textwrap.dedent("\n".join([self.string_order(1), self.string_order(2), self.string_order(3)]))

@@ -163,7 +163,7 @@ np.fill_diagonal(null_diag, 0)""",
         return {"Output": self.tr("Calculation completed in: ") + str((dt.now() - start).total_seconds()) + "secs"}
 
     def name(self):
-        return self.tr("Matrix calculator")
+        return "matrixcald"
 
     def displayName(self):
         return self.tr("Matrix calculator")
@@ -172,7 +172,7 @@ np.fill_diagonal(null_diag, 0)""",
         return "02-" + self.tr("Data")
 
     def groupId(self):
-        return "02-" + self.tr("Data")
+        return "data"
 
     def shortHelpString(self):
         return textwrap.dedent(

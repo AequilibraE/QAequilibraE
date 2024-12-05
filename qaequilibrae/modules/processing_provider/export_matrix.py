@@ -66,7 +66,7 @@ class ExportMatrix(QgsProcessingAlgorithm):
         return {"Output": dst_path}
 
     def name(self):
-        return self.tr("Export matrices")
+        return "exportmatrices"
 
     def displayName(self):
         return self.tr("Export matrices")
@@ -75,7 +75,7 @@ class ExportMatrix(QgsProcessingAlgorithm):
         return "02-" + self.tr("Data")
 
     def groupId(self):
-        return "02-" + self.tr("Data")
+        return "data"
 
     def shortHelpString(self):
         return self.tr("Export an existing *.omx or *.aem matrix file into *.csv, *.aem or *.omx")

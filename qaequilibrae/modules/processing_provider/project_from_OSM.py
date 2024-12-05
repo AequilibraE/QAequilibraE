@@ -56,7 +56,7 @@ class ProjectFromOSM(QgsProcessingAlgorithm):
         return {"Output": project_path}
 
     def name(self):
-        return self.tr("Create project from OSM")
+        return "projectfromosm"
 
     def displayName(self):
         return self.tr("Create project from OSM")
@@ -65,7 +65,7 @@ class ProjectFromOSM(QgsProcessingAlgorithm):
         return "01-" + self.tr("Model Building")
 
     def groupId(self):
-        return "01-" + self.tr("Model Building")
+        return "modelbuilding"
 
     def shortHelpString(self):
         return self.tr("Create an AequilibraE project from OpenStreetMap")

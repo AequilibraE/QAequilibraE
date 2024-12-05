@@ -158,16 +158,16 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
         return {"Output": project_path}
 
     def name(self):
-        return self.tr("Add links from layer to project")
+        return "addlinksfromlayer"
 
     def displayName(self):
         return self.tr("Add links from layer to project")
 
     def group(self):
-        return "01-" + self.tr("Model Building")
+        return 
 
     def groupId(self):
-        return "01-" + self.tr("Model Building")
+        return "modelbuilding"
 
     def shortHelpString(self):
         return self.tr("Take links from a layer and add them to an existing AequilibraE project")

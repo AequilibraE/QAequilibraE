@@ -153,7 +153,7 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
         return {"Output": f"{mat.name}, {mat.description} ({matrix_file})"}
 
     def name(self):
-        return self.tr("Add matrix from layer to aem file")
+        return "exportmatrixasaem"
 
     def displayName(self):
         return self.tr("Add matrix from layer to aem file")
@@ -162,7 +162,7 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
         return "02-" + self.tr("Data")
 
     def groupId(self):
-        return "02-" + self.tr("Data")
+        return "data"
 
     def shortHelpString(self):
         return "\n".join(

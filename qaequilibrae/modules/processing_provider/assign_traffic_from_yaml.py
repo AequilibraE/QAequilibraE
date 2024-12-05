@@ -159,7 +159,7 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
         return {"Output": "Traffic assignment successfully completed"}
 
     def name(self):
-        return self.tr("Traffic assignment from file")
+        return "assignmentfromyaml"
 
     def displayName(self):
         return self.tr("Traffic assignment from file")
@@ -168,7 +168,7 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
         return "03-" + self.tr("Paths and assignment")
 
     def groupId(self):
-        return "03-" + self.tr("Paths and assignment")
+        return "pathsandassignment"
 
     def shortHelpString(self):
         return textwrap.dedent("\n".join([self.string_order(1), self.string_order(2), self.string_order(3)]))
