@@ -1,6 +1,7 @@
 import math
 import tempfile
 from os.path import isdir
+from shapely.geometry import Point
 from time import localtime, strftime
 
 import qgis
@@ -88,3 +89,8 @@ def only_str(str_input):
     if isinstance(str_input, bytes):
         return str_input.decode("utf-8")
     return str_input
+
+
+def polygon_from_radius(self, point: Point):
+    # We approximate with the radius of the Earth at the equator
+    return point.buffer(self.radius / 110000)

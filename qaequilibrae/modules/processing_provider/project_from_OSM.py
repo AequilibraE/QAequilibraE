@@ -16,7 +16,7 @@ class ProjectFromOSM(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterString("place_name", self.tr("Place name"), multiLine=False))
         self.addParameter(
-            QgsProcessingParameterFolderDestination("project_folder", self.tr("Output folder"), createByDefault=True)
+            QgsProcessingParameterFolderDestination("project_path", self.tr("Output folder"), createByDefault=True)
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
@@ -30,7 +30,7 @@ class ProjectFromOSM(QgsProcessingAlgorithm):
         feedback.pushInfo(self.tr("Creating project"))
 
         project = Project()
-        project.new(parameters["project_folder"])
+        project.new(parameters["project_path"])
 
         project.network.create_from_osm(place_name=parameters["place_name"])
 
@@ -40,7 +40,7 @@ class ProjectFromOSM(QgsProcessingAlgorithm):
         feedback.pushInfo(self.tr("Closing project"))
         project.close()
 
-        return {"Output": parameters["project_folder"]}
+        return {"Output": parameters["project_path"]}
 
     def name(self):
         return "projectfromosm"

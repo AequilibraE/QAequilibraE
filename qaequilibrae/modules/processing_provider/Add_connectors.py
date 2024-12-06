@@ -5,12 +5,12 @@ import pandas as pd
 
 from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessing, QgsProcessingAlgorithm
 from qgis.core import QgsProcessingParameterFile, QgsProcessingParameterNumber, QgsProcessingParameterString
-from qgis.core import QgsFeature, QgsVectorLayer, QgsDataSourceUri
+from qgis.core import QgsFeature, QgsVectorLayer, QgsDataSourceUri, QgsProcessingParameterBoolean
 
 from qgis import processing
 
-from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt
+from qaequilibrae.modules.common_tools import standard_path, polygon_from_radius
 
 
 class AddConnectors(QgsProcessingAlgorithm):
@@ -22,13 +22,12 @@ class AddConnectors(QgsProcessingAlgorithm):
                 self.tr("Connectors per centroid"),
                 type=QgsProcessingParameterNumber.Integer,
                 minValue=1,
-                maxValue=10,
                 defaultValue=1,
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
-                "mode", self.tr("Modes to connect (only one at a time)"), multiLine=False, defaultValue="c"
+                "mode", self.tr("Modes to connect (defaults to all)"), multiLine=False,
             )
         )
         self.addParameter(
@@ -39,108 +38,50 @@ class AddConnectors(QgsProcessingAlgorithm):
                 defaultValue=standard_path(),
             )
         )
+        self.addParameter(
+            QgsProcessingParameterString(
+                "link_type", self.tr("Link types to connect (defaults to all)"), multiLine=False,
+            )
+        )
 
     def processAlgorithm(self, parameters, context, model_feedback):
+        # Checks if we have access to aequilibrae library
+        if iutil.find_spec("aequilibrae") is None:
+            sys.exit(self.tr("AequilibraE module not found"))
+
+        from aequilibrae import Project
+
         feedback = QgsProcessingMultiStepFeedback(2, model_feedback)
-
         feedback.pushInfo(self.tr("Opening project"))
-        project_path = parameters["project_path"]
 
-        # Import nodes layer
-        uri = QgsDataSourceUri()
-        uri.setDatabase(join(project_path, "project_database.sqlite"))
-        uri.setDataSource("", "nodes", "geometry")
-        nodes_layer = QgsVectorLayer(uri.uri(), "nodes_layer", "spatialite")
+        project = Project()
+        project.open(parameters["project_path"])
 
-        # Import links layer
-        uri = QgsDataSourceUri()
-        uri.setDatabase(join(project_path, "project_database.sqlite"))
-        uri.setDataSource("", "links", "geometry")
-        links_layer = QgsVectorLayer(uri.uri(), "links_layer", "spatialite")
+        nodes = project.network.nodes
+        nodes.refresh()
 
-        # Get current max link_id
-        cols = ["link_id", "ogc_fid"]
-        datagen = ([f[col] for col in cols] for f in links_layer.getFeatures())
-        links_ids = pd.DataFrame.from_records(data=datagen, columns=cols)
-        ogc_id = links_ids["ogc_fid"].max() + 1
-        link_id = links_ids["link_id"].max() + 1
+        centroids = nodes.data[nodes.data["is_centroid"] == 1].node_id.tolist()
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(1)
 
-        feedback.pushInfo(self.tr("Extracting required nodes to process"))
-        # Extract centroids to connect
-        alg_params = {
-            "EXPRESSION": '("is_centroid" = 1) AND ( not("modes" ILIKE \'%'
-            + parameters["mode"]
-            + '%\') OR "modes" IS NULL )',
-            "INPUT": nodes_layer,
-            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
-        }
-        ConnectFrom = processing.run(
-            "native:extractbyexpression", alg_params, context=context, feedback=feedback, is_child_algorithm=True
-        )
+        # Adding connectors
+        num_connectors = parameters["num_connectors"]
+        mode = parameters["mode"]
+        feedback.pushInfo(self.tr('Adding {} connectors when none exists for mode "{}"').format(num_connectors, mode))
 
-        # Extract nodes to connect
-        alg_params = {
-            "EXPRESSION": '("is_centroid" = 0) AND ("modes" ILIKE \'%' + parameters["mode"] + "%')",
-            "INPUT": nodes_layer,
-            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
-        }
-        ConnectTo = processing.run(
-            "native:extractbyexpression", alg_params, context=context, feedback=feedback, is_child_algorithm=True
-        )
+        for counter, zone_id in enumerate(centroids):
+            node = nodes.get(zone_id)
+            geo = polygon_from_radius(node.geometry)
+            for mode_id in modes:
+                node.connect_mode(area=geo, mode_id=mode_id, link_types=link_types, connectors=num_connectors)
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
 
-        # Computing and adding connectors
-        feedback.pushInfo(
-            self.tr('Adding {} connectors when none exists for mode "{}"').format(
-                parameters["num_connectors"], parameters["mode"]
-            )
-        )
-
-        alg_params = {
-            "SOURCE": ConnectFrom["OUTPUT"],
-            "DESTINATION": ConnectTo["OUTPUT"],
-            "METHOD": 0,
-            "DISTANCE": 10,
-            "NEIGHBORS": parameters["num_connectors"],
-            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
-        }
-        Connectors = processing.run(
-            "native:shortestline", alg_params, context=context, feedback=feedback, is_child_algorithm=True
-        )
-
-        connectors_layer = context.takeResultLayer(Connectors["OUTPUT"])
-        feature_list = []
-        for f in connectors_layer.getFeatures():
-            geom = f.geometry()
-            nf = QgsFeature(links_layer.fields())
-            nf.setGeometry(geom)
-            nf["ogc_fid"] = int(ogc_id)
-            nf["link_id"] = int(link_id)
-            nf["a_node"] = 0
-            nf["b_node"] = 0
-            nf["direction"] = 0
-            nf["capacity_ab"] = 99999
-            nf["capacity_ba"] = 99999
-            nf["link_type"] = "centroid_connector"
-            nf["name"] = "centroid_connector zone " + str(f["node_id"])
-            nf["modes"] = f["modes_2"]
-            feature_list.append(nf)
-            ogc_id = ogc_id + 1
-            link_id = link_id + 1
-        links_layer.startEditing()
-        links_layer.addFeatures(feature_list)
-        links_layer.commitChanges()
-
-        feedback.pushInfo(self.tr("{} connectors have been added").format(len(feature_list)))
-
-        feedback.pushInfo(" ")
-        feedback.setCurrentStep(3)
-        del feature_list, nodes_layer, links_layer, connectors_layer
+        project.network.nodes.refresh()
+        project.network.links.refresh()
+        project.close()
 
         return {"Output": parameters["project_path"]}
 

@@ -1,9 +1,8 @@
-import shapely.wkb
-from shapely.geometry import Point
-
 from aequilibrae.utils.interface.worker_thread import WorkerThread
 from PyQt5.QtCore import pyqtSignal
+import shapely.wkb
 
+from qaequilibrae.modules.common_tools import polygon_from_radius
 
 class AddsConnectorsProcedure(WorkerThread):
     signal = pyqtSignal(object)
@@ -69,7 +68,7 @@ class AddsConnectorsProcedure(WorkerThread):
         self.signal.emit(["start", self.project.network.count_centroids(), "Adding connectors from nodes"])
         for counter, zone_id in enumerate(centroids):
             node = nodes.get(zone_id)
-            geo = self.polygon_from_radius(node.geometry)
+            geo = polygon_from_radius(node.geometry)
             for mode_id in self.modes:
                 node.connect_mode(area=geo, mode_id=mode_id, link_types=self.link_types, connectors=self.num_connectors)
             self.signal.emit(["update", counter + 1, f"Connector from node: {zone_id}"])
@@ -83,11 +82,7 @@ class AddsConnectorsProcedure(WorkerThread):
             node = nodes.new_centroid(feat.id())
             node.geometry = shapely.wkb.loads(feat.geometry().asWkb().data())
             node.save()
-            geo = self.polygon_from_radius(node.geometry)
+            geo = polygon_from_radius(node.geometry)
             for mode_id in self.modes:
                 node.connect_mode(area=geo, mode_id=mode_id, link_types=self.link_types, connectors=self.num_connectors)
             self.signal.emit(["update", counter + 1, f"Connector from layer feature: {feat.id()}"])
-
-    def polygon_from_radius(self, point: Point):
-        # We approximate with the radius of the Earth at the equator
-        return point.buffer(self.radius / 110000)
