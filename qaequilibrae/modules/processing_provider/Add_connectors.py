@@ -1,13 +1,13 @@
 import importlib.util as iutil
 import sys
-from os.path import join
-import pandas as pd
 
-from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessing, QgsProcessingAlgorithm
-from qgis.core import QgsProcessingParameterFile, QgsProcessingParameterNumber, QgsProcessingParameterString
-from qgis.core import QgsFeature, QgsVectorLayer, QgsDataSourceUri, QgsProcessingParameterBoolean
-
-from qgis import processing
+from qgis.core import (
+    QgsProcessingMultiStepFeedback,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterString,
+)
 
 from qaequilibrae.i18n.translate import trlt
 from qaequilibrae.modules.common_tools import standard_path, polygon_from_radius
@@ -16,6 +16,14 @@ from qaequilibrae.modules.common_tools import standard_path, polygon_from_radius
 class AddConnectors(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
+        self.addParameter(
+            QgsProcessingParameterFile(
+                "project_path",
+                self.tr("Project path"),
+                behavior=QgsProcessingParameterFile.Folder,
+                defaultValue=standard_path(),
+            )
+        )
         self.addParameter(
             QgsProcessingParameterNumber(
                 "num_connectors",
@@ -27,20 +35,12 @@ class AddConnectors(QgsProcessingAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterString(
-                "mode", self.tr("Modes to connect (defaults to all)"), multiLine=False,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(
-                "project_path",
-                self.tr("Project path"),
-                behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
+                "mode", self.tr("Modes to connect (defaults to all)"), multiLine=False, optional=True
             )
         )
         self.addParameter(
             QgsProcessingParameterString(
-                "link_type", self.tr("Link types to connect (defaults to all)"), multiLine=False,
+                "link_type", self.tr("Link types to connect (defaults to all)"), multiLine=False, optional=True
             )
         )
 
@@ -66,15 +66,21 @@ class AddConnectors(QgsProcessingAlgorithm):
         feedback.setCurrentStep(1)
 
         # Adding connectors
-        num_connectors = parameters["num_connectors"]
-        mode = parameters["mode"]
-        feedback.pushInfo(self.tr('Adding {} connectors when none exists for mode "{}"').format(num_connectors, mode))
+        feedback.pushInfo(self.tr("Adding centroid connectors"))
+
+        lt = project.network.link_types.all_types()
+        link_types = parameters["link_type"] if "link_type" in parameters else "".join(lt.keys())
+
+        modes = project.network.modes.all_modes()
+        modes = list(set(parameters["mode"])) if "mode" in parameters else [k for k in modes.keys()]
 
         for counter, zone_id in enumerate(centroids):
             node = nodes.get(zone_id)
-            geo = polygon_from_radius(node.geometry)
+            geo = polygon_from_radius(node.geometry, 3000)
             for mode_id in modes:
-                node.connect_mode(area=geo, mode_id=mode_id, link_types=link_types, connectors=num_connectors)
+                node.connect_mode(
+                    area=geo, mode_id=mode_id, link_types=link_types, connectors=parameters["num_connectors"]
+                )
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)

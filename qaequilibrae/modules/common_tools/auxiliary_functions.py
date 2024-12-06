@@ -91,6 +91,6 @@ def only_str(str_input):
     return str_input
 
 
-def polygon_from_radius(self, point: Point):
+def polygon_from_radius(point: Point, radius):
     # We approximate with the radius of the Earth at the equator
-    return point.buffer(self.radius / 110000)
+    return point.buffer(radius / 110000)

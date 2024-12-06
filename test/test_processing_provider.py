@@ -13,9 +13,7 @@ from qgis.core import QgsProject, QgsField
 from PyQt5.QtCore import QVariant
 
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
-
 from qaequilibrae.modules.processing_provider.provider import Provider
-
 from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
 from qaequilibrae.modules.processing_provider.add_links_from_layer import AddLinksFromLayer
 from qaequilibrae.modules.processing_provider.add_matrix_from_layer import AddMatrixFromLayer
