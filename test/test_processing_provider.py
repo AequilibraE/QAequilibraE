@@ -8,6 +8,7 @@ from os import makedirs
 from shapely.geometry import Point
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae import Project
+from aequilibrae.transit import Transit
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.core import QgsProject, QgsField, QgsVectorLayer
 from PyQt5.QtCore import QVariant
@@ -311,13 +312,58 @@ def test_add_links_from_layer(ae_with_project):
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
-    result = action.run(parameters, context, feedback)
+    _ = action.run(parameters, context, feedback)
 
 
-def test_assign_transit_from_yaml():
+def test_assign_transit_from_yaml(coquimbo_project):
+
+    folder = coquimbo_project.project.project_base_path
+    file_path = join(folder, "transit_config.yml")
+
+    assert isfile(file_path)
+
+    string_to_replace = "path_to_project"
+
+    with open(file_path, "r", encoding="utf-8") as file:
+        content = file.read()
+
+    updated_content = re.sub(re.escape(string_to_replace), folder, content)
+
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write(updated_content)
+
+    data = Transit(coquimbo_project.project)
+    graph = data.create_graph(
+                with_outer_stop_transfers=False,
+                with_walking_edges=False,
+                blocking_centroid_flows=False,
+                connector_method="overlapping_regions",
+            )
+    
+    coquimbo_project.project.network.build_graphs()
+    graph.create_line_geometry(method="connector project match", graph="c")
+    
+    data.save_graphs()
 
     action = TransitAssignYAML()
-    pass
+    
+    parameters = {"conf_file": file_path}
+
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
+
+    result = action.processAlgorithm(parameters, context, feedback)
+
+    assert result["Output"] == "Transit assignment successfully completed"
+
+    assert isfile(join(folder, "results_database.sqlite"))
+
+    conn = sqlite3.connect(join(folder, "results_database.sqlite"))
+    tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchone()[0]
+    assert tables == "transit_from_yaml"
+
+    row = conn.execute("SELECT * FROM transit_from_yaml;").fetchone()
+    assert row
 
 
 def test_create_matrix_from_layer(folder_path):

@@ -102,7 +102,7 @@ class TransitAssignYAML(QgsProcessingAlgorithm):
 
         project.close()
 
-        return {"Output": "PT assignment successfully completed"}
+        return {"Output": "Transit assignment successfully completed"}
 
     def name(self):
         return "ptassignfromyaml"
@@ -129,24 +129,21 @@ class TransitAssignYAML(QgsProcessingAlgorithm):
             return self.tr("Example of valid configuration file:")
         elif order == 3:
             return textwrap.dedent(
-                """\
-                project: D:/AequilibraE/Project/
-                
-                result_name: sce_from_yaml
-                
-                transit_classes:
-                    - student:
-                        matrix_path: D:/AequilibraE/Project/matrices/demand.aem
-                        matrix_core: student_pt
-                        blocked_centroid_flows: True
-                        skims: travel_time, distance
-                    - worker:
-                        matrix_path: D:/AequilibraE/Project/matrices/demand.aem
-                        matrix_core: worker_pt
-                        blocked_centroid_flows: True
-                        
+                """
+                project_path: path_to_project
+                result_name: transit_from_yaml
+                matrix_path: path_to_project/matrices/demand.aem
+                matrix_core: workers  
                 assignment:
+                    time_field: trav_time
+                    frequency: freq
+                    algorithm: os
+                graph:
                     period_id: 1
+                    with_outer_stop_transfers: False 
+                    with_walking_edges: False
+                    blocking_centroid_flows: False
+                    connector_method: overlapping_regions
                 """
             )
 
