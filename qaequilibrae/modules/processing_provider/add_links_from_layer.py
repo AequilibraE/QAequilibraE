@@ -122,6 +122,8 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
             new_link.geometry = record.geometry
             new_link.save()
 
+        links.refresh()
+
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
 
@@ -132,7 +134,7 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
         project.close()
         feedback.pushInfo(self.tr("Closing project"))
 
-        return {"Output": project_path}
+        return {"Output": project.network.count_links()}
 
     def name(self):
         return "addlinksfromlayer"

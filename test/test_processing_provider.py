@@ -9,7 +9,7 @@ from shapely.geometry import Point
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae import Project
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
-from qgis.core import QgsProject, QgsField
+from qgis.core import QgsProject, QgsField, QgsVectorLayer
 from PyQt5.QtCore import QVariant
 
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
@@ -287,10 +287,31 @@ def test_import_gtfs(pt_no_feed, allow_map_match):
     assert result[0]["Output"] == "Traffic assignment successfully completed"
 
 
-def test_add_links_from_layer():
+def test_add_links_from_layer(ae_with_project):
+
+    csv_path = "test/data/NetworkPreparation/link.csv"
+    uri = "file://{}?delimiter=,&crs=epsg:4326&wktField={}".format(csv_path, "geometry")
+    layer = QgsVectorLayer(uri, "link", "delimitedtext")
+
+    if not layer.isValid():
+        print("Layer failed to load!")
+    else:
+        QgsProject.instance().addMapLayer(layer)
 
     action = AddLinksFromLayer()
-    pass
+
+    parameters = {
+        "links": layer,
+        "link_type": "link_type",
+        "direction": "direction",
+        "modes": "modes",
+        "project_path": ae_with_project.project.project_base_path
+    }
+
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
+
+    result = action.run(parameters, context, feedback)
 
 
 def test_assign_transit_from_yaml():
@@ -350,9 +371,8 @@ def test_matrix_calc(ae):
     pass
 
 
-@pytest.mark.skip("Waaaaait a minute")
+@pytest.mark.skip("Configure to run only in GH Actions")
 def test_project_from_osm(folder_path):
-    # makedirs(folder_path)
 
     action = ProjectFromOSM()
 
