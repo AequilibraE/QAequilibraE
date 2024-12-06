@@ -2,14 +2,12 @@ import importlib.util as iutil
 import sys
 import numpy as np
 import pandas as pd
-from os.path import join
 from scipy.sparse import coo_matrix
 
 from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessingParameterString, QgsProcessingParameterDefinition
-from qgis.core import QgsProcessingParameterField, QgsProcessingParameterMapLayer, QgsProcessingParameterFile
-from qgis.core import QgsProcessingAlgorithm
+from qgis.core import QgsProcessingParameterField, QgsProcessingParameterMapLayer
+from qgis.core import QgsProcessingAlgorithm, QgsProcessingParameterFileDestination
 
-from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt
 
 
@@ -24,7 +22,6 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="matrix_layer",
                 allowMultiple=False,
-                defaultValue="origin",
             )
         )
         self.addParameter(
@@ -34,7 +31,6 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="matrix_layer",
                 allowMultiple=False,
-                defaultValue="destination",
             )
         )
         self.addParameter(
@@ -44,118 +40,103 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="matrix_layer",
                 allowMultiple=False,
-                defaultValue="value",
             )
         )
         self.addParameter(
-            QgsProcessingParameterString("file_name", self.tr("File name"), multiLine=False, defaultValue="")
+            QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "AequilibraE Matrix (*.aem)")
         )
-        self.addParameter(
-            QgsProcessingParameterFile(
-                "output_folder",
-                self.tr("Output folder"),
-                behavior=QgsProcessingParameterFile.Folder,
-                fileFilter="All folders (*.*)",
-                defaultValue=standard_path(),
-            )
-        )
+
         advparams = [
             QgsProcessingParameterString(
-                "matrix_name", self.tr("Matrix name"), optional=True, multiLine=False, defaultValue=""
+                "matrix_name",
+                self.tr("Matrix name"),
+                optional=True,
+                multiLine=False,
             ),
             QgsProcessingParameterString(
                 "matrix_description",
                 self.tr("Matrix description"),
                 optional=True,
                 multiLine=False,
-                defaultValue="",
             ),
-            QgsProcessingParameterString("matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="Value"),
+            QgsProcessingParameterString(
+                "matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix_core"
+            ),
         ]
         for param in advparams:
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
 
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(3, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
         from aequilibrae.matrix import AequilibraeMatrix
 
+        feedback = QgsProcessingMultiStepFeedback(3, model_feedback)
+
         origin = parameters["origin"]
         destination = parameters["destination"]
         value = parameters["value"]
-
-        matrix_name = parameters["matrix_name"]
-        matrix_description = parameters["matrix_description"]
-        core_name = [parameters["matrix_core"]]
-
-        output_folder = parameters["output_folder"]
-        output_name = parameters["file_name"]
-        file_name = join(output_folder, f"{output_name}.aem")
+        list_cores = [parameters["matrix_core"]]
+        path_to_file = parameters["file_name"]
 
         # Import layer as a pandas df
         feedback.pushInfo(self.tr("Importing layer"))
         layer = self.parameterAsVectorLayer(parameters, "matrix_layer", context)
-        cols = [origin, destination, value]
-        datagen = ([f[col] for col in cols] for f in layer.getFeatures())
-        matrix = pd.DataFrame.from_records(data=datagen, columns=cols)
+
+        columns = [origin, destination, value]
+        data = [feat.attributes() for feat in layer.getFeatures()]
+
+        trip_df = pd.DataFrame(data=data, columns=columns)
         feedback.pushInfo("")
         feedback.setCurrentStep(1)
 
-        # Getting all zones
-        all_zones = np.array(sorted(list(set(list(matrix[origin].unique()) + list(matrix[destination].unique())))))
-        num_zones = all_zones.shape[0]
-        idx = np.arange(num_zones)
+        # Borrowed from AequilibraE's "create_from_trip_list"
+        zones_list = sorted(set(list(trip_df[origin].unique()) + list(trip_df[destination].unique())))
+        zones_df = pd.DataFrame({"zone": zones_list, "idx": list(np.arange(len(zones_list)))})
 
-        # Creates the indexing dataframes
-        origs = pd.DataFrame({"from_index": all_zones, "from": idx})
-        dests = pd.DataFrame({"to_index": all_zones, "to": idx})
+        trip_df = trip_df.merge(
+            zones_df.rename(columns={"zone": origin, "idx": origin + "_idx"}), on=origin, how="left"
+        ).merge(zones_df.rename(columns={"zone": destination, "idx": destination + "_idx"}), on=destination, how="left")
 
-        # adds the new index columns to the pandas dataframe
-        matrix = matrix.merge(origs, left_on=origin, right_on="from_index", how="left")
-        matrix = matrix.merge(dests, left_on=destination, right_on="to_index", how="left")
-
-        agg_matrix = matrix.groupby(["from", "to"]).sum()
-
-        # returns the indices
-        agg_matrix.reset_index(inplace=True)
-
-        # Creating the aequilibrae matrix file
-        mat = AequilibraeMatrix()
-        mat.name = matrix_name
-        mat.description = matrix_description
-
-        mat.create_empty(file_name=file_name, zones=num_zones, matrix_names=core_name, memory_only=False)
-        mat.index[:] = all_zones[:]
-
-        m = (
-            coo_matrix((agg_matrix[value], (agg_matrix["from"], agg_matrix["to"])), shape=(num_zones, num_zones))
-            .toarray()
-            .astype(np.float64)
-        )
-        mat.matrix[core_name[0]][:, :] = m[:, :]
-        feedback.pushInfo(self.tr("{}x{} matrix imported ").format(num_zones, num_zones))
+        nb_of_zones = len(zones_list)
+        feedback.pushInfo(self.tr("{}x{} matrix imported ").format(nb_of_zones, nb_of_zones))
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
 
-        mat.save()
+        mat = AequilibraeMatrix()
+        mat.create_empty(file_name=path_to_file, zones=nb_of_zones, matrix_names=list_cores, memory_only=False)
+
+        m = (
+            coo_matrix(
+                (trip_df[value], (trip_df[origin + "_idx"], trip_df[destination + "_idx"])),
+                shape=(nb_of_zones, nb_of_zones),
+            )
+            .toarray()
+            .astype(np.float64)
+        )
+
+        mat.matrix[mat.names[0]][:, :] = m[:, :]
+        mat.index[:] = zones_df["zone"][:]
+
+        if "matrix_name" in parameters:
+            mat.name = parameters["matrix_name"]
+        if "matrix_description" in parameters:
+            mat.description = parameters["matrix_description"]
         mat.close()
-        del agg_matrix, matrix, m
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(3)
 
-        return {"Output": f"{mat.name}, {mat.description} ({file_name})"}
+        return {"Output": f"{mat.name}, {mat.description} ({path_to_file})"}
 
     def name(self):
         return "aemfromlayer"
 
     def displayName(self):
-        return self.tr("Create aem matrix file from layer")
+        return self.tr("Create AequilibraE matrix from layer")
 
     def group(self):
         return self.tr("2. Data")
@@ -171,7 +152,7 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
 
     def string_order(self, order):
         if order == 1:
-            return self.tr("Save a layer as a *.aem file. Notice that:")
+            return self.tr("Save layer as a *.aem file. Notice that:")
         elif order == 2:
             return self.tr("- the original matrix stored in the layer needs to be in list format")
         elif order == 3:
