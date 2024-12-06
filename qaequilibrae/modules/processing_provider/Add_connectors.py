@@ -7,7 +7,7 @@ from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessing, QgsProcessi
 from qgis.core import QgsProcessingParameterFile, QgsProcessingParameterNumber, QgsProcessingParameterString
 from qgis.core import QgsFeature, QgsVectorLayer, QgsDataSourceUri
 
-import processing
+from qgis import processing
 
 from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt

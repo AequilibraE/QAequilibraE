@@ -7,7 +7,7 @@ from os.path import isfile, join
 from os import makedirs
 from shapely.geometry import Point
 from aequilibrae.matrix import AequilibraeMatrix
-from aequilibrae.project import Project
+from aequilibrae import Project
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.core import QgsProject, QgsField
 from PyQt5.QtCore import QVariant
@@ -16,7 +16,7 @@ from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_fr
 
 from qaequilibrae.modules.processing_provider.provider import Provider
 
-# from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
+from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
 from qaequilibrae.modules.processing_provider.add_links_from_layer import AddLinksFromLayer
 from qaequilibrae.modules.processing_provider.add_matrix_from_layer import AddMatrixFromLayer
 from qaequilibrae.modules.processing_provider.assign_pt_from_yaml import TransitAssignYAML
@@ -143,34 +143,34 @@ def test_project_from_layer(folder_path, load_sfalls_from_layer):
     assert project.network.count_nodes() == 24
 
 
-# def test_add_centroid_connector(pt_no_feed):
-#     project = pt_no_feed.project
-#     project_folder = project.project_base_path
+def test_add_centroid_connector(pt_no_feed):
+    project = pt_no_feed.project
+    project_folder = project.project_base_path
 
-#     nodes = project.network.nodes
+    nodes = project.network.nodes
 
-#     cnt = nodes.new_centroid(100_000)
-#     cnt.geometry = Point(-71.34, -29.95)
-#     cnt.save()
+    cnt = nodes.new_centroid(100_000)
+    cnt.geometry = Point(-71.34, -29.95)
+    cnt.save()
 
-#     action = AddConnectors()
+    action = AddConnectors()
 
-#     parameters = {"num_connectors": 3, "mode": "c", "project_path": project_folder}
+    parameters = {"num_connectors": 3, "mode": "c", "project_path": project_folder}
 
-#     context = QgsProcessingContext()
-#     feedback = QgsProcessingFeedback()
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
 
-#     result = action.processAlgorithm(parameters, context, feedback)
+    result = action.processAlgorithm(parameters, context, feedback)
 
-#     assert result["Output"] == project_folder
+    assert result["Output"] == project_folder
 
-#     node_qry = "select count(node_id) from nodes where is_centroid=1"
-#     node_count = project.conn.execute(node_qry).fetchone()[0]
-#     assert node_count == 1
+    node_qry = "select count(node_id) from nodes where is_centroid=1"
+    node_count = project.conn.execute(node_qry).fetchone()[0]
+    assert node_count == 1
 
-#     link_qry = "select count(name) from links where name like 'centroid connector%'"
-#     link_count = project.conn.execute(link_qry).fetchone()[0]
-#     assert link_count == 3
+    link_qry = "select count(name) from links where name like 'centroid connector%'"
+    link_count = project.conn.execute(link_qry).fetchone()[0]
+    assert link_count == 3
 
 
 @pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
@@ -301,19 +301,72 @@ def test_assign_transit_from_yaml():
     pass
 
 
-def test_create_matrix_from_layer():
+def test_create_matrix_from_layer(folder_path):
+    makedirs(folder_path)
+
+    df = pd.read_csv("test/data/SiouxFalls_project/SiouxFalls_od.csv")
+    layer = layer_from_dataframe(df, "SiouxFalls_od")
 
     action = CreateMatrixFromLayer()
-    pass
+
+    parameters = {
+        "matrix_layer": layer,
+        "origin": "O",
+        "destination": "D",
+        "value": "Ton",
+        "file_name": join(folder_path, "siouxfalls_od.aem"),
+        "matrix_core": "MAT_CORE",
+    }
+
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
+
+    _ = action.run(parameters, context, feedback)
+    assert isfile(parameters["matrix_file"])
+
+    mat = AequilibraeMatrix()
+    mat.load(parameters["matrix_file"])
+
+    info = mat.__dict__
+    assert info["names"] == [parameters["matrix_core"]]
+    assert info["zones"] == 24
+    assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
 
 
-def test_matrix_calc():
+def test_matrix_calc(ae):
 
     action = MatrixCalculator()
+
+    # parameters = {
+    #     "conf_file": "test/data/SiouxFalls_project/matrix_config.yml",
+    #     "procedure": "sum (m1, m2)",
+    #     "dest_path": "test/data/SiouxFalls_project/matrices/asdfg.aem",
+    #     "matrix_core": "new_core",
+    # }
+
+    # context = QgsProcessingContext()
+    # feedback = QgsProcessingFeedback()
+
+    # result = action.run(parameters, context, feedback)
+    # print(result)
     pass
 
 
-def test_project_from_osm():
+@pytest.mark.skip("Waaaaait a minute")
+def test_project_from_osm(folder_path):
+    # makedirs(folder_path)
 
     action = ProjectFromOSM()
-    pass
+
+    parameters = {"place_name": "Abrolhos", "project_folder": folder_path}
+
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
+
+    _ = action.run(parameters, context, feedback)
+
+    project = Project()
+    project.open(folder_path)
+
+    assert project.network.count_links() == 11
+    assert project.network.count_nodes() == 10

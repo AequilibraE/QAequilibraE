@@ -15,7 +15,7 @@ if str(provider_path) not in sys.path:
 class Provider(QgsProcessingProvider):
 
     def loadAlgorithms(self):
-        # from .Add_connectors import AddConnectors
+        from .Add_connectors import AddConnectors
         from .add_links_from_layer import AddLinksFromLayer
         from .add_matrix_from_layer import AddMatrixFromLayer
         from .assign_pt_from_yaml import TransitAssignYAML
@@ -29,7 +29,7 @@ class Provider(QgsProcessingProvider):
         from .project_from_OSM import ProjectFromOSM
         from .renumber_nodes_from_layer import RenumberNodesFromLayer
 
-        # self.addAlgorithm(AddConnectors())
+        self.addAlgorithm(AddConnectors())
         self.addAlgorithm(AddLinksFromLayer())
         self.addAlgorithm(AddMatrixFromLayer())
         self.addAlgorithm(TransitAssignYAML())

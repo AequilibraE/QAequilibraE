@@ -1,51 +1,38 @@
 import importlib.util as iutil
 import sys
-from os.path import join
 
-from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
-from qgis.core import QgsProcessingParameterString
+from qgis.core import (
+    QgsProcessingAlgorithm,
+    QgsProcessingMultiStepFeedback,
+    QgsProcessingParameterString,
+    QgsProcessingParameterFolderDestination,
+)
 
-from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt
 
 
 class ProjectFromOSM(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterString("place_name", self.tr("Place name"), multiLine=False))
         self.addParameter(
-            QgsProcessingParameterString(
-                "OSM_place", self.tr("Place name (OSM search)"), multiLine=False, defaultValue=""
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(
-                "dst",
-                self.tr("Output folder"),
-                behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterString(
-                "project_name", self.tr("Project name"), multiLine=False, defaultValue="new_project"
-            )
+            QgsProcessingParameterFolderDestination("project_folder", self.tr("Output folder"), createByDefault=True)
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(2, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
         from aequilibrae import Project
 
+        feedback = QgsProcessingMultiStepFeedback(2, model_feedback)
         feedback.pushInfo(self.tr("Creating project"))
-        project_path = join(parameters["dst"], parameters["project_name"])
-        project = Project()
-        project.new(project_path)
 
-        project.network.create_from_osm(place_name=parameters["OSM_place"])
+        project = Project()
+        project.new(parameters["project_folder"])
+
+        project.network.create_from_osm(place_name=parameters["place_name"])
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
@@ -53,7 +40,7 @@ class ProjectFromOSM(QgsProcessingAlgorithm):
         feedback.pushInfo(self.tr("Closing project"))
         project.close()
 
-        return {"Output": project_path}
+        return {"Output": parameters["project_folder"]}
 
     def name(self):
         return "projectfromosm"
@@ -68,7 +55,7 @@ class ProjectFromOSM(QgsProcessingAlgorithm):
         return "modelbuilding"
 
     def shortHelpString(self):
-        return self.tr("Create an AequilibraE project from OpenStreetMap")
+        return self.tr("Create an AequilibraE project from OpenStreetMap network")
 
     def createInstance(self):
         return ProjectFromOSM()
