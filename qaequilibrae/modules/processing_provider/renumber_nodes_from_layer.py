@@ -133,18 +133,15 @@ class RenumberNodesFromLayer(QgsProcessingAlgorithm):
         return "modelbuilding"
 
     def shortHelpString(self):
-        return f"{self.string_order(1)}\n{self.string_order(2)} {self.string_order(3)}"
+        help_messages = [
+            self.tr("Adds or renumbers nodes in an AequilibraE project to match a layer of centroids."),
+            self.tr("WARNING: you may have to change existing node_id (ex. using QGIS field calculator)"),
+            self.tr("to ensure that changed node IDs (coming from Zone ID) are not already used."),
+        ]
+        return "\n".join(help_messages)
 
     def createInstance(self):
         return RenumberNodesFromLayer()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Add or renumber nodes in an AequilibraE project to match a layer of centroids.")
-        elif order == 2:
-            return self.tr("WARNING: you may have to change existing node_id (ex. using QGIS field calculator)")
-        elif order == 3:
-            return self.tr("to ensure that changed node IDs (coming from Zone ID) are not already used.")
 
     def tr(self, message):
         return trlt("RenumberNodesFromLayer", message)

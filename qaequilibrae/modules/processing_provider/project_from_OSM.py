@@ -55,7 +55,7 @@ class ProjectFromOSM(QgsProcessingAlgorithm):
         return "modelbuilding"
 
     def shortHelpString(self):
-        return self.tr("Create an AequilibraE project from OpenStreetMap network")
+        return self.tr("Creates an AequilibraE project from OpenStreetMap")
 
     def createInstance(self):
         return ProjectFromOSM()

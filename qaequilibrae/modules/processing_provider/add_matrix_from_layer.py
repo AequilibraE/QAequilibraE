@@ -116,30 +116,17 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
         return "data"
 
     def shortHelpString(self):
-        return "\n".join(
-            [
-                self.string_order(1),
-                self.string_order(2),
-                self.string_order(3),
-                self.string_order(4),
-                self.string_order(5),
-            ]
-        )
+        help_messages = [
+            self.tr("Saves a layer to an existing *.omx file. Notice that:"),
+            self.tr("- the original matrix stored in the layer needs to be in list format"),
+            self.tr("- origin and destination fields need to be integers"),
+            self.tr("- value field can be either integer or real"),
+            self.tr("- if matrix_core already exists, it will be updated and previous data will be lost"),
+        ]
+        return "\n".join(help_messages)
 
     def createInstance(self):
         return AddMatrixFromLayer()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Save a layer to an existing *.omx file. Notice that:")
-        elif order == 2:
-            return self.tr("- the original matrix stored in the layer needs to be in list format")
-        elif order == 3:
-            return self.tr("- origin and destination fields need to be integers")
-        elif order == 4:
-            return self.tr("- value field can be either integer or real")
-        elif order == 5:
-            return self.tr("- if matrix_core already exists, it will be updated and previous data will be lost")
 
     def tr(self, message):
         return trlt("AddMatrixFromLayer", message)

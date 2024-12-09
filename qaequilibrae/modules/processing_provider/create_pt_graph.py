@@ -101,7 +101,7 @@ class CreatePTGraph(QgsProcessingAlgorithm):
         return "publictransport"
 
     def shortHelpString(self):
-        return "Creates a graph to be used with PT Assignment"
+        return "Creates a transit graph"
 
     def createInstance(self):
         return CreatePTGraph()

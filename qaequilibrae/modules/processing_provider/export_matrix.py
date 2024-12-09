@@ -78,7 +78,7 @@ class ExportMatrix(QgsProcessingAlgorithm):
         return "data"
 
     def shortHelpString(self):
-        return self.tr("Export an existing *.omx or *.aem matrix file into *.csv, *.aem or *.omx")
+        return self.tr("Exports an existing *.omx or *.aem matrix file into *.csv, *.aem or *.omx")
 
     def createInstance(self):
         return ExportMatrix()

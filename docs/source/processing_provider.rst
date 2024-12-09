@@ -128,3 +128,62 @@ an example of a valid YAML configuration.
         time_field: free_flow_time
         max_iter: 10
         rgap: 0.001
+
+
+Public Transport
+----------------
+
+
+.. code-block:: yaml
+    :caption: Transit assignment configuration
+
+    project: path_to_aequilibrae_project
+    result_name: your_result_name
+    traffic_classes:
+        - car:
+            matrix_path: path_to_aequilibrae_project/matrices/demand.aem
+            matrix_core: car
+            network_mode: c
+            pce: 1
+            blocked_centroid_flows: True
+            skims: travel_time, distance
+        - truck:
+            matrix_path: path_to_aequilibrae_project/matrices/demand.aem
+            matrix_core: truck
+            network_mode: c
+            pce: 2
+            fixed_cost: toll
+            vot: 12
+            blocked_centroid_flows: True
+    assignment:
+        algorithm: bfw
+        vdf: BPR2
+        alpha: 0.15
+        beta: power
+        capacity_field: capacity
+        time_field: travel_time
+        max_iter: 250
+        rgap: 0.00001
+    select_links: # optional, name with a list of lists as [[link_id, link_direction]]
+        - from_node_1: [[1, 1], [2, 1]]
+        - random_nodes: [[3, 1], [5, 1]]
+
+
+.. code-block:: yaml
+    :caption: Transit graph Configuration
+
+    project_path: path_to_aequilibrae_project
+    result_name: transit_from_yaml
+    matrix_path: path_to_aequilibrae_project/matrices/demand.aem
+    matrix_core: workers  
+    assignment:
+        time_field: trav_time
+        frequency: freq
+        algorithm: os
+    graph:
+        period_id: 1
+        with_outer_stop_transfers: False 
+        with_walking_edges: False
+        blocking_centroid_flows: False
+        connector_method: overlapping_regions
+

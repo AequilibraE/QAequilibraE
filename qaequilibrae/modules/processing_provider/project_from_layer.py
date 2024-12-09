@@ -1,6 +1,5 @@
 import importlib.util as iutil
 import sys
-from os.path import join
 from string import ascii_letters
 
 from qgis.core import QgsProcessingAlgorithm
@@ -8,7 +7,7 @@ from qgis.core import QgsProcessing, QgsProcessingMultiStepFeedback, QgsProcessi
 from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFolderDestination
 
 from qaequilibrae.i18n.translate import trlt
-from qaequilibrae.modules.common_tools import geodataframe_from_layer, standard_path
+from qaequilibrae.modules.common_tools import geodataframe_from_layer
 
 
 class ProjectFromLayer(QgsProcessingAlgorithm):
@@ -156,7 +155,7 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
         return "modelbuilding"
 
     def shortHelpString(self):
-        return self.tr("Create an AequilibraE project from a given link layer")
+        return self.tr("Creates an AequilibraE project from a given link layer")
 
     def createInstance(self):
         return ProjectFromLayer()

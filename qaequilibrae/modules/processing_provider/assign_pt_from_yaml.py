@@ -1,6 +1,5 @@
 import importlib.util as iutil
 import sys
-import textwrap
 import yaml
 
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
@@ -116,35 +115,14 @@ class TransitAssignYAML(QgsProcessingAlgorithm):
         return "publictransport"
 
     def shortHelpString(self):
-        return textwrap.dedent("\n".join([self.string_order(1), self.string_order(2), self.string_order(3)]))
+        help_messages = [
+            self.tr("Runs transit assignment using a YAML configuration file."),
+            self.tr("Example of valid configuration is provided in the plugin documentation."),
+        ]
+        return "\n".join(help_messages)
 
     def createInstance(self):
         return TransitAssignYAML()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Run a pt assignment using a YAML configuration file.")
-        elif order == 2:
-            return self.tr("Example of valid configuration file:")
-        elif order == 3:
-            return textwrap.dedent(
-                """
-                project_path: path_to_project
-                result_name: transit_from_yaml
-                matrix_path: path_to_project/matrices/demand.aem
-                matrix_core: workers  
-                assignment:
-                    time_field: trav_time
-                    frequency: freq
-                    algorithm: os
-                graph:
-                    period_id: 1
-                    with_outer_stop_transfers: False 
-                    with_walking_edges: False
-                    blocking_centroid_flows: False
-                    connector_method: overlapping_regions
-                """
-            )
 
     def tr(self, message):
         return trlt("ptAssignYAML", message)

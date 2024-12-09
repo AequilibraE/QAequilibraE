@@ -105,7 +105,7 @@ class AddConnectors(QgsProcessingAlgorithm):
         return "modelbuilding"
 
     def shortHelpString(self):
-        return self.tr("Go through all the centroids and add connectors only if none exists for the chosen mode")
+        return self.tr("Adds centroid connectors for one or all modes.")
 
     def createInstance(self):
         return AddConnectors()

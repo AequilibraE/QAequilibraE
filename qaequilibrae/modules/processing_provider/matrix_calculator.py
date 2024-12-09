@@ -6,7 +6,6 @@ from qgis.core import QgsProcessingException
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingMultiStepFeedback,
-    QgsProcessingParameterDefinition,
     QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
@@ -113,7 +112,7 @@ class MatrixCalculator(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         help_messages = [
-            self.tr("Run a matrix calculation based on a matrix configuration file (*.yaml) and an expression."),
+            self.tr("Runs a matrix calculation based on a matrix configuration file (*.yaml) and an expression."),
             self.tr("Results are stored in an AequilibraE Matrix."),
             self.tr("Please notice that:"),
             self.tr(

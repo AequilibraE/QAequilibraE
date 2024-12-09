@@ -1,6 +1,5 @@
 import importlib.util as iutil
 import sys
-import textwrap
 import yaml
 
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
@@ -150,51 +149,14 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
         return "pathsandassignment"
 
     def shortHelpString(self):
-        return textwrap.dedent("\n".join([self.string_order(1), self.string_order(2), self.string_order(3)]))
+        help_messages = [
+            self.tr("Runs traffic assignment using a YAML configuration file."),
+            self.tr("Example of valid configuration is provided in the plugin documentation."),
+        ]
+        return "\n".join(help_messages)
 
     def createInstance(self):
         return TrafficAssignYAML()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Run a traffic assignment using a YAML configuration file.")
-        elif order == 2:
-            return self.tr("Example of valid configuration file:")
-        elif order == 3:
-            return textwrap.dedent(
-                """\
-                project: D:/AequilibraE/Project/
-                result_name: your_result_name
-                traffic_classes:
-                    - car:
-                        matrix_path: D:/AequilibraE/Project/matrices/demand.aem
-                        matrix_core: car
-                        network_mode: c
-                        pce: 1
-                        blocked_centroid_flows: True
-                        skims: travel_time, distance
-                    - truck:
-                        matrix_path: D:/AequilibraE/Project/matrices/demand.aem
-                        matrix_core: truck
-                        network_mode: c
-                        pce: 2
-                        fixed_cost: toll
-                        vot: 12
-                        blocked_centroid_flows: True
-                assignment:
-                    algorithm: bfw
-                    vdf: BPR2
-                    alpha: 0.15
-                    beta: power
-                    capacity_field: capacity
-                    time_field: travel_time
-                    max_iter: 250
-                    rgap: 0.00001
-                select_links: # optional, name with a list of lists as [[link_id, link_direction]]
-                    - from_node_1: [[1, 1], [2, 1]]
-                    - random_nodes: [[3, 1], [5, 1]]
-                """
-            )
 
     def tr(self, message):
         return trlt("TrafficAssignYAML", message)

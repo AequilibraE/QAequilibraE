@@ -5,7 +5,6 @@ from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, Qg
 from qgis.core import QgsProcessingParameterString, QgsProcessingParameterBoolean
 
 from qaequilibrae.i18n.translate import trlt
-from qaequilibrae.modules.common_tools import standard_path
 
 
 class ImportGTFS(QgsProcessingAlgorithm):
@@ -96,7 +95,7 @@ class ImportGTFS(QgsProcessingAlgorithm):
         return "publictransport"
 
     def shortHelpString(self):
-        return self.tr("Add PT routes from a GTFS file to an existing AequilibraE project.")
+        return self.tr("Adds transit routes from a GTFS to an existing AequilibraE project.")
 
     def createInstance(self):
         return ImportGTFS()

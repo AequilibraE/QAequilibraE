@@ -147,20 +147,16 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
         return "data"
 
     def shortHelpString(self):
-        return "\n".join([self.string_order(1), self.string_order(2), self.string_order(3), self.string_order(4)])
+        help_messages = [
+            self.tr("Saves layer as a new *.aem file. Notice that:"),
+            self.tr("- the original matrix stored in the layer needs to be in list format"),
+            self.tr("- origin and destination fields need to be integers"),
+            self.tr("- value field can be either integer or real"),
+        ]
+        return "\n".join(help_messages)
 
     def createInstance(self):
         return CreateMatrixFromLayer()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Save layer as a new *.aem file. Notice that:")
-        elif order == 2:
-            return self.tr("- the original matrix stored in the layer needs to be in list format")
-        elif order == 3:
-            return self.tr("- origin and destination fields need to be integers")
-        elif order == 4:
-            return self.tr("- value field can be either integer or real")
 
     def tr(self, message):
         return trlt("CreateMatrixFromLayer", message)
