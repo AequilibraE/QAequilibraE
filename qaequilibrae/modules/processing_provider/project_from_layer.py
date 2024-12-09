@@ -5,7 +5,7 @@ from string import ascii_letters
 
 from qgis.core import QgsProcessingAlgorithm
 from qgis.core import QgsProcessing, QgsProcessingMultiStepFeedback, QgsProcessingParameterVectorLayer
-from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFile, QgsProcessingParameterString
+from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFolderDestination
 
 from qaequilibrae.i18n.translate import trlt
 from qaequilibrae.modules.common_tools import geodataframe_from_layer, standard_path
@@ -26,7 +26,6 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="links",
                 allowMultiple=False,
-                defaultValue="link_id",
             )
         )
         self.addParameter(
@@ -36,7 +35,6 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.String,
                 parentLayerParameterName="links",
                 allowMultiple=False,
-                defaultValue="link_type",
             )
         )
         self.addParameter(
@@ -46,7 +44,6 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="links",
                 allowMultiple=False,
-                defaultValue="direction",
             )
         )
         self.addParameter(
@@ -56,21 +53,10 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.String,
                 parentLayerParameterName="links",
                 allowMultiple=False,
-                defaultValue="modes",
             )
         )
         self.addParameter(
-            QgsProcessingParameterFile(
-                "folder",
-                self.tr("Output folder"),
-                behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterString(
-                "project_name", self.tr("Project name"), multiLine=False, defaultValue="new_project"
-            )
+            QgsProcessingParameterFolderDestination("project_path", self.tr("Output folder"), createByDefault=True)
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
@@ -83,9 +69,8 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
         feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
         feedback.pushInfo(self.tr("Creating project"))
 
-        project_path = join(parameters["folder"], parameters["project_name"])
         project = Project()
-        project.new(project_path)
+        project.new(parameters["project_path"])
 
         feedback.pushInfo(self.tr("Importing links layer"))
 
@@ -156,7 +141,7 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
 
         feedback.pushInfo(self.tr("Closing project"))
 
-        return {"Output": project_path}
+        return {"Output": parameters["project_path"]}
 
     def name(self):
         return "projectfromlayer"

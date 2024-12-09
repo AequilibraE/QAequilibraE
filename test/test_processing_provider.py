@@ -124,20 +124,19 @@ def test_project_from_layer(folder_path, load_sfalls_from_layer):
         "link_type": "ltype",
         "direction": "direction",
         "modes": "modes",
-        "folder": folder_path,
-        "project_name": "from_test",
+        "project_path": f"{folder_path}/new_project",
     }
 
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
     result = action.run(parameters, context, feedback)
-    assert result[0]["Output"] == join(folder_path, parameters["project_name"])
+    assert result[0]["Output"] == parameters["project_path"]
 
     QgsProject.instance().clear()
 
     project = Project()
-    project.open(join(folder_path, parameters["project_name"]))
+    project.open(parameters["project_path"])
 
     assert project.network.count_links() == 76
     assert project.network.count_nodes() == 24
@@ -254,7 +253,6 @@ def test_create_pt_graph(coquimbo_project):
         "block_flows": False,
         "walking_edges": False,
         "outer_stops_transfers": False,
-        "has_zones": False,
     }
 
     context = QgsProcessingContext()

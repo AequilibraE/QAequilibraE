@@ -43,6 +43,11 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
+            QgsProcessingParameterString(
+                "matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix_core"
+            )
+        )
+        self.addParameter(
             QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "AequilibraE Matrix (*.aem)")
         )
 
@@ -58,9 +63,6 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
                 self.tr("Matrix description"),
                 optional=True,
                 multiLine=False,
-            ),
-            QgsProcessingParameterString(
-                "matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix_core"
             ),
         ]
         for param in advparams:

@@ -1,11 +1,13 @@
 import importlib.util as iutil
 import sys
-import textwrap
 import yaml
 
-from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
+from qgis.core import QgsProcessingException
 from qgis.core import (
+    QgsProcessingAlgorithm,
+    QgsProcessingMultiStepFeedback,
     QgsProcessingParameterDefinition,
+    QgsProcessingParameterFile,
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
 )
@@ -29,14 +31,12 @@ class MatrixCalculator(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFile(
                 "conf_file",
-                self.tr("Matrix configuration file (.yaml)"),
+                self.tr("Configuration file (*.yaml)"),
                 behavior=QgsProcessingParameterFile.File,
-                fileFilter="",
-                defaultValue=None,
             )
         )
         self.addParameter(
-            QgsProcessingParameterString("procedure", self.tr("Matrix core"), multiLine=True, defaultValue="")
+            QgsProcessingParameterString("procedure", self.tr("Expression"), multiLine=True, defaultValue="")
         )
         self.addParameter(
             QgsProcessingParameterString("matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix")
@@ -45,22 +45,15 @@ class MatrixCalculator(QgsProcessingAlgorithm):
             QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "AequilibraE Matrix (*.aem)")
         )
 
-        advparams = [
-            QgsProcessingParameterString(
-                "filtering_matrix", self.tr("Filtering matrix"), multiLine=False, optional=True, defaultValue=None
-            )
-        ]
-
-        for param in advparams:
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-            self.addParameter(param)
-
     def processAlgorithm(self, parameters, context, model_feedback):
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
         from aequilibrae.matrix import AequilibraeMatrix
+
+        if parameters["file_name"] is None:
+            raise QgsProcessingException(self.tr("Plase use a valid file name."))
 
         feedback = QgsProcessingMultiStepFeedback(4, model_feedback)
         feedback.pushInfo(self.tr("Getting matrices from configuration file"))
@@ -81,15 +74,15 @@ class MatrixCalculator(QgsProcessingAlgorithm):
 
         expression = parameters["procedure"]
 
-        # Replace the expression for matrices variables
-        for key in matrices.keys():
-            if key in expression:
-                expression = expression.replace(key, f"matrices['{key}']")
-
         # Replace the expression for numpy operations
         for key in self.operation_map.keys():
             if key in expression:
                 expression = expression.replace(key, self.operation_map[key])
+
+        # Replace the expression for matrices variables
+        for key in matrices.keys():
+            if key in expression:
+                expression = expression.replace(key, f"matrices['{key}']")
 
         out = eval(expression)
 
@@ -119,59 +112,20 @@ class MatrixCalculator(QgsProcessingAlgorithm):
         return "data"
 
     def shortHelpString(self):
-        return textwrap.dedent(
-            "\n".join(
-                [
-                    self.string_order(1),
-                    self.string_order(2),
-                    self.string_order(3),
-                    self.string_order(4),
-                    self.string_order(5),
-                    self.string_order(6),
-                    self.string_order(7),
-                ]
-            )
-        )
+        help_messages = [
+            self.tr("Run a matrix calculation based on a matrix configuration file (*.yaml) and an expression."),
+            self.tr("Results are stored in an AequilibraE Matrix."),
+            self.tr("Please notice that:"),
+            self.tr(
+                "- each key in the configuration file corresponds to the name of the matrix in the input expression;"
+            ),
+            self.tr("- expression must be written according to NumPy syntax."),
+            self.tr("Examples of valid expressions and configuration are provided in the plugin documentation."),
+        ]
+        return "\n".join(help_messages)
 
     def createInstance(self):
         return MatrixCalculator()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Run a matrix calculation based on a request and a matrix config file (.yaml) :")
-        elif order == 2:
-            return self.tr("- Matrix configuration file (.yaml file)")
-        elif order == 3:
-            return (
-                self.tr("- Request as a formula, example : ")
-                + "null_diag( abs( max( t(matA)-(matB*3), zeros ) + power(matC,2) ) )"
-            )
-        elif order == 4:
-            return self.tr("- .aem file and matrix core to store calculated matrix")
-        elif order == 5:
-            return self.tr(
-                "- filtering matrix, a matrix of 0 and 1 defined in matrix config file that will be used to update only a part of the destination matrix "
-            )
-        elif order == 6:
-            return self.tr("Example of valid matrix configuration file:")
-        elif order == 7:
-            return textwrap.dedent(
-                """\
-                Matrices:
-                    - generation:
-                        matrix_path: D:/AequilibraE/Project/matrices/socioeconomic_2024.aem
-                        matrix_core: generation
-                    - pop2024:
-                        matrix_path: D:/AequilibraE/Project/matrices/socioeconomic_2024.aem
-                        matrix_core: pop_dest
-                    - emp2024:
-                        matrix_path: D:/AequilibraE/Project/matrices/socioeconomic_2024.aem
-                        matrix_core: emp_dest
-                    - gen_time:
-                        matrix_path: D:/AequilibraE/Project/matrices/aon_skims.aem
-                        matrix_core: gen_time
-               """
-            )
 
     def tr(self, message):
         return trlt("MatrixCalculator", message)

@@ -8,15 +8,23 @@ from qgis.core import QgsProcessing, QgsProcessingMultiStepFeedback, QgsProcessi
 from qgis.core import QgsProcessingParameterVectorLayer, QgsProcessingParameterField, QgsProcessingParameterFile
 
 from qaequilibrae.i18n.translate import trlt
-from qaequilibrae.modules.common_tools import standard_path
 
 
 class RenumberNodesFromLayer(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
+            QgsProcessingParameterFile(
+                "project_path",
+                self.tr("Project path"),
+                behavior=QgsProcessingParameterFile.Folder,
+            )
+        )
+        self.addParameter(
             QgsProcessingParameterVectorLayer(
-                "nodes", self.tr("Centroids"), types=[QgsProcessing.TypeVectorPoint], defaultValue=None
+                "nodes",
+                self.tr("Centroids"),
+                types=[QgsProcessing.TypeVectorPoint],
             )
         )
         self.addParameter(
@@ -26,15 +34,6 @@ class RenumberNodesFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="nodes",
                 allowMultiple=False,
-                defaultValue=None,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(
-                "project_path",
-                self.tr("Output folder"),
-                behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
             )
         )
 

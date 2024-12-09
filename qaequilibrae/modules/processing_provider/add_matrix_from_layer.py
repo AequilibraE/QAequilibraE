@@ -14,6 +14,9 @@ from qaequilibrae.i18n.translate import trlt
 class AddMatrixFromLayer(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
+        self.addParameter(
+            QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "Open Matrix (*.omx)")
+        )
         self.addParameter(QgsProcessingParameterMapLayer("matrix_layer", self.tr("Matrix Layer")))
         self.addParameter(
             QgsProcessingParameterField(
@@ -22,7 +25,6 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="matrix_layer",
                 allowMultiple=False,
-                defaultValue="origin",
             )
         )
         self.addParameter(
@@ -32,7 +34,6 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="matrix_layer",
                 allowMultiple=False,
-                defaultValue="destination",
             )
         )
         self.addParameter(
@@ -42,16 +43,9 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="matrix_layer",
                 allowMultiple=False,
-                defaultValue="value",
             )
         )
-        self.addParameter(
-            QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "Open Matrix (*.omx)")
-        )
-
-        self.addParameter(
-            QgsProcessingParameterString("matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="Value")
-        )
+        self.addParameter(QgsProcessingParameterString("matrix_core", self.tr("Matrix core"), "matrix_core", False))
 
     def processAlgorithm(self, parameters, context, model_feedback):
         # Checks if we have access to aequilibrae library

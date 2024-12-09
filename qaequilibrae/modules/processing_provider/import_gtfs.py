@@ -14,16 +14,18 @@ class ImportGTFS(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFile(
                 "gtfs_file",
-                self.tr("GTFS file (.zip)"),
+                self.tr("GTFS file"),
                 behavior=QgsProcessingParameterFile.File,
-                fileFilter="",
-                defaultValue=None,
+                fileFilter="ZIP (*.zip)",
             )
         )
         self.addParameter(QgsProcessingParameterString("gtfs_agency", self.tr("Transit agency"), multiLine=False))
         self.addParameter(
             QgsProcessingParameterString(
-                "gtfs_date", self.tr("Date to import (YYYY-MM-DD)"), multiLine=False, defaultValue="1980-01-01"
+                "gtfs_date",
+                self.tr("Date to import (YYYY-MM-DD)"),
+                defaultValue="1980-01-01",
+                multiLine=False,
             )
         )
         self.addParameter(
@@ -34,7 +36,6 @@ class ImportGTFS(QgsProcessingAlgorithm):
                 "project_path",
                 self.tr("Project path"),
                 behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
             )
         )
 

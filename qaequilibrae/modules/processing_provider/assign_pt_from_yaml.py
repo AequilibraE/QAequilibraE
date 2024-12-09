@@ -17,7 +17,6 @@ class TransitAssignYAML(QgsProcessingAlgorithm):
                 self.tr("Configuration file (.yaml)"),
                 behavior=QgsProcessingParameterFile.File,
                 fileFilter="",
-                defaultValue=None,
             )
         )
 

@@ -4,13 +4,14 @@ import sys
 from qgis.core import (
     QgsProcessingMultiStepFeedback,
     QgsProcessingAlgorithm,
+    QgsProcessingParameterDefinition,
     QgsProcessingParameterFile,
     QgsProcessingParameterNumber,
     QgsProcessingParameterString,
 )
 
 from qaequilibrae.i18n.translate import trlt
-from qaequilibrae.modules.common_tools import standard_path, polygon_from_radius
+from qaequilibrae.modules.common_tools import polygon_from_radius
 
 
 class AddConnectors(QgsProcessingAlgorithm):
@@ -18,31 +19,31 @@ class AddConnectors(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterFile(
-                "project_path",
-                self.tr("Project path"),
-                behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
+                "project_path", self.tr("Project path"), behavior=QgsProcessingParameterFile.Folder
             )
         )
         self.addParameter(
             QgsProcessingParameterNumber(
                 "num_connectors",
-                self.tr("Connectors per centroid"),
+                self.tr("Number of connectors per centroid"),
                 type=QgsProcessingParameterNumber.Integer,
                 minValue=1,
                 defaultValue=1,
             )
         )
-        self.addParameter(
+
+        advparams = [
             QgsProcessingParameterString(
                 "mode", self.tr("Modes to connect (defaults to all)"), multiLine=False, optional=True
-            )
-        )
-        self.addParameter(
+            ),
             QgsProcessingParameterString(
                 "link_type", self.tr("Link types to connect (defaults to all)"), multiLine=False, optional=True
-            )
-        )
+            ),
+        ]
+
+        for param in advparams:
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.addParameter(param)
 
     def processAlgorithm(self, parameters, context, model_feedback):
         # Checks if we have access to aequilibrae library

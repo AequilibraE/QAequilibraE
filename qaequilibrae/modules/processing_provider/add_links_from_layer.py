@@ -7,12 +7,19 @@ from qgis.core import QgsProcessing, QgsProcessingMultiStepFeedback, QgsProcessi
 from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFile
 
 from qaequilibrae.i18n.translate import trlt
-from qaequilibrae.modules.common_tools import geodataframe_from_layer, standard_path
+from qaequilibrae.modules.common_tools import geodataframe_from_layer
 
 
 class AddLinksFromLayer(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
+        self.addParameter(
+            QgsProcessingParameterFile(
+                "project_path",
+                self.tr("Project path"),
+                behavior=QgsProcessingParameterFile.Folder,
+            )
+        )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 "links", self.tr("Links"), types=[QgsProcessing.TypeVectorLine], defaultValue=None
@@ -25,7 +32,6 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.String,
                 parentLayerParameterName="links",
                 allowMultiple=False,
-                defaultValue="link_type",
             )
         )
         self.addParameter(
@@ -35,7 +41,6 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="links",
                 allowMultiple=False,
-                defaultValue="direction",
             )
         )
         self.addParameter(
@@ -45,15 +50,6 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.String,
                 parentLayerParameterName="links",
                 allowMultiple=False,
-                defaultValue="modes",
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(
-                "project_path",
-                self.tr("Project path"),
-                behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
             )
         )
 
@@ -149,7 +145,7 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
         return "modelbuilding"
 
     def shortHelpString(self):
-        return self.tr("Take links from a layer and add them to an existing AequilibraE project")
+        return self.tr("Adds links from a layer to an existing AequilibraE project")
 
     def createInstance(self):
         return AddLinksFromLayer()
