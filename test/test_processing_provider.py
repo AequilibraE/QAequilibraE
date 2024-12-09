@@ -2,6 +2,7 @@ import pytest
 import re
 import pandas as pd
 import numpy as np
+import shutil
 import sqlite3
 from os.path import isfile, join
 from os import environ, makedirs
@@ -306,7 +307,7 @@ def test_add_links_from_layer(ae_with_project):
         "link_type": "link_type",
         "direction": "direction",
         "modes": "modes",
-        "project_path": ae_with_project.project.project_base_path
+        "project_path": ae_with_project.project.project_base_path,
     }
 
     context = QgsProcessingContext()
@@ -317,8 +318,10 @@ def test_add_links_from_layer(ae_with_project):
 
 def test_assign_transit_from_yaml(coquimbo_project):
     folder = coquimbo_project.project.project_base_path
-    file_path = join(folder, "transit_config.yml")
+    shutil.copyfile("test/data/coquimbo_project/transit_config.yml", f"{folder}/transit_config.yml")
+    shutil.copyfile("test/data/coquimbo_project/matrices/demand.aem", f"{folder}/matrices/demand.aem")
 
+    file_path = join(folder, "transit_config.yml")
     assert isfile(file_path)
 
     string_to_replace = "path_to_project"
@@ -333,19 +336,19 @@ def test_assign_transit_from_yaml(coquimbo_project):
 
     data = Transit(coquimbo_project.project)
     graph = data.create_graph(
-                with_outer_stop_transfers=False,
-                with_walking_edges=False,
-                blocking_centroid_flows=False,
-                connector_method="overlapping_regions",
-            )
-    
+        with_outer_stop_transfers=False,
+        with_walking_edges=False,
+        blocking_centroid_flows=False,
+        connector_method="overlapping_regions",
+    )
+
     coquimbo_project.project.network.build_graphs()
     graph.create_line_geometry(method="connector project match", graph="c")
-    
+
     data.save_graphs()
 
     action = TransitAssignYAML()
-    
+
     parameters = {"conf_file": file_path}
 
     context = QgsProcessingContext()
@@ -416,7 +419,7 @@ def test_matrix_calc(ae):
     pass
 
 
-@pytest.mark.skipif(not bool(environ.get('CI')), reason="Runs only in GitHub Action")
+@pytest.mark.skipif(not bool(environ.get("CI")), reason="Runs only in GitHub Action")
 def test_project_from_osm(folder_path):
 
     action = ProjectFromOSM()
