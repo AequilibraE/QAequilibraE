@@ -432,7 +432,7 @@ def test_project_from_osm(folder_path):
 
     action = ProjectFromOSM()
 
-    parameters = {"place_name": "Abrolhos", "project_folder": folder_path}
+    parameters = {"place_name": "Abrolhos", "project_path": folder_path}
 
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
