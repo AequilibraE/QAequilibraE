@@ -5,8 +5,8 @@ import pandas as pd
 from scipy.sparse import coo_matrix
 
 from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessingParameterString
-from qgis.core import QgsProcessingParameterField, QgsProcessingParameterMapLayer, QgsProcessingParameterFile
-from qgis.core import QgsProcessingAlgorithm
+from qgis.core import QgsProcessingParameterField, QgsProcessingParameterMapLayer
+from qgis.core import QgsProcessingAlgorithm, QgsProcessingParameterFileDestination
 
 from qaequilibrae.i18n.translate import trlt
 
@@ -46,13 +46,7 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterFile(
-                "matrix_file",
-                self.tr("Output name"),
-                behavior=QgsProcessingParameterFile.File,
-                fileFilter="",
-                defaultValue=None,
-            )
+            QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "Open Matrix (*.omx)")
         )
 
         self.addParameter(
@@ -65,14 +59,13 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
             sys.exit(self.tr("AequilibraE module not found"))
 
         from aequilibrae.matrix import AequilibraeMatrix
+        import openmatrix as omx
 
         feedback = QgsProcessingMultiStepFeedback(3, model_feedback)
 
         origin = parameters["origin"]
         destination = parameters["destination"]
         value = parameters["value"]
-        list_cores = [parameters["matrix_core"]]
-        path_to_file = parameters["matrix_file"]
 
         # Import layer as a pandas df
         feedback.pushInfo(self.tr("Importing layer"))
@@ -98,11 +91,6 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
 
-        mat = AequilibraeMatrix()
-        mat.create_empty(
-            file_name=path_to_file[:-4] + ".aem", zones=nb_of_zones, matrix_names=list_cores, memory_only=False
-        )
-
         m = (
             coo_matrix(
                 (trip_df[value], (trip_df[origin + "_idx"], trip_df[destination + "_idx"])),
@@ -112,19 +100,20 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
             .astype(np.float64)
         )
 
-        mat.matrix[mat.names[0]][:, :] = m[:, :]
-        mat.save()
+        mat = omx.open_file(parameters["file_name"], "a")
+        mat[parameters["matrix_core"]] = m
+        mat.close()
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(3)
 
-        return {"Output": f"{mat.name}, {mat.description} ({path_to_file})"}
+        return {"Output": f"New core addedd to {parameters["file_name"]}"}
 
     def name(self):
-        return "exportmatrixasaem"
+        return "exportmatrixasomx"
 
     def displayName(self):
-        return self.tr("Add matrix from layer to aem file")
+        return self.tr("Save matrix from layer in existing file")
 
     def group(self):
         return self.tr("2. Data")
@@ -148,7 +137,7 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
 
     def string_order(self, order):
         if order == 1:
-            return self.tr("Save a layer to an existing *.aem file. Notice that:")
+            return self.tr("Save a layer to an existing *.omx file. Notice that:")
         elif order == 2:
             return self.tr("- the original matrix stored in the layer needs to be in list format")
         elif order == 3:

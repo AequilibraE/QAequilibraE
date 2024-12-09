@@ -2,6 +2,7 @@ import pytest
 import re
 import pandas as pd
 import numpy as np
+import openmatrix as omx
 import shutil
 import sqlite3
 from os.path import isfile, join
@@ -80,7 +81,7 @@ def test_matrix_from_layer(folder_path):
         "origin": "O",
         "destination": "D",
         "value": "Ton",
-        "matrix_file": join(folder_path, "siouxfalls_od.aem"),
+        "file_name": join(folder_path, "demand.omx"),
         "matrix_core": "MAT_CORE",
     }
 
@@ -89,15 +90,14 @@ def test_matrix_from_layer(folder_path):
 
     _ = action.run(parameters, context, feedback)
 
-    assert isfile(parameters["matrix_file"])
+    assert isfile(parameters["file_name"])
 
-    mat = AequilibraeMatrix()
-    mat.load(parameters["matrix_file"])
+    mat = omx.open_file(parameters["file_name"])
+    assert "MAT_CORE" in mat.list_matrices()
 
-    info = mat.__dict__
-    assert info["names"] == [parameters["matrix_core"]]
-    assert info["zones"] == 24
-    assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
+    m = np.array(mat["MAT_CORE"])
+    assert m.shape == (24, 24)
+    assert m.sum() == 360600
 
 
 @pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
