@@ -29,22 +29,59 @@ menu. Notice that not all AequilibraE functionalities are available for processi
 
 In the following subsections, we'll go over all functionalities.
 
+
+Model Building
+--------------
+Add centroid connectors
+~~~~~~~~~~~~~~~~~~~~~~~
+AequilibraE's processing tool can also add centroid connectors to a project's network. The user
+needs to specify the number of centroids, the modes to be connected, and the project folder.
+The default connection mode is **c** (car).
+
+.. image:: images/processing_provider_centroids.png
+    :align: center
+    :alt: Processing provider add centroid connectors
+
+Add links from layer to project
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+.. image:: images/processing_provider_new_links_to_project.png
+    :align: center
+    :alt: Processing provider add new links from layer to project
+
+Add/Renumber nodes from layer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+One can also add or renumber nodes in an AequilibraE project to match a layer of centroids.
+Just select or import the centroids layer, specify the node ID you want to match, and the output
+folder.
+
+.. image:: images/processing_provider_nodes_from_centroids.png
+    :align: center
+    :alt: Processing provider update nodes from centroids
+
+Create project from link layer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*Create project from link layer* is similar to the widget menu 
+:ref:`Create project from layers <project_from_layers>`, and allows the user to create an AequilibraE 
+project directly from a link layer, without requiring a node layer. With a geometric layer loaded into
+QGIS, select it in the *Links* button, and add the required data in the subsequent menus. Choose the project's
+name and specify the location where you want to save it on your machine.
+
+.. image:: images/processing_provider_project_from_links.png
+    :align: center
+    :alt: Processing provider create project from link layer
+
+Create project from OSM
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: images/processing_provider_project_from_osm.png
+    :align: center
+    :alt: Processing provider create project from osm
+
 Data
 ----
-Export matrices
-~~~~~~~~~~~~~~~
-The *Export matrices* tool is analogous to the *Export* button in the matrix viewer 
-(see: :ref:`this figure <fig_data_visualize_matrices>` for more details). 
-Its usage is straightforward: select the matrix you want to export, specify the path
-on your machine to store the file, and select its output format. Only \*.aem and \*.omx files can 
-be used as input, and the output format can be either one of \*.aem, \*.omx, or \*.csv.
-
-.. image:: images/processing_provider_export_matrices.png
-    :align: center
-    :alt: Processing provider export matrices
-
-Import matrices
-~~~~~~~~~~~~~~~
+Create AequilibraE Matrix from layer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 With *Import matrices*, the user can save an open data layer directly as a \*.aem file.
 This tool is analogous to the widget menu :ref:`importing_matrices`, but it does not
 require an open AequilibraE project to work. To use the tool, the user must have an open layer
@@ -59,39 +96,31 @@ which columns correspond to the origin, destination, and flow, creating a file n
 specifying the destination folder. In the *Advanced Parameters*, the user will find fields to add
 extra information to the AequilibraE matrix they are about to create.
 
-Model Building
---------------
-Add centroid connectors
-~~~~~~~~~~~~~~~~~~~~~~~
-AequilibraE's processing tool can also add centroid connectors to a project's network. The user
-needs to specify the number of centroids, the modes to be connected, and the project folder.
-The default connection mode is **c** (car).
+Export matrices
+~~~~~~~~~~~~~~~
+The *Export matrices* tool is analogous to the *Export* button in the matrix viewer 
+(see: :ref:`this figure <fig_data_visualize_matrices>` for more details). 
+Its usage is straightforward: select the matrix you want to export, specify the path
+on your machine to store the file, and select its output format. Only \*.aem and \*.omx files can 
+be used as input, and the output format can be either one of \*.aem, \*.omx, or \*.csv.
 
-.. image:: images/processing_provider_centroids.png
+.. image:: images/processing_provider_export_matrices.png
     :align: center
-    :alt: Processing provider add centroid connectors
+    :alt: Processing provider export matrices
 
-Create project from link layer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*Create project from link layer* is similar to the widget menu 
-:ref:`Create project from layers <project_from_layers>`, and allows the user to create an AequilibraE 
-project directly from a link layer, without requiring a node layer. With a geometric layer loaded into
-QGIS, select it in the *Links* button, and add the required data in the subsequent menus. Choose the project's
-name and specify the location where you want to save it on your machine.
+Matrix calculator
+~~~~~~~~~~~~~~~~~
 
-.. image:: images/processing_provider_project_from_links.png
+.. image:: images/processing_provider_matrix_calc.png
     :align: center
-    :alt: Processing provider create project from link layer
+    :alt: Processing provider matrix calculator
+    
+Save matrix from layer in existing file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Add/Renumber nodes from layer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-One can also add or renumber nodes in an AequilibraE project to match a layer of centroids.
-Just select or import the centroids layer, specify the node ID you want to match, and the output
-folder.
-
-.. image:: images/processing_provider_nodes_from_centroids.png
+.. image:: images/processing_provider_save_matrix_in_existing_file.png
     :align: center
-    :alt: Processing provider update nodes from centroids
+    :alt: Processing provider save matrix in existing file
 
 Paths and assignment
 --------------------
@@ -132,7 +161,45 @@ an example of a valid YAML configuration.
 
 Public Transport
 ----------------
+Create transit graph
+~~~~~~~~~~~~~~~~~~~~
 
+.. image:: images/processing_provider_create_transit_graph.png
+    :align: center
+    :alt: Processing provider create transit graph
+
+.. code-block:: yaml
+    :caption: Transit graph Configuration
+
+    project_path: path_to_aequilibrae_project
+    result_name: transit_from_yaml
+    matrix_path: path_to_aequilibrae_project/matrices/demand.aem
+    matrix_core: workers  
+    assignment:
+        time_field: trav_time
+        frequency: freq
+        algorithm: os
+    graph:
+        period_id: 1
+        with_outer_stop_transfers: False 
+        with_walking_edges: False
+        blocking_centroid_flows: False
+        connector_method: overlapping_regions
+
+Create GTFS
+~~~~~~~~~~~
+
+.. image:: images/processing_provider_import_gtfs.png
+    :align: center
+    :alt: Processing provider import GTFS
+
+
+Transit assignment from file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. image:: images/processing_provider_transit_assignment.png
+    :align: center
+    :alt: Processing provider transit assignment from file
 
 .. code-block:: yaml
     :caption: Transit assignment configuration
@@ -167,23 +234,3 @@ Public Transport
     select_links: # optional, name with a list of lists as [[link_id, link_direction]]
         - from_node_1: [[1, 1], [2, 1]]
         - random_nodes: [[3, 1], [5, 1]]
-
-
-.. code-block:: yaml
-    :caption: Transit graph Configuration
-
-    project_path: path_to_aequilibrae_project
-    result_name: transit_from_yaml
-    matrix_path: path_to_aequilibrae_project/matrices/demand.aem
-    matrix_core: workers  
-    assignment:
-        time_field: trav_time
-        frequency: freq
-        algorithm: os
-    graph:
-        period_id: 1
-        with_outer_stop_transfers: False 
-        with_walking_edges: False
-        blocking_centroid_flows: False
-        connector_method: overlapping_regions
-

@@ -106,7 +106,7 @@ class TransitAssignYAML(QgsProcessingAlgorithm):
         return "ptassignfromyaml"
 
     def displayName(self):
-        return self.tr("PT assignment from file")
+        return self.tr("Transit assignment from file")
 
     def group(self):
         return self.tr("4. Public Transport")

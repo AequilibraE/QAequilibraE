@@ -92,7 +92,7 @@ class CreatePTGraph(QgsProcessingAlgorithm):
         return "createptgraph"
 
     def displayName(self):
-        return self.tr("Create PT graph")
+        return self.tr("Create transit graph")
 
     def group(self):
         return self.tr("4. Public Transport")
