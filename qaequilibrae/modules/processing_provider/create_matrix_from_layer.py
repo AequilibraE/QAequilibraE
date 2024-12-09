@@ -152,7 +152,7 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
 
     def string_order(self, order):
         if order == 1:
-            return self.tr("Save layer as a *.aem file. Notice that:")
+            return self.tr("Save layer as a new *.aem file. Notice that:")
         elif order == 2:
             return self.tr("- the original matrix stored in the layer needs to be in list format")
         elif order == 3:
