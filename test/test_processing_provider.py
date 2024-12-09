@@ -290,8 +290,10 @@ def test_import_gtfs(pt_no_feed, allow_map_match):
 
 
 def test_add_links_from_layer(ae_with_project):
+    folder_path = ae_with_project.project.project_base_path
+    csv_path = f"{folder_path}/link.csv"
+    shutil.copyfile("test/data/NetworkPreparation/link.csv", csv_path)
 
-    csv_path = "test/data/NetworkPreparation/link.csv"
     uri = "file://{}?delimiter=,&crs=epsg:4326&wktField={}".format(csv_path, "geometry")
     layer = QgsVectorLayer(uri, "link", "delimitedtext")
 
@@ -314,6 +316,12 @@ def test_add_links_from_layer(ae_with_project):
     feedback = QgsProcessingFeedback()
 
     _ = action.run(parameters, context, feedback)
+
+    project = Project()
+    project.open(folder_path)
+
+    assert project.network.count_links() == 80
+    assert project.network.count_nodes() == 28
 
 
 def test_assign_transit_from_yaml(coquimbo_project):
