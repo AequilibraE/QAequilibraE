@@ -408,23 +408,31 @@ def test_create_matrix_from_layer(folder_path):
     assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
 
 
-def test_matrix_calc(ae):
+def test_matrix_calc(folder_path):
+    makedirs(folder_path)
 
     action = MatrixCalculator()
 
-    # parameters = {
-    #     "conf_file": "test/data/SiouxFalls_project/matrix_config.yml",
-    #     "procedure": "sum (m1, m2)",
-    #     "dest_path": "test/data/SiouxFalls_project/matrices/asdfg.aem",
-    #     "matrix_core": "new_core",
-    # }
+    parameters = {
+        "conf_file": "test/data/SiouxFalls_project/matrix_config.yml",
+        "procedure": "(cars + heavy_vehicles).T",
+        "file_name": f"{folder_path}/hello.aem",
+        "matrix_core": "new_core",
+    }
 
-    # context = QgsProcessingContext()
-    # feedback = QgsProcessingFeedback()
+    context = QgsProcessingContext()
+    feedback = QgsProcessingFeedback()
 
-    # result = action.run(parameters, context, feedback)
-    # print(result)
-    pass
+    _ = action.run(parameters, context, feedback)
+
+    assert isfile(parameters["file_name"])
+    mat = AequilibraeMatrix()
+    mat.load(parameters["file_name"])
+
+    info = mat.__dict__
+    assert info["names"] == [parameters["matrix_core"]]
+    assert info["zones"] == 24
+    assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) > 360600
 
 
 @pytest.mark.skipif(not bool(environ.get("CI")), reason="Runs only in GitHub Action")

@@ -1,11 +1,14 @@
 import importlib.util as iutil
 import sys
 import textwrap
-
-from datetime import datetime as dt
+import yaml
 
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
-from qgis.core import QgsProcessingParameterDefinition, QgsProcessingParameterBoolean, QgsProcessingParameterString
+from qgis.core import (
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterFileDestination,
+    QgsProcessingParameterString,
+)
 
 from qaequilibrae.i18n.translate import trlt
 
@@ -13,6 +16,16 @@ from qaequilibrae.i18n.translate import trlt
 class MatrixCalculator(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
+        self.operation_map = {
+            "min(": "np.min(",
+            "max(": "np.max(",
+            "abs(": "np.absolute(",
+            "ln(": "np.log(",
+            "exp(": "np.exp(",
+            "power(": "np.power(",
+            "null_diag(": "np.null_diag(",
+        }
+
         self.addParameter(
             QgsProcessingParameterFile(
                 "conf_file",
@@ -23,21 +36,13 @@ class MatrixCalculator(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterString("request", self.tr("Request"), multiLine=False, defaultValue=None)
+            QgsProcessingParameterString("procedure", self.tr("Matrix core"), multiLine=True, defaultValue="")
         )
         self.addParameter(
-            QgsProcessingParameterFile(
-                "dest_path",
-                self.tr("Existing .aem file") + self.tr("(used to store computed matrix)"),
-                behavior=QgsProcessingParameterFile.File,
-                fileFilter="",
-                defaultValue=None,
-            )
+            QgsProcessingParameterString("matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix")
         )
         self.addParameter(
-            QgsProcessingParameterString(
-                "matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="MatrixCalculator_Result"
-            )
+            QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "AequilibraE Matrix (*.aem)")
         )
 
         advparams = [
@@ -51,119 +56,58 @@ class MatrixCalculator(QgsProcessingAlgorithm):
             self.addParameter(param)
 
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(4, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
-        exec("from aequilibrae.matrix import AequilibraeMatrix", globals())
-        exec("import numpy as np", globals())
-        import yaml
+        from aequilibrae.matrix import AequilibraeMatrix
 
-        start = dt.now()
-
-        # Import or create all needed matrices as numpy arrays
+        feedback = QgsProcessingMultiStepFeedback(4, model_feedback)
         feedback.pushInfo(self.tr("Getting matrices from configuration file"))
-        conf_file = parameters["conf_file"]
-        dest_path = parameters["dest_path"]
-        dest_core = [parameters["matrix_core"]]
-        request = parameters["request"]
 
-        destination = AequilibraeMatrix()
-        destination.load(dest_path)
-        global d
-        d = len(destination.get_matrix(dest_core[0]))
-
-        feedback.pushInfo(
-            self.tr("Matrix total before calculation: ")
-            + "{:,.2f}".format(destination.get_matrix(dest_core[0]).sum()).replace(",", " ")
-        )
-        feedback.pushInfo(self.tr("Expected dimensions of matrix based on destination file: ") + str(d) + "x" + str(d))
-        feedback.pushInfo("")
-
-        with open(conf_file, "r") as f:
+        with open(parameters["conf_file"], "r") as f:
             params = yaml.safe_load(f)
-        m_list = []
 
-        for matrices in params["Matrices"]:
-            for matrix in matrices:
-                exec(
-                    f"""
-{matrix} = AequilibraeMatrix()
-{matrix}.load("{matrices[matrix]["matrix_path"]}")
-{matrix}={matrix}.get_matrix("{matrices[matrix]["matrix_core"]}") 
-""",
-                    globals(),
-                )
+        # Load matrices
+        matrices = {}
+        index = []
+        for matrix in params:
+            for name, values in matrix.items():
+                mat = AequilibraeMatrix()
+                mat.load(values["matrix_path"])
+                matrices[name] = mat.get_matrix(values["matrix_core"])
+                index[:] = mat.index[:]
+                mat.close()
 
-                m_list.append(matrix)
-                exec(f"dim=len({matrix})", globals())
-                feedback.pushInfo(str(matrix))
-                feedback.pushInfo(self.tr(f"Importation of {matrix}, matrix dimensions {dim}x{dim} and total is:"))
-                exec('feedback.pushInfo("{:,.2f}".format(' + matrix + '.sum()).replace(",", " "))')
-                assert d == dim, self.tr("Matrices must have the same dimensions as the desired result !")
-                feedback.pushInfo("")
+        expression = parameters["procedure"]
 
-        if "null_diag" in request:  # If needed, prepare a matrix to set diagonal to 0
-            exec(
-                """
-null_diag=np.ones((d, d), dtype=np.float64)
-np.fill_diagonal(null_diag, 0)""",
-                globals(),
-            )
+        # Replace the expression for matrices variables
+        for key in matrices.keys():
+            if key in expression:
+                expression = expression.replace(key, f"matrices['{key}']")
 
-        if "zeros" in request:  # If needed, prepare a matrix full of zero
-            exec("zeros=np.zeros((d, d), dtype=np.float64)", globals())
-        feedback.pushInfo(" ")
-        feedback.setCurrentStep(1)
+        # Replace the expression for numpy operations
+        for key in self.operation_map.keys():
+            if key in expression:
+                expression = expression.replace(key, self.operation_map[key])
 
-        # Setting up request, Used grammar is close to R language, need to be translated for numpy
-        request = request.replace("max(", "np.maximum(")
-        request = request.replace("min(", "np.minimum(")
-        request = request.replace("ln(", "np.log(")
-        request = request.replace("exp(", "np.exp(")
-        request = request.replace("power(", "np.power(")
-        request = request.replace("abs(", "np.absolute(")
-        request = request.replace("null_diag(", "null_diag*(")
-        request = request.replace("t(", "np.transpose(")
+        out = eval(expression)
 
-        feedback.pushInfo(" ")
-        feedback.setCurrentStep(2)
+        mat = AequilibraeMatrix()
+        mat.create_empty(
+            file_name=parameters["file_name"],
+            zones=len(index),
+            matrix_names=[parameters["matrix_core"]],
+            memory_only=False,
+        )
+        mat.matrix[parameters["matrix_core"]][:, :] = out[:, :]
+        mat.index[:] = index[:]
+        mat.close()
 
-        # Compute request: if a filtering matrix is used, update only a part of the destination matrix
-        filtering_matrix = parameters["filtering_matrix"]
-        if len(filtering_matrix) > 0:
-            global result
-            exec("filtering_matrix=np.nan_to_num(" + filtering_matrix + ")", globals())
-            assert np.any((filtering_matrix == 0.0) | (filtering_matrix == 1.0))
-            keep = np.absolute(filtering_matrix - np.ones(d)) * destination.get_matrix(dest_core[0])
-            exec("new=filtering_matrix*(" + request + ")", globals())
-            result = keep + new
-            del filtering_matrix
-        else:
-            exec("result=" + request, globals())
-        feedback.pushInfo(self.tr("Result (total: ") + f"{'{:,.2f}'.format(result.sum()).replace(',', ' ')}): ")
-        feedback.pushInfo(str(result))
-
-        feedback.pushInfo(" ")
-        feedback.setCurrentStep(3)
-
-        # Updating destination matrix file
-        destination.matrix[dest_core[0]][:, :] = result[:, :]
-        destination.save()
-        destination.close()
-
-        for m in m_list:
-            exec("del " + m, globals())
-
-        feedback.pushInfo(" ")
-        feedback.setCurrentStep(4)
-
-        return {"Output": self.tr("Calculation completed in: ") + str((dt.now() - start).total_seconds()) + "secs"}
+        return {"Output": "Finished"}
 
     def name(self):
-        return "matrixcald"
+        return "matrixcalc"
 
     def displayName(self):
         return self.tr("Matrix calculator")
@@ -185,8 +129,6 @@ np.fill_diagonal(null_diag, 0)""",
                     self.string_order(5),
                     self.string_order(6),
                     self.string_order(7),
-                    self.string_order(8),
-                    self.string_order(9),
                 ]
             )
         )
@@ -228,25 +170,6 @@ np.fill_diagonal(null_diag, 0)""",
                     - gen_time:
                         matrix_path: D:/AequilibraE/Project/matrices/aon_skims.aem
                         matrix_core: gen_time
-               """
-            )
-        elif order == 8:
-            return self.tr("List of available functions :")
-        elif order == 9:
-            return textwrap.dedent(
-                """\
-                    +
-                    -
-                    /
-                    *
-                    min(matA, matB)
-                    max(matA, matB)
-                    abs(matA)
-                    ln(matA)
-                    exp(matA)
-                    power(matA, n)
-                    null_diag(matA)
-                    t(matA) #transpose
                """
             )
 
