@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import sqlite3
 from os.path import isfile, join
-from os import makedirs
+from os import environ, makedirs
 from shapely.geometry import Point
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae import Project
@@ -316,7 +316,6 @@ def test_add_links_from_layer(ae_with_project):
 
 
 def test_assign_transit_from_yaml(coquimbo_project):
-
     folder = coquimbo_project.project.project_base_path
     file_path = join(folder, "transit_config.yml")
 
@@ -387,10 +386,10 @@ def test_create_matrix_from_layer(folder_path):
     feedback = QgsProcessingFeedback()
 
     _ = action.run(parameters, context, feedback)
-    assert isfile(parameters["matrix_file"])
+    assert isfile(parameters["file_name"])
 
     mat = AequilibraeMatrix()
-    mat.load(parameters["matrix_file"])
+    mat.load(parameters["file_name"])
 
     info = mat.__dict__
     assert info["names"] == [parameters["matrix_core"]]
@@ -417,7 +416,7 @@ def test_matrix_calc(ae):
     pass
 
 
-@pytest.mark.skip("Configure to run only in GH Actions")
+@pytest.mark.skipif(not bool(environ.get('CI')), reason="Runs only in GitHub Action")
 def test_project_from_osm(folder_path):
 
     action = ProjectFromOSM()
