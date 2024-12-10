@@ -18,10 +18,10 @@ class Provider(QgsProcessingProvider):
         from .Add_connectors import AddConnectors
         from .add_links_from_layer import AddLinksFromLayer
         from .add_matrix_from_layer import AddMatrixFromLayer
-        from .assign_pt_from_yaml import TransitAssignYAML
+        from .assign_transit_from_yaml import TransitAssignYAML
         from .assign_traffic_from_yaml import TrafficAssignYAML
         from .create_matrix_from_layer import CreateMatrixFromLayer
-        from .create_pt_graph import CreatePTGraph
+        from .create_transit_graph import CreatePTGraph
         from .export_matrix import ExportMatrix
         from .import_gtfs import ImportGTFS
         from .matrix_calculator import MatrixCalculator

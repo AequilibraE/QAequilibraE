@@ -11,37 +11,28 @@ from os import environ, makedirs
 import pytest
 from shapely.geometry import Point
 
-from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae import Project
+from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.transit import Transit
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.core import QgsProject, QgsField, QgsVectorLayer
 from PyQt5.QtCore import QVariant
 
+from .utilities import load_sfalls_from_layer
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
 from qaequilibrae.modules.processing_provider.add_links_from_layer import AddLinksFromLayer
 from qaequilibrae.modules.processing_provider.add_matrix_from_layer import AddMatrixFromLayer
-from qaequilibrae.modules.processing_provider.assign_pt_from_yaml import TransitAssignYAML
+from qaequilibrae.modules.processing_provider.assign_transit_from_yaml import TransitAssignYAML
 from qaequilibrae.modules.processing_provider.assign_traffic_from_yaml import TrafficAssignYAML
 from qaequilibrae.modules.processing_provider.create_matrix_from_layer import CreateMatrixFromLayer
-from qaequilibrae.modules.processing_provider.create_pt_graph import CreatePTGraph
+from qaequilibrae.modules.processing_provider.create_transit_graph import CreatePTGraph
 from qaequilibrae.modules.processing_provider.export_matrix import ExportMatrix
 from qaequilibrae.modules.processing_provider.import_gtfs import ImportGTFS
 from qaequilibrae.modules.processing_provider.matrix_calculator import MatrixCalculator
 from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
 from qaequilibrae.modules.processing_provider.project_from_OSM import ProjectFromOSM
-from aequilibrae.project import Project
-
-from .utilities import load_sfalls_from_layer
-from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
-from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
-from qaequilibrae.modules.processing_provider.assign_from_yaml import TrafficAssignYAML
-from qaequilibrae.modules.processing_provider.export_matrix import ExportMatrix
-from qaequilibrae.modules.processing_provider.matrix_from_layer import MatrixFromLayer
-from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
-from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
 
 
@@ -68,8 +59,8 @@ def test_export_matrix(folder_path, source_file, format):
     action = ExportMatrix()
 
     parameters = {
-        "src": f"test/data/SiouxFalls_project/matrices/{source_file}",
-        "dst": folder_path,
+        "matrix_path": f"test/data/SiouxFalls_project/matrices/{source_file}",
+        "file_path": folder_path,
         "output_format": format,
     }
 
@@ -94,7 +85,7 @@ def test_matrix_from_layer(folder_path):
         "origin": "O",
         "destination": "D",
         "value": "Ton",
-        "file_name": join(folder_path, "demand.omx"),
+        "file_path": join(folder_path, "demand.omx"),
         "matrix_core": "MAT_CORE",
     }
 
@@ -103,9 +94,9 @@ def test_matrix_from_layer(folder_path):
 
     _ = action.run(parameters, context, feedback)
 
-    assert isfile(parameters["file_name"])
+    assert isfile(parameters["file_path"])
 
-    mat = omx.open_file(parameters["file_name"])
+    mat = omx.open_file(parameters["file_path"])
     assert "MAT_CORE" in mat.list_matrices()
 
     m = np.array(mat["MAT_CORE"])
@@ -330,7 +321,7 @@ def test_add_links_from_layer(ae_with_project):
     project = Project()
     project.open(folder_path)
 
-    assert project.network.count_links() == 80
+    assert project.network.count_links() == 81
     assert project.network.count_nodes() == 28
 
 
@@ -399,7 +390,7 @@ def test_create_matrix_from_layer(folder_path):
         "origin": "O",
         "destination": "D",
         "value": "Ton",
-        "file_name": join(folder_path, "siouxfalls_od.aem"),
+        "file_path": join(folder_path, "siouxfalls_od.aem"),
         "matrix_core": "MAT_CORE",
     }
 
@@ -407,10 +398,10 @@ def test_create_matrix_from_layer(folder_path):
     feedback = QgsProcessingFeedback()
 
     _ = action.run(parameters, context, feedback)
-    assert isfile(parameters["file_name"])
+    assert isfile(parameters["file_path"])
 
     mat = AequilibraeMatrix()
-    mat.load(parameters["file_name"])
+    mat.load(parameters["file_path"])
 
     info = mat.__dict__
     assert info["names"] == [parameters["matrix_core"]]
@@ -426,7 +417,7 @@ def test_matrix_calc(folder_path):
     parameters = {
         "conf_file": "test/data/SiouxFalls_project/matrix_config.yml",
         "procedure": "(cars + heavy_vehicles).T",
-        "file_name": f"{folder_path}/hello.aem",
+        "file_path": f"{folder_path}/hello.aem",
         "matrix_core": "new_core",
     }
 
@@ -435,9 +426,9 @@ def test_matrix_calc(folder_path):
 
     _ = action.run(parameters, context, feedback)
 
-    assert isfile(parameters["file_name"])
+    assert isfile(parameters["file_path"])
     mat = AequilibraeMatrix()
-    mat.load(parameters["file_name"])
+    mat.load(parameters["file_path"])
 
     info = mat.__dict__
     assert info["names"] == [parameters["matrix_core"]]

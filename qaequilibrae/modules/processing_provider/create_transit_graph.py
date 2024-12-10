@@ -33,7 +33,7 @@ class CreatePTGraph(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterBoolean("has_zones", self.tr("Project has zoning information"), defaultValue=True)
+            QgsProcessingParameterBoolean("has_zones", self.tr("Project has zoning information"), defaultValue=False)
         )
 
     def processAlgorithm(self, parameters, context, feedback):
