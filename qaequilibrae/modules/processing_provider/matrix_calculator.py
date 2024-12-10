@@ -87,7 +87,7 @@ class MatrixCalculator(QgsProcessingAlgorithm):
 
         mat = AequilibraeMatrix()
         mat.create_empty(
-            file_path=parameters["file_path"],
+            file_name=parameters["file_path"],
             zones=len(index),
             matrix_names=[parameters["matrix_core"]],
             memory_only=False,
@@ -121,7 +121,7 @@ class MatrixCalculator(QgsProcessingAlgorithm):
             self.tr("- expression must be written according to NumPy syntax."),
             self.tr("Examples of valid expressions and configuration are provided in the plugin documentation."),
         ]
-        return "\n".join(help_messages)
+        return "".join(help_messages)
 
     def createInstance(self):
         return MatrixCalculator()

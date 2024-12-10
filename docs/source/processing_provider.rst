@@ -148,10 +148,6 @@ the YAML file and an expression that can be used for calculation.
     - matrix_name1:
         matrix_path: path to file
         matrix_core: specifiy the core name
-    # For all the constants used for calculation 
-    - constants:
-        constant_name1: 3
-        constant_name2: 0.8
 
 .. code-block:: yaml
     :caption: Expression

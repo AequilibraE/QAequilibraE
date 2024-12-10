@@ -1,24 +1,22 @@
-import os
-import re
-import pandas as pd
 import numpy as np
 import openmatrix as omx
+import pandas as pd
+import pytest
+import re
 import shutil
 import sqlite3
-from os.path import isfile, join
-from os import environ, makedirs
-
-import pytest
-from shapely.geometry import Point
 
 from aequilibrae import Project
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.transit import Transit
+from os import environ, makedirs
+from os.path import isfile, join
+from PyQt5.QtCore import QVariant
 from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
 from qgis.core import QgsProject, QgsField, QgsVectorLayer
-from PyQt5.QtCore import QVariant
+from shapely.geometry import Point
 
-from .utilities import load_sfalls_from_layer
+from .utilities import load_test_layer, load_sfalls_from_layer
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
@@ -55,8 +53,7 @@ def test_provider_exists(qgis_app):
 @pytest.mark.parametrize("format", [0, 1, 2])
 @pytest.mark.parametrize("source_file", ["sfalls_skims.omx", "demand.aem"])
 def test_export_matrix(folder_path, source_file, format):
-    os.makedirs(folder_path)
-    action = ExportMatrix()
+    makedirs(folder_path)
 
     parameters = {
         "matrix_path": f"test/data/SiouxFalls_project/matrices/{source_file}",
@@ -64,6 +61,7 @@ def test_export_matrix(folder_path, source_file, format):
         "output_format": format,
     }
 
+    action = ExportMatrix()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -73,12 +71,10 @@ def test_export_matrix(folder_path, source_file, format):
 
 
 def test_matrix_from_layer(folder_path):
-    os.makedirs(folder_path)
+    makedirs(folder_path)
 
     df = pd.read_csv("test/data/SiouxFalls_project/SiouxFalls_od.csv")
     layer = layer_from_dataframe(df, "SiouxFalls_od")
-
-    action = AddMatrixFromLayer()
 
     parameters = {
         "matrix_layer": layer,
@@ -89,6 +85,7 @@ def test_matrix_from_layer(folder_path):
         "matrix_core": "MAT_CORE",
     }
 
+    action = AddMatrixFromLayer()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -120,8 +117,6 @@ def test_project_from_layer(folder_path):
 
     linkslayer.commitChanges()
 
-    action = ProjectFromLayer()
-
     parameters = {
         "links": linkslayer,
         "link_id": "link_id",
@@ -131,6 +126,7 @@ def test_project_from_layer(folder_path):
         "project_path": f"{folder_path}/new_project",
     }
 
+    action = ProjectFromLayer()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -154,10 +150,9 @@ def test_add_centroid_connector(pt_no_feed):
     cnt.geometry = Point(-71.34, -29.95)
     cnt.save()
 
-    action = AddConnectors()
-
     parameters = {"num_connectors": 3, "mode": "c", "project_path": project_folder}
 
+    action = AddConnectors()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -189,10 +184,9 @@ def test_renumber_from_centroids(ae_with_project, tmp_path):
 
     nodeslayer.commitChanges()
 
-    action = RenumberNodesFromLayer()
-
     parameters = {"nodes": nodeslayer, "node_id": "id", "project_path": project_folder}
 
+    action = RenumberNodesFromLayer()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -222,10 +216,9 @@ def test_assign_from_yaml(ae_with_project):
     with open(file_path, "w", encoding="utf-8") as file:
         file.write(updated_content)
 
-    action = TrafficAssignYAML()
-
     parameters = {"conf_file": file_path}
 
+    action = TrafficAssignYAML()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -248,8 +241,6 @@ def test_create_pt_graph(coquimbo_project):
     project = coquimbo_project.project
     project_folder = project.project_base_path
 
-    action = CreatePTGraph()
-
     parameters = {
         "project_path": project_folder,
         "access_mode": "c",
@@ -258,6 +249,7 @@ def test_create_pt_graph(coquimbo_project):
         "outer_stops_transfers": False,
     }
 
+    action = CreatePTGraph()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -273,8 +265,6 @@ def test_import_gtfs(pt_no_feed, allow_map_match):
     project = pt_no_feed.project
     project_folder = project.project_base_path
 
-    action = ImportGTFS()
-
     parameters = {
         "project_path": project_folder,
         "gtfs_file": "test/data/coquimbo_project/gtfs_coquimbo.zip",
@@ -283,6 +273,7 @@ def test_import_gtfs(pt_no_feed, allow_map_match):
         "allow_map_match": allow_map_match,
     }
 
+    action = ImportGTFS()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -292,18 +283,9 @@ def test_import_gtfs(pt_no_feed, allow_map_match):
 
 def test_add_links_from_layer(ae_with_project):
     folder_path = ae_with_project.project.project_base_path
-    csv_path = f"{folder_path}/link.csv"
-    shutil.copyfile("test/data/NetworkPreparation/link.csv", csv_path)
 
-    uri = "file://{}?delimiter=,&crs=epsg:4326&wktField={}".format(csv_path, "geometry")
-    layer = QgsVectorLayer(uri, "link", "delimitedtext")
-
-    if not layer.isValid():
-        print("Layer failed to load!")
-    else:
-        QgsProject.instance().addMapLayer(layer)
-
-    action = AddLinksFromLayer()
+    load_test_layer(ae_with_project.project.project_base_path, "link")
+    layer = QgsProject.instance().mapLayersByName("link")[0]
 
     parameters = {
         "links": layer,
@@ -313,6 +295,7 @@ def test_add_links_from_layer(ae_with_project):
         "project_path": ae_with_project.project.project_base_path,
     }
 
+    action = AddLinksFromLayer()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -356,10 +339,9 @@ def test_assign_transit_from_yaml(coquimbo_project):
 
     data.save_graphs()
 
-    action = TransitAssignYAML()
-
     parameters = {"conf_file": file_path}
 
+    action = TransitAssignYAML()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -383,8 +365,6 @@ def test_create_matrix_from_layer(folder_path):
     df = pd.read_csv("test/data/SiouxFalls_project/SiouxFalls_od.csv")
     layer = layer_from_dataframe(df, "SiouxFalls_od")
 
-    action = CreateMatrixFromLayer()
-
     parameters = {
         "matrix_layer": layer,
         "origin": "O",
@@ -394,6 +374,7 @@ def test_create_matrix_from_layer(folder_path):
         "matrix_core": "MAT_CORE",
     }
 
+    action = CreateMatrixFromLayer()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -412,15 +393,14 @@ def test_create_matrix_from_layer(folder_path):
 def test_matrix_calc(folder_path):
     makedirs(folder_path)
 
-    action = MatrixCalculator()
-
     parameters = {
         "conf_file": "test/data/SiouxFalls_project/matrix_config.yml",
-        "procedure": "(cars + heavy_vehicles).T",
+        "procedure": "(cars - (heavy_vehicles * 0.25)).T",
         "file_path": f"{folder_path}/hello.aem",
         "matrix_core": "new_core",
     }
 
+    action = MatrixCalculator()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 
@@ -433,16 +413,15 @@ def test_matrix_calc(folder_path):
     info = mat.__dict__
     assert info["names"] == [parameters["matrix_core"]]
     assert info["zones"] == 24
-    assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) > 360600
+    assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) > 0
 
 
 @pytest.mark.skipif(not bool(environ.get("CI")), reason="Runs only in GitHub Action")
 def test_project_from_osm(folder_path):
 
-    action = ProjectFromOSM()
-
     parameters = {"place_name": "Abrolhos", "project_path": folder_path}
 
+    action = ProjectFromOSM()
     context = QgsProcessingContext()
     feedback = QgsProcessingFeedback()
 

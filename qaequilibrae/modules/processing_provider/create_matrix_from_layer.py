@@ -109,7 +109,7 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
         feedback.setCurrentStep(2)
 
         mat = AequilibraeMatrix()
-        mat.create_empty(file_path=path_to_file, zones=nb_of_zones, matrix_names=list_cores, memory_only=False)
+        mat.create_empty(file_name=path_to_file, zones=nb_of_zones, matrix_names=list_cores, memory_only=False)
 
         m = (
             coo_matrix(
