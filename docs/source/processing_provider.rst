@@ -2,10 +2,11 @@ Processing Tools
 ================
 
 Some of AequilibraE's plugin functionalities are now available in a processing plugin.
-The processing plugin is automatically installed with AequilibraE and allows you to perform
+The processing plugin is automatically installed with QAequilibraE and allows you to perform
 several tasks, such as creating project from links, exporting matrices, and much more,
 as a batch process or not. To use the processing plugin, you don't have to directly open
-the AequilibraE project, although it is mandatory to have AequilibraE installed.
+the AequilibraE project, nor have the widget open, although it is mandatory to have 
+AequilibraE installed.
 
 To find AequilibraE's processing plugin, click on the **Processing** panel and select **Toolbox**.
 You can also use the available QGIS shortcut to open the Toolbox window.
@@ -133,12 +134,12 @@ operations.
 To be more effective in your calculation, please use the brackets to separate the operations
 in the desired order of execution.
 
-The following code blocks present, respectively, the matrix input configuration in the YAML file
-and an expression that can be used for calculation. 
-
 .. image:: images/processing_provider_matrix_calc.png
     :align: center
     :alt: Processing provider matrix calculator
+
+The following code blocks present, respectively, examples of a matrix input configuration for 
+the YAML file and an expression that can be used for calculation. 
 
 .. code-block:: yaml
     :caption: Matrix configuration
@@ -159,7 +160,7 @@ and an expression that can be used for calculation.
 
 Save matrix from layer in existing file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-This tools allows you to export the data from a 
+This tools allows you to export the data from an open layer to an existing \*.omx file.
 
 .. important::
 
@@ -176,21 +177,22 @@ Traffic assignment from file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 AequilibraE traffic assignment can now be performed using a YAML file that contains the model input
 information. The process is straightforward: create a valid YAML file with your project path,
-required matrices, and valid parameters, and load it into AequilibraE. The code block below contains
-an example of a valid YAML configuration.
+required matrices, and valid parameters, and load it into AequilibraE. 
 
 .. image:: images/processing_provider_traffic_assignment.png
     :align: center
     :alt: Processing provider traffic assignment from file
 
+The code block below contains an example of a valid YAML configuration.
+
 .. code-block:: yaml
     :caption: Traffic assignment configuration
 
-    project: path_to_aequilibrae_project
-    result_name: name_of_result_file_to_save
+    project: path_to_project
+    result_name: test_from_yaml
     traffic_classes:
         - car:
-            matrix_path: path_to_aequilibrae_project/matrices/demand.aem
+            matrix_path: path_to_project/matrices/demand.aem
             matrix_core: matrix
             network_mode: c
             pce: 1
@@ -205,23 +207,73 @@ an example of a valid YAML configuration.
         time_field: free_flow_time
         max_iter: 10
         rgap: 0.001
-
+    select_links: # optional, name with a list of lists as [[link_id, link_direction]]
+        - from_node_1: [[1, 1], [2, 1]]
+        - random_nodes: [[3, 1], [5, 1]]
 
 Public Transport
 ----------------
 Create transit graph
 ~~~~~~~~~~~~~~~~~~~~
+Benefiting from new AequilibraE features, this processing tool allows you to create and
+save a transit graph to use in the transit assignment. Figure below presents an screenshot
+of the create transit graph processing interface.
 
 .. image:: images/processing_provider_create_transit_graph.png
     :align: center
     :alt: Processing provider create transit graph
 
-.. code-block:: yaml
-    :caption: Transit graph Configuration
+Notice that you will have to input data such as the project path, the desired mode, and the
+period ID for which you want to create your graph. Other graph configuration, such
+as ``Block flows through centroids`` and ``Project with walking edges`` are boolean, 
+and can be selected as necessary. You can read more about these configuration 
+`here <https://www.aequilibrae.com/python/develop/modeling_with_aequilibrae/transit_assignment/transit_graph.html#transit-graph-specificities-in-aequilibrae>`_.
 
-    project_path: path_to_aequilibrae_project
+.. note::
+    
+    Currently only a single transit graph can be saved and reloaded.
+
+Create GTFS
+~~~~~~~~~~~
+This tool allows you to import a GTFS feed to your project. Just point to the
+GTFS zip and project paths in your machine, select the date for which you want to
+import the transit routes, and if you want to map-match the routes or not. Remember
+that depending on the GTFS size, the map-matching procedure can be really time-consuming.
+Unlike the GTFS importer in the widget menu, to use this processing tool you must
+know which calendar date you are going to use. 
+
+.. image:: images/processing_provider_import_gtfs.png
+    :align: center
+    :alt: Processing provider import GTFS
+
+.. tip::
+    
+    Mobility Data is a non-profit organization that provides a 
+    `GTFS validator tool <https://gtfs-validator.mobilitydata.org/>`_. 
+    If you want to use QAequilibraE processing processing provider tool to import a GTFS 
+    feed, you can load your GTFS file at their validator and it will provide you useful 
+    information, including calendar date ranges.
+
+Transit assignment from file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Transit assignment from file is quite similar to the traffic assignment presented above,
+with the remarkable differences related to the transit graph and assignment, as shown in
+AequilibraE. The YAML file setup includes the project location in your machine, as well as
+information on matrix and assignment. To use this tool, you must have a transit graph, 
+either created by the processing tool above or using AequilibraE code.
+
+.. image:: images/processing_provider_transit_assignment.png
+    :align: center
+    :alt: Processing provider transit assignment from file
+
+The code block below contains an example of a valid YAML configuration.
+
+.. code-block:: yaml
+    :caption: Transit assignment configuration
+
+    project_path: path_to_project
     result_name: transit_from_yaml
-    matrix_path: path_to_aequilibrae_project/matrices/demand.aem
+    matrix_path: path_to_project/matrices/demand.aem
     matrix_core: workers  
     assignment:
         time_field: trav_time
@@ -233,52 +285,3 @@ Create transit graph
         with_walking_edges: False
         blocking_centroid_flows: False
         connector_method: overlapping_regions
-
-Create GTFS
-~~~~~~~~~~~
-
-.. image:: images/processing_provider_import_gtfs.png
-    :align: center
-    :alt: Processing provider import GTFS
-
-
-Transit assignment from file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. image:: images/processing_provider_transit_assignment.png
-    :align: center
-    :alt: Processing provider transit assignment from file
-
-.. code-block:: yaml
-    :caption: Transit assignment configuration
-
-    project: path_to_aequilibrae_project
-    result_name: your_result_name
-    traffic_classes:
-        - car:
-            matrix_path: path_to_aequilibrae_project/matrices/demand.aem
-            matrix_core: car
-            network_mode: c
-            pce: 1
-            blocked_centroid_flows: True
-            skims: travel_time, distance
-        - truck:
-            matrix_path: path_to_aequilibrae_project/matrices/demand.aem
-            matrix_core: truck
-            network_mode: c
-            pce: 2
-            fixed_cost: toll
-            vot: 12
-            blocked_centroid_flows: True
-    assignment:
-        algorithm: bfw
-        vdf: BPR2
-        alpha: 0.15
-        beta: power
-        capacity_field: capacity
-        time_field: travel_time
-        max_iter: 250
-        rgap: 0.00001
-    select_links: # optional, name with a list of lists as [[link_id, link_direction]]
-        - from_node_1: [[1, 1], [2, 1]]
-        - random_nodes: [[3, 1], [5, 1]]

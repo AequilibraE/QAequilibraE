@@ -29,18 +29,18 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterField(
-                "link_type",
-                self.tr("Link type"),
-                type=QgsProcessingParameterField.String,
+                "direction",
+                self.tr("Direction"),
+                type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="links",
                 allowMultiple=False,
             )
         )
         self.addParameter(
             QgsProcessingParameterField(
-                "direction",
-                self.tr("Direction"),
-                type=QgsProcessingParameterField.Numeric,
+                "link_type",
+                self.tr("Link type"),
+                type=QgsProcessingParameterField.String,
                 parentLayerParameterName="links",
                 allowMultiple=False,
             )

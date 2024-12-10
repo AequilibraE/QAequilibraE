@@ -21,8 +21,8 @@ class ExportMatrix(QgsProcessingAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterFile(
-                "dst",
-                self.tr("Output folder"),
+                "file_path",
+                self.tr("File path"),
                 behavior=QgsProcessingParameterFile.Folder,
                 defaultValue=None,
             )
@@ -46,7 +46,7 @@ class ExportMatrix(QgsProcessingAlgorithm):
         file_format = ["csv", "omx", "aem"]
         format = file_format[parameters["output_format"]]
         file_name, ext = parameters["src"].split("/")[-1].split(".")
-        dst_path = join(parameters["dst"], f"{file_name}.{format}")
+        dst_path = join(parameters["file_path"], f"{file_name}.{format}")
 
         kwargs = {"file_path": dst_path, "memory_only": False}
         mat = AequilibraeMatrix()

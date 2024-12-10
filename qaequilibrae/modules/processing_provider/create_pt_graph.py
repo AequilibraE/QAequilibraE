@@ -16,12 +16,11 @@ class CreatePTGraph(QgsProcessingAlgorithm):
             QgsProcessingParameterFile(
                 "project_path",
                 self.tr("Project path"),
-                behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
+                behavior=QgsProcessingParameterFile.Folder
             )
         )
         self.addParameter(
-            QgsProcessingParameterString("access_mode", self.tr("Mode"), multiLine=False, defaultValue="w")
+            QgsProcessingParameterString("access_mode", self.tr("Modes"), multiLine=False)
         )
         self.addParameter(
             QgsProcessingParameterBoolean("block_flows", self.tr("Block flows through centroids"), defaultValue=True)

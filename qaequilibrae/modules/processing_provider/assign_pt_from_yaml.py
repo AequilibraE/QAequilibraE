@@ -13,7 +13,7 @@ class TransitAssignYAML(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFile(
                 "conf_file",
-                self.tr("Configuration file (.yaml)"),
+                self.tr("Configuration file (*.yaml)"),
                 behavior=QgsProcessingParameterFile.File,
                 fileFilter="",
             )

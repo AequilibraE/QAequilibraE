@@ -35,10 +35,10 @@ class MatrixCalculator(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterString("procedure", self.tr("Expression"), multiLine=True, defaultValue="")
+            QgsProcessingParameterString("procedure", self.tr("Expression"), multiLine=True)
         )
         self.addParameter(
-            QgsProcessingParameterString("matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix")
+            QgsProcessingParameterString("matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix_core")
         )
         self.addParameter(
             QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "AequilibraE Matrix (*.aem)")
