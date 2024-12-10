@@ -1,7 +1,9 @@
 import pytest
+import qgis
 from qgis.core import QgsProject
 
 from qaequilibrae.modules.routing_procedures.tsp_dialog import TSPDialog
+from qaequilibrae.modules.routing_procedures.tsp_procedure import TSPProcedure
 
 
 @pytest.mark.parametrize("in_selection", [False, True])
@@ -23,8 +25,6 @@ def test_create_from_centroids(ae_with_project, in_selection):
         assert "TSP Stops" in names
     else:
         assert len(dialog.worker_thread.node_sequence) == 25
-
-    QgsProject.instance().clear()
 
     ae_with_project.run_close_project()
 
@@ -96,3 +96,31 @@ def test_centroid_error(pt_no_feed):
     ), "Level 3 error message is missing"
 
     pt_no_feed.run_close_project()
+
+
+@pytest.mark.parametrize("has_solution", [True, False])
+def test_routing_procedure(ae_with_project, has_solution):
+    import numpy as np
+
+    if not has_solution:
+        project_links = ae_with_project.project.network.links
+        project_links.delete(3)
+        project_links.delete(4)
+        project_links.refresh()
+
+    ae_with_project.project.network.build_graphs()
+    graph = ae_with_project.project.network.graphs["c"]
+    graph.set_graph("free_flow_time")
+    graph.set_skimming(["free_flow_time"])
+    graph.set_blocked_centroid_flows(False)
+
+    if not has_solution:
+        graph.prepare_graph(np.array([1, 2], dtype=np.int32))
+
+    procedure = TSPProcedure(qgis.utils.iface.mainWindow(), graph, 1, 1)
+    procedure.doWork()
+
+    if has_solution:
+        assert procedure.report[0] == "Objective function value: 96.0"
+    else:
+        assert procedure.report[0] == "Solution not found"

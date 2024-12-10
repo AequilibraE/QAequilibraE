@@ -3,15 +3,14 @@ import pandas as pd
 from functools import partial
 
 import qgis
+from qgis.PyQt import QtWidgets, uic
+from qgis.PyQt.QtCore import Qt, QSize
 
-from qgis.PyQt import QtWidgets, uic, QtCore
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QTableWidgetItem
-from qaequilibrae.modules.matrix_procedures.load_dataset_class import LoadDataset
 from qaequilibrae.modules.common_tools.all_layers_from_toc import all_layers_from_toc
 from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path, get_vector_layer_by_name
 from qaequilibrae.modules.common_tools.get_output_file_name import GetOutputFileName
 from qaequilibrae.modules.common_tools.global_parameters import integer_types, float_types, point_types, poly_types
+from qaequilibrae.modules.matrix_procedures.load_dataset_class import LoadDataset
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_vector_loader.ui"))
 
@@ -79,13 +78,13 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
             for table, fields in comb:
                 for field in fields:
                     table.setRowCount(table.rowCount() + 1)
-                    item1 = QTableWidgetItem(field)
+                    item1 = QtWidgets.QTableWidgetItem(field)
                     item1.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                     table.setItem(table.rowCount() - 1, 0, item1)
 
     def size_it_accordingly(self, final=False):
         def set_size(w, h):
-            self.setMaximumSize(QtCore.QSize(w, h))
+            self.setMaximumSize(QSize(w, h))
             self.resize(w, h)
 
         if self.radio_csv.isChecked() or self.radio_parquet.isChecked():

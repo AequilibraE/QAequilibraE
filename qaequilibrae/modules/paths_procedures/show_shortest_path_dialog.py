@@ -6,8 +6,7 @@ from aequilibrae.project import Project
 from qgis._core import QgsProject, QgsVectorLayer, QgsSpatialIndex
 
 import qgis
-from qgis.PyQt import QtCore
-from qgis.PyQt import QtWidgets, uic
+from qgis.PyQt import QtCore, QtWidgets, uic
 from qgis.utils import iface
 from qaequilibrae.modules.paths_procedures.point_tool import PointTool
 from qaequilibrae.modules.common_tools import LoadGraphLayerSettingDialog
@@ -155,7 +154,7 @@ class ShortestPathDialog(QtWidgets.QDialog, FORM_CLASS):
                     self.create_path_with_scratch_layer()
             else:
                 msg = self.tr("No path between {} and {}").format(self.path_from.text(), self.path_to.text())
-                qgis.utils.iface.messageBar().pushMessage(msg, "", level=3)
+                qgis.utils.iface.messageBar().pushMessage(msg, "", level=2)
 
     def create_path_with_selection(self):
         f = "link_id"

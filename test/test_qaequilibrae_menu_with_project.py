@@ -66,6 +66,26 @@ def test_logfile_menu(ae_with_project, qtbot):
     assert len(messagebar.messages[3]) == 0, "Messagebar should be empty" + str(messagebar.messages)
 
 
+def test_create_project_from_osm_menu(ae_with_project):
+    action = ae_with_project.menuActions["Model Building"][0]
+    assert action.text() == "Create project from OSM", "Wrong text content"
+    action.trigger()
+    messagebar = ae_with_project.iface.messageBar()
+    assert (
+        messagebar.messages[2][0] == "Error:You need to close the project currently open first"
+    ), "Level 2 error message is missing"
+
+
+def test_create_project_from_layers_menu(ae_with_project):
+    action = ae_with_project.menuActions["Model Building"][1]
+    assert action.text() == "Create Project from layers", "Wrong text content"
+    action.trigger()
+    messagebar = ae_with_project.iface.messageBar()
+    assert (
+        messagebar.messages[2][0] == "Error:You need to close the project currently open first"
+    ), "Level 2 error message is missing"
+
+
 def test_network_preparation_menu(ae_with_project, qtbot):
     from qaequilibrae.modules.network import NetworkPreparationDialog
 
@@ -275,8 +295,6 @@ def test_gtfs_importer(ae_with_project, qtbot):
 
 
 def test_gtfs_explorer(ae_with_project, qtbot):
-    from qaequilibrae.modules.public_transport_procedures.transit_navigator_dialog import TransitNavigatorDialog
-
     action = ae_with_project.menuActions["Public Transport"][1]
     assert action.text() == "Explore Transit", "Wrong text content"
     action.trigger()

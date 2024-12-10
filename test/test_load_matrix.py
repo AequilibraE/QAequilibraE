@@ -1,43 +1,12 @@
 import numpy as np
-from PyQt5.QtCore import QTimer, QVariant
-from qgis.core import QgsProject, QgsVectorLayer, QgsField, QgsFeature
+import pandas as pd
+from PyQt5.QtCore import QTimer
 
+from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.matrix_procedures.load_matrix_dialog import LoadMatrixDialog
 
 
-def load_layers():
-    import csv
-
-    path_to_csv = "test/data/SiouxFalls_project/SiouxFalls_od.csv"
-    datalayer = QgsVectorLayer("None?delimiter=,", "open_layer", "memory")
-
-    fields = [
-        QgsField("O", QVariant.Int),
-        QgsField("D", QVariant.Int),
-        QgsField("Ton", QVariant.Double),
-    ]
-    datalayer.dataProvider().addAttributes(fields)
-    datalayer.updateFields()
-
-    with open(path_to_csv, "r") as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            origin = int(row["O"])
-            destination = int(row["D"])
-            tons = float(row["Ton"])
-
-            feature = QgsFeature()
-            feature.setAttributes([origin, destination, tons])
-
-            datalayer.dataProvider().addFeature(feature)
-
-    if not datalayer.isValid():
-        print("Open layer failed to load!")
-    else:
-        QgsProject.instance().addMapLayer(datalayer)
-
-
-def test_matrix_menu(ae_with_project, qtbot):
+def test_matrix_menu(ae_with_project, qtbot, timeoutDetector):
     from qaequilibrae.modules.matrix_procedures.load_matrix_dialog import LoadMatrixDialog
     from test.test_qaequilibrae_menu_with_project import check_if_new_active_window_matches_class
 
@@ -51,9 +20,12 @@ def test_matrix_menu(ae_with_project, qtbot):
 
 
 # TODO: test removing the matrices
-def test_save_matrix(ae_with_project, folder_path):
+def test_save_matrix(ae_with_project, folder_path, timeoutDetector):
     file_name = f"{folder_path}/test_matrix.aem"
-    load_layers()
+
+    df = pd.read_csv("test/data/SiouxFalls_project/SiouxFalls_od.csv")
+    _ = layer_from_dataframe(df, "open_layer")
+
     dialog = LoadMatrixDialog(ae_with_project)
     dialog.sparse = True
     dialog.output_name = file_name

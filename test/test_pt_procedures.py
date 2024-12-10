@@ -2,6 +2,7 @@ import os
 import sqlite3
 import pytest
 from datetime import datetime
+
 from aequilibrae.transit import Transit
 from PyQt5.QtCore import QTimer
 

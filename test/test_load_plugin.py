@@ -1,24 +1,13 @@
-import unittest
-
 from qaequilibrae.qaequilibrae import AequilibraEMenu
 from qgis.utils import iface
 from .utilities import get_qgis_app
 
 
-class OpenMainDialogTest(unittest.TestCase):
-    """Test dialog works."""
+def test_if_dialog_opens():
+    """Test we can click OK."""
 
-    def setUp(self):
-        """Runs before each test."""
-        _ = get_qgis_app()
+    _ = get_qgis_app()
 
-    def test_if_dialog_opens(self):
-        """Test we can click OK."""
+    dialog = AequilibraEMenu(iface)
 
-        self.dialog = AequilibraEMenu(iface)
-
-
-if __name__ == "__main__":
-    suite = unittest.makeSuite(OpenMainDialogTest)
-    runner = unittest.TextTestRunner(verbosity=2)
-    runner.run(suite)
+    assert dialog is not None

@@ -19,12 +19,12 @@
  -----------------------------------------------------------------------------------------------------------
  """
 
+import os
 from qgis.core import *
 from qgis.PyQt import QtWidgets, uic
-from .get_output_file_name import GetOutputFileName
 
-import os
 from .auxiliary_functions import standard_path
+from .get_output_file_name import GetOutputFileName
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_report.ui"))
 
@@ -43,13 +43,17 @@ class ReportDialog(QtWidgets.QDialog, FORM_CLASS):
         self.but_close.clicked.connect(self.exit_procedure)
 
     def save_log(self):
-        file_types = "Text files(*.txt)"
-        new_name, _ = GetOutputFileName(self, self.tr("Save procedure log"), file_types, ".txt", self.path)
+        new_name = self.browse_outfile()
         if new_name is not None:
             with open(new_name, "w") as outp:
                 for t in self.reporting:
                     outp.write(t)
             self.exit_procedure()
+
+    def browse_outfile(self):
+        file_types = "Text files(*.txt)"
+        new_name, _ = GetOutputFileName(self, self.tr("Save procedure log"), file_types, ".txt", self.path)
+        return new_name
 
     def exit_procedure(self):
         self.close()

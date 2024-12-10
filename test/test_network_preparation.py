@@ -1,38 +1,17 @@
 import pytest
-from os.path import join
-from uuid import uuid4
-from shutil import copytree
+from qgis.core import QgsProject
 
-from qgis.core import QgsProject, QgsVectorLayer
+from .utilities import load_test_layer
 from qaequilibrae.modules.network.network_preparation_dialog import NetworkPreparationDialog
 from qaequilibrae.modules.network.Network_preparation_procedure import NetworkPreparationProcedure
 
 
-def load_test_layer(path, file_name):
-    csv_path = f"/{path}/{file_name}.csv"
-
-    if file_name == "link":
-        uri = "file://{}?delimiter=,&crs=epsg:4326&wktField={}".format(csv_path, "geometry")
-    else:
-        uri = "file://{}?delimiter=,&crs=epsg:4326&xField={}&yField={}".format(csv_path, "x", "y")
-
-    layer = QgsVectorLayer(uri, file_name, "delimitedtext")
-
-    if not layer.isValid():
-        print("Layer failed to load!")
-    else:
-        QgsProject.instance().addMapLayer(layer)
-
-
 @pytest.mark.parametrize("is_node", [True, False])
-def test_prepare_network(tmp_path, ae, is_node):
+def test_prepare_network(folder_path, ae, is_node):
 
-    folder = join(tmp_path, uuid4().hex)
-    copytree("test/data/NetworkPreparation", folder)
-
-    load_test_layer(folder, "link")
+    load_test_layer(folder_path, "link")
     if is_node:
-        load_test_layer(folder, "node")
+        load_test_layer(folder_path, "node")
 
     dialog = NetworkPreparationDialog(ae)
     dialog.cbb_line_layer.setCurrentText("link")
@@ -70,5 +49,3 @@ def test_prepare_network(tmp_path, ae, is_node):
         layer = QgsProject.instance().mapLayersByName("net_nodes")[0]
         for f in layer.getFeatures():
             assert f.attributes()[0] >= 1001
-
-    QgsProject.instance().removeAllMapLayers()

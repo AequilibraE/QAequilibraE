@@ -1,4 +1,5 @@
 import pytest
+
 from qgis.core import QgsProject
 
 from qaequilibrae.modules.gis.desire_lines_dialog import DesireLinesDialog
