@@ -12,6 +12,13 @@ class ImportGTFS(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterFile(
+                "project_path",
+                self.tr("Project path"),
+                behavior=QgsProcessingParameterFile.Folder,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterFile(
                 "gtfs_file",
                 self.tr("GTFS file"),
                 behavior=QgsProcessingParameterFile.File,
@@ -29,13 +36,6 @@ class ImportGTFS(QgsProcessingAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterBoolean("allow_map_match", self.tr("Map-match transit routes"), defaultValue=True)
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(
-                "project_path",
-                self.tr("Project path"),
-                behavior=QgsProcessingParameterFile.Folder,
-            )
         )
 
     def processAlgorithm(self, parameters, context, feedback):

@@ -3,9 +3,7 @@ import sys
 
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingParameterFile
 from qgis.core import QgsProcessingParameterBoolean, QgsProcessingParameterString, QgsProcessingParameterNumber
-from qgis.core import QgsProcessingParameterDefinition
 
-from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt
 
 
@@ -14,14 +12,15 @@ class CreatePTGraph(QgsProcessingAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(
             QgsProcessingParameterFile(
-                "project_path",
-                self.tr("Project path"),
-                behavior=QgsProcessingParameterFile.Folder
+                "project_path", self.tr("Project path"), behavior=QgsProcessingParameterFile.Folder
             )
         )
         self.addParameter(
-            QgsProcessingParameterString("access_mode", self.tr("Modes"), multiLine=False)
+            QgsProcessingParameterNumber(
+                "period_id", self.tr("Period ID"), type=QgsProcessingParameterNumber.Integer, minValue=1, defaultValue=1
+            )
         )
+        self.addParameter(QgsProcessingParameterString("access_mode", self.tr("Modes"), multiLine=False))
         self.addParameter(
             QgsProcessingParameterBoolean("block_flows", self.tr("Block flows through centroids"), defaultValue=True)
         )
@@ -33,17 +32,9 @@ class CreatePTGraph(QgsProcessingAlgorithm):
                 "outer_stops_transfers", self.tr("Project with outer stops transfers"), defaultValue=False
             )
         )
-
-        advparams = [
-            QgsProcessingParameterBoolean("has_zones", self.tr("Project has zoning information"), defaultValue=True),
-            QgsProcessingParameterNumber(
-                "period_id", self.tr("Period ID"), type=QgsProcessingParameterNumber.Integer, minValue=1, defaultValue=1
-            ),
-        ]
-
-        for param in advparams:
-            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-            self.addParameter(param)
+        self.addParameter(
+            QgsProcessingParameterBoolean("has_zones", self.tr("Project has zoning information"), defaultValue=True)
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         # Checks if we have access to aequilibrae library

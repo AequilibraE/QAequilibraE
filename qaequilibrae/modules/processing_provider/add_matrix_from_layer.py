@@ -15,7 +15,7 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
-            QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "Open Matrix (*.omx)")
+            QgsProcessingParameterFileDestination("file_path", self.tr("File path"), "Open Matrix (*.omx)")
         )
         self.addParameter(QgsProcessingParameterMapLayer("matrix_layer", self.tr("Matrix Layer")))
         self.addParameter(
@@ -94,14 +94,14 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
             .astype(np.float64)
         )
 
-        mat = omx.open_file(parameters["file_name"], "a")
+        mat = omx.open_file(parameters["file_path"], "a")
         mat[parameters["matrix_core"]] = m
         mat.close()
 
         feedback.pushInfo(" ")
         feedback.setCurrentStep(3)
 
-        return {"Output": f"New core addedd to {parameters["file_name"]}"}
+        return {"Output": f"New core addedd to {parameters["file_path"]}"}
 
     def name(self):
         return "exportmatrixasomx"

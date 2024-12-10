@@ -48,7 +48,7 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "AequilibraE Matrix (*.aem)")
+            QgsProcessingParameterFileDestination("file_path", self.tr("File path"), "AequilibraE Matrix (*.aem)")
         )
 
         advparams = [
@@ -82,7 +82,7 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
         destination = parameters["destination"]
         value = parameters["value"]
         list_cores = [parameters["matrix_core"]]
-        path_to_file = parameters["file_name"]
+        path_to_file = parameters["file_path"]
 
         # Import layer as a pandas df
         feedback.pushInfo(self.tr("Importing layer"))
@@ -109,7 +109,7 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
         feedback.setCurrentStep(2)
 
         mat = AequilibraeMatrix()
-        mat.create_empty(file_name=path_to_file, zones=nb_of_zones, matrix_names=list_cores, memory_only=False)
+        mat.create_empty(file_path=path_to_file, zones=nb_of_zones, matrix_names=list_cores, memory_only=False)
 
         m = (
             coo_matrix(

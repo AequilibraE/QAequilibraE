@@ -34,14 +34,14 @@ class MatrixCalculator(QgsProcessingAlgorithm):
                 behavior=QgsProcessingParameterFile.File,
             )
         )
+        self.addParameter(QgsProcessingParameterString("procedure", self.tr("Expression"), multiLine=True))
         self.addParameter(
-            QgsProcessingParameterString("procedure", self.tr("Expression"), multiLine=True)
+            QgsProcessingParameterString(
+                "matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix_core"
+            )
         )
         self.addParameter(
-            QgsProcessingParameterString("matrix_core", self.tr("Matrix core"), multiLine=False, defaultValue="matrix_core")
-        )
-        self.addParameter(
-            QgsProcessingParameterFileDestination("file_name", self.tr("File name"), "AequilibraE Matrix (*.aem)")
+            QgsProcessingParameterFileDestination("file_path", self.tr("File path"), "AequilibraE Matrix (*.aem)")
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
@@ -51,7 +51,7 @@ class MatrixCalculator(QgsProcessingAlgorithm):
 
         from aequilibrae.matrix import AequilibraeMatrix
 
-        if parameters["file_name"] is None:
+        if parameters["file_path"] is None:
             raise QgsProcessingException(self.tr("Plase use a valid file name."))
 
         feedback = QgsProcessingMultiStepFeedback(4, model_feedback)
@@ -87,7 +87,7 @@ class MatrixCalculator(QgsProcessingAlgorithm):
 
         mat = AequilibraeMatrix()
         mat.create_empty(
-            file_name=parameters["file_name"],
+            file_path=parameters["file_path"],
             zones=len(index),
             matrix_names=[parameters["matrix_core"]],
             memory_only=False,

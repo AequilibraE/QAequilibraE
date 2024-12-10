@@ -22,16 +22,9 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
         )
         self.addParameter(
             QgsProcessingParameterVectorLayer(
-                "links", self.tr("Links"), types=[QgsProcessing.TypeVectorLine], defaultValue=None
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterField(
-                "link_type",
-                self.tr("Link type"),
-                type=QgsProcessingParameterField.String,
-                parentLayerParameterName="links",
-                allowMultiple=False,
+                "links",
+                self.tr("Links"),
+                types=[QgsProcessing.TypeVectorLine],
             )
         )
         self.addParameter(
@@ -39,6 +32,15 @@ class AddLinksFromLayer(QgsProcessingAlgorithm):
                 "direction",
                 self.tr("Direction"),
                 type=QgsProcessingParameterField.Numeric,
+                parentLayerParameterName="links",
+                allowMultiple=False,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
+                "link_type",
+                self.tr("Link type"),
+                type=QgsProcessingParameterField.String,
                 parentLayerParameterName="links",
                 allowMultiple=False,
             )
