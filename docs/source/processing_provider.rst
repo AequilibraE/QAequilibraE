@@ -1,11 +1,11 @@
 Processing Tools
 ================
 
-Some of AequilibraE's plugin functionalities are now available in a Processing plugin.
-The processing plugin is automatically installed with AequilibraE and allows the user to 
-create projects from links, export matrices, and much more. The processing plugin usage
-does not require open AequilibraE projects, although it is mandatory to have AequilibraE
-installed.
+Some of AequilibraE's plugin functionalities are now available in a processing plugin.
+The processing plugin is automatically installed with AequilibraE and allows you to perform
+several tasks, such as creating project from links, exporting matrices, and much more,
+as a batch process or not. To use the processing plugin, you don't have to directly open
+the AequilibraE project, although it is mandatory to have AequilibraE installed.
 
 To find AequilibraE's processing plugin, click on the **Processing** panel and select **Toolbox**.
 You can also use the available QGIS shortcut to open the Toolbox window.
@@ -15,7 +15,7 @@ You can also use the available QGIS shortcut to open the Toolbox window.
     :alt: Processing provider menu
 
 At the bottom of the window, you'll find the AequilibraE logo and the available functions.
-The functions are divided into three groups, following the same logic as the AequilibraE Widget
+The functions are divided into groups, following the same logic as the AequilibraE widget
 menu. Notice that not all AequilibraE functionalities are available for processing.
 
 .. subfigure:: AB
@@ -29,14 +29,14 @@ menu. Notice that not all AequilibraE functionalities are available for processi
 
 In the following subsections, we'll go over all functionalities.
 
-
 Model Building
 --------------
 Add centroid connectors
 ~~~~~~~~~~~~~~~~~~~~~~~
-AequilibraE's processing tool can also add centroid connectors to a project's network. The user
-needs to specify the number of centroids, the modes to be connected, and the project folder.
-The default connection mode is **c** (car).
+AequilibraE's processing tool can add centroid connectors to a project's network. All you
+need to do is specify the number of centroids and the project folder. You can also choose
+the modes and the link types you want to connect, otherwise the default configuration uses
+all modes and link types.
 
 .. image:: images/processing_provider_centroids.png
     :align: center
@@ -44,14 +44,20 @@ The default connection mode is **c** (car).
 
 Add links from layer to project
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
+This tool allows you to add links from a vector layer to your existing project network.
+The fields usage is straightforward: in *Project path*, you add the project's path in your
+machine, then select a vector layer that corresponds to the new links you want to add to
+your project, and indicate the layer fields that correspond to the link type, direction, and
+modes. Notice that this tool doesn't require a node layer, nor does it require fields such
+as ``a_node`` or ``b_node``, as it will use the existing numbering in the project.
+
 .. image:: images/processing_provider_new_links_to_project.png
     :align: center
     :alt: Processing provider add new links from layer to project
 
 Add/Renumber nodes from layer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-One can also add or renumber nodes in an AequilibraE project to match a layer of centroids.
+You can also add or renumber nodes in an AequilibraE project to match a layer of centroids.
 Just select or import the centroids layer, specify the node ID you want to match, and the output
 folder.
 
@@ -62,10 +68,10 @@ folder.
 Create project from link layer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *Create project from link layer* is similar to the widget menu 
-:ref:`Create project from layers <project_from_layers>`, and allows the user to create an AequilibraE 
-project directly from a link layer, without requiring a node layer. With a geometric layer loaded into
-QGIS, select it in the *Links* button, and add the required data in the subsequent menus. Choose the project's
-name and specify the location where you want to save it on your machine.
+:ref:`Create project from layers <project_from_layers>`, and allows you to create an AequilibraE 
+project directly from a link layer, without requiring a node layer. With a geometric layer loaded 
+into QGIS, select it in the *Links* button, and add the required data in the subsequent menus. 
+Choose the project's name and specify the location where you want to save it on your machine.
 
 .. image:: images/processing_provider_project_from_links.png
     :align: center
@@ -73,6 +79,9 @@ name and specify the location where you want to save it on your machine.
 
 Create project from OSM
 ~~~~~~~~~~~~~~~~~~~~~~~
+This tool is similar to the homonymous widget menu 
+:ref:`Create project from OSM <create-proj-from-osm>`, and allows you to create an AequilibraE
+project only specifying the place name and the folder path and name you want to save the project.
 
 .. image:: images/processing_provider_project_from_osm.png
     :align: center
@@ -82,19 +91,20 @@ Data
 ----
 Create AequilibraE Matrix from layer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-With *Import matrices*, the user can save an open data layer directly as a \*.aem file.
+With *Import matrices*, you can save an open data layer directly as a \*.aem file.
 This tool is analogous to the widget menu :ref:`importing_matrices`, but it does not
-require an open AequilibraE project to work. To use the tool, the user must have an open layer
+require an open AequilibraE project to work. To use the tool, you must have an open layer
 loaded in QGIS, and the menus are the ones presented in the figure below.
 
 .. image:: images/processing_provider_import_matrices.png
     :align: center
     :alt: Processing provider import matrices
 
-The upper fields are mandatory and are responsible for selecting the layer, indicating
-which columns correspond to the origin, destination, and flow, creating a file name, and
-specifying the destination folder. In the *Advanced Parameters*, the user will find fields to add
-extra information to the AequilibraE matrix they are about to create.
+The upper fields are mandatory and are res.. note::ponsible for selecting the layer, indicating
+which columns correspond to the origin, destination, and flow, creating a core name for your
+matrix, and specifying the output file name and path. In the *Advanced Parameters*, you can add
+extra information about your AequilibraE matrix using the fields ``Matrix name`` and 
+``Matrix description``.
 
 Export matrices
 ~~~~~~~~~~~~~~~
@@ -110,13 +120,51 @@ be used as input, and the output format can be either one of \*.aem, \*.omx, or 
 
 Matrix calculator
 ~~~~~~~~~~~~~~~~~
+Under the hood, this tool performs several matrix calculations using NumPy. Its output is 
+an AequilibraE matrix stored in the file path you provide. Notice that not all matrices
+operations available in NumPy are also available here. We currently handle the following
+operations.
+
+* ``+``, ``-``, ``*``, ``/``
+* ``min``, ``max``, ``abs``
+* ``ln``, ``exp``, ``power``
+* ``null_diag``, ``T``
+
+To be more effective in your calculation, please use the brackets to separate the operations
+in the desired order of execution.
+
+The following code blocks present, respectively, the matrix input configuration in the YAML file
+and an expression that can be used for calculation. 
 
 .. image:: images/processing_provider_matrix_calc.png
     :align: center
     :alt: Processing provider matrix calculator
-    
+
+.. code-block:: yaml
+    :caption: Matrix configuration
+
+    # For each matrix used for calculation
+    - matrix_name1:
+        matrix_path: path to file
+        matrix_core: specifiy the core name
+    # For all the constants used for calculation 
+    - constants:
+        constant_name1: 3
+        constant_name2: 0.8
+
+.. code-block:: yaml
+    :caption: Expression
+
+    (matrix_name1 - matrix_name2).T
+
 Save matrix from layer in existing file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This tools allows you to export the data from a 
+
+.. important::
+
+    Currently, we cannot add new cores to an existing AequilibraE matrix. For this reason
+    the only output file format available is \*.omx. 
 
 .. image:: images/processing_provider_save_matrix_in_existing_file.png
     :align: center
@@ -136,7 +184,7 @@ an example of a valid YAML configuration.
     :alt: Processing provider traffic assignment from file
 
 .. code-block:: yaml
-    :caption: YAML configuration example
+    :caption: Traffic assignment configuration
 
     project: path_to_aequilibrae_project
     result_name: name_of_result_file_to_save
