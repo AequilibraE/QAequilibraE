@@ -33,9 +33,16 @@ def test_open_project_menu(ae, qtbot):
     # action.trigger()
 
 
-def test_create_example(ae):
+def test_create_example(ae, qtbot):
+    from qaequilibrae.modules.project_procedures import CreateExampleDialog
+
+    def handle_trigger():
+        check_if_new_active_window_matches_class(qtbot, CreateExampleDialog)
+
     action = ae.menuActions["Project"][1]
     assert action.text() == "Create example", "Wrong text content"
+    QTimer.singleShot(10, handle_trigger)
+    action.trigger()
 
 
 def test_parameters_menu(ae, qtbot):

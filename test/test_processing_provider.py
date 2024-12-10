@@ -1,4 +1,4 @@
-import pytest
+import os
 import re
 import pandas as pd
 import numpy as np
@@ -7,7 +7,10 @@ import shutil
 import sqlite3
 from os.path import isfile, join
 from os import environ, makedirs
+
+import pytest
 from shapely.geometry import Point
+
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae import Project
 from aequilibrae.transit import Transit
@@ -29,6 +32,16 @@ from qaequilibrae.modules.processing_provider.import_gtfs import ImportGTFS
 from qaequilibrae.modules.processing_provider.matrix_calculator import MatrixCalculator
 from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
 from qaequilibrae.modules.processing_provider.project_from_OSM import ProjectFromOSM
+from aequilibrae.project import Project
+
+from .utilities import load_sfalls_from_layer
+from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
+from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
+from qaequilibrae.modules.processing_provider.assign_from_yaml import TrafficAssignYAML
+from qaequilibrae.modules.processing_provider.export_matrix import ExportMatrix
+from qaequilibrae.modules.processing_provider.matrix_from_layer import MatrixFromLayer
+from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
+from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
 
 
@@ -51,7 +64,7 @@ def test_provider_exists(qgis_app):
 @pytest.mark.parametrize("format", [0, 1, 2])
 @pytest.mark.parametrize("source_file", ["sfalls_skims.omx", "demand.aem"])
 def test_export_matrix(folder_path, source_file, format):
-    makedirs(folder_path)
+    os.makedirs(folder_path)
     action = ExportMatrix()
 
     parameters = {
@@ -69,7 +82,7 @@ def test_export_matrix(folder_path, source_file, format):
 
 
 def test_matrix_from_layer(folder_path):
-    makedirs(folder_path)
+    os.makedirs(folder_path)
 
     df = pd.read_csv("test/data/SiouxFalls_project/SiouxFalls_od.csv")
     layer = layer_from_dataframe(df, "SiouxFalls_od")
@@ -100,8 +113,8 @@ def test_matrix_from_layer(folder_path):
     assert m.sum() == 360600
 
 
-@pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
-def test_project_from_layer(folder_path, load_sfalls_from_layer):
+def test_project_from_layer(folder_path):
+    load_sfalls_from_layer(folder_path)
 
     linkslayer = QgsProject.instance().mapLayersByName("Links layer")[0]
 
@@ -132,8 +145,6 @@ def test_project_from_layer(folder_path, load_sfalls_from_layer):
 
     result = action.run(parameters, context, feedback)
     assert result[0]["Output"] == parameters["project_path"]
-
-    QgsProject.instance().clear()
 
     project = Project()
     project.open(parameters["project_path"])
@@ -172,8 +183,9 @@ def test_add_centroid_connector(pt_no_feed):
     assert link_count == 3
 
 
-@pytest.mark.parametrize("load_sfalls_from_layer", ["tmp"], indirect=True)
-def test_renumber_from_centroids(ae_with_project, load_sfalls_from_layer):
+def test_renumber_from_centroids(ae_with_project, tmp_path):
+    load_sfalls_from_layer(tmp_path)
+
     project = ae_with_project.project
     project_folder = project.project_base_path
 

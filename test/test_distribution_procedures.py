@@ -1,17 +1,23 @@
-from os.path import isfile, splitext, basename
 import numpy as np
-import pandas as pd
 import openmatrix as omx
+import pandas as pd
 import pytest
-from qgis.core import QgsProject
-from aequilibrae.matrix import AequilibraeMatrix
+from os.path import basename, isfile, splitext
 
-from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
+from aequilibrae.matrix import AequilibraeMatrix
+from qgis.core import QgsProject
+
+from .utilities import run_sfalls_assignment
+from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.distribution_procedures.distribution_models_dialog import DistributionModelsDialog
+from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
 
 
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
-def test_ipf(ae_with_project, folder_path, mocker, method, load_synthetic_future_vector):
+def test_ipf(ae_with_project, folder_path, mocker, method):
+
+    df = pd.read_csv("test/data/SiouxFalls_project/synthetic_future_vector.csv")
+    _ = layer_from_dataframe(df, "synthetic_future_vector")
 
     file_path = f"{folder_path}/demand_ipf_D.aem"
     mocker.patch(
@@ -76,8 +82,8 @@ def test_ipf(ae_with_project, folder_path, mocker, method, load_synthetic_future
 
 
 @pytest.mark.parametrize("method", ["negative_exponential", "inverse_power", "both"])
-def test_calibrate_gravity(run_assignment, method, folder_path, mocker):
-    proj = run_assignment
+def test_calibrate_gravity(ae_with_project, method, folder_path, mocker):
+    proj = run_sfalls_assignment(ae_with_project)
 
     file_path = f"{folder_path}/mod_{method}.mod"
     mocker.patch(

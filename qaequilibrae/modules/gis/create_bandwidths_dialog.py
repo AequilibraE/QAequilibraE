@@ -438,7 +438,7 @@ class CreateBandwidthsDialog(QDialog, FORM_CLASS):
         width_legend_name = f"{layer_name} (Width)"
         cls.delete_existing_layers_with_same_name(width_legend_name)
 
-        width_layer = QgsVectorLayer("LineString?crs=4326", width_legend_name, "memory")
+        width_layer = QgsVectorLayer("LineString?crs=epsg:4326", width_legend_name, "memory")
         symbol = QgsSymbol.defaultSymbol(width_layer.geometryType())
         symbol.setWidth(0.001)
         symbol.setColor(QColor("#000000"))
@@ -473,7 +473,7 @@ class CreateBandwidthsDialog(QDialog, FORM_CLASS):
         color_legend_name = f"{layer_name} (Color)"
         cls.delete_existing_layers_with_same_name(color_legend_name)
 
-        color_layer = QgsVectorLayer("LineString?crs=4326", color_legend_name, "memory")
+        color_layer = QgsVectorLayer("LineString?crs=epsg:4326", color_legend_name, "memory")
 
         renderer = QgsRuleBasedRenderer(QgsLineSymbol.createSimple({"width": 2}))
         root_rule = renderer.rootRule()
