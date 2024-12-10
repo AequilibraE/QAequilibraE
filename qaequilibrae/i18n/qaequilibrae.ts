@@ -1307,32 +1307,32 @@
 <context>
     <name>LoadDatasetDialog</name>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="63"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="62"/>
         <source>Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="166"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="165"/>
         <source>Error while loading vector:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="228"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="227"/>
         <source>No name provided for the output file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="199"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="198"/>
         <source>Invalid field chosen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="214"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="213"/>
         <source>One cannot load a dataset with indices only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="188"/>
+        <location filename="../modules/matrix_procedures/load_dataset_dialog.py" line="187"/>
         <source>Could not load file. It might be corrupted or not a valid file format. {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1340,23 +1340,18 @@
 <context>
     <name>LoadMatrix</name>
     <message>
-        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="32"/>
+        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="31"/>
         <source>Loading from table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="44"/>
+        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="43"/>
         <source>Loading matrix: {}/{}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="47"/>
+        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="46"/>
         <source>Converting to a NumPy array</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/matrix_procedures/load_matrix_class.py" line="66"/>
-        <source>Loading from NumPy</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1557,11 +1552,11 @@
     <name>ParameterDialog</name>
     <message>
         <location filename="../modules/common_tools/parameters_dialog.py" line="66"/>
-        <source>Parameter structure was compromised. Please reset to defaults</source>
+        <source>Parameter structure was compromised. Please reset to default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/common_tools/parameters_dialog.py" line="102"/>
+        <location filename="../modules/common_tools/parameters_dialog.py" line="100"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1773,7 +1768,7 @@
 <context>
     <name>ReportDialog</name>
     <message>
-        <location filename="../modules/common_tools/report_dialog.py" line="47"/>
+        <location filename="../modules/common_tools/report_dialog.py" line="55"/>
         <source>Save procedure log</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1781,17 +1776,17 @@
 <context>
     <name>ShortestPathDialog</name>
     <message>
-        <location filename="../modules/paths_procedures/show_shortest_path_dialog.py" line="55"/>
+        <location filename="../modules/paths_procedures/show_shortest_path_dialog.py" line="54"/>
         <source>Loading data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/show_shortest_path_dialog.py" line="95"/>
+        <location filename="../modules/paths_procedures/show_shortest_path_dialog.py" line="94"/>
         <source>Display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/show_shortest_path_dialog.py" line="157"/>
+        <location filename="../modules/paths_procedures/show_shortest_path_dialog.py" line="156"/>
         <source>No path between {} and {}</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2024,37 +2019,37 @@
 <context>
     <name>TrafficAssignmentDialog</name>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="232"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="229"/>
         <source>Class name already used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="285"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="282"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="336"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="333"/>
         <source>Input error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="360"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="357"/>
         <source>No traffic classes to assign</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="365"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="362"/>
         <source>Missing scenario name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="370"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="367"/>
         <source>Result table name already exists. Choose a new name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="429"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="426"/>
         <source>VDF parameter is not numeric</source>
         <translation type="unfinished"></translation>
     </message>
