@@ -49,18 +49,6 @@ jobs:
           Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "qaequilibrae\download_extra_packages_class.py" -NoNewWindow -Wait
           $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
 
-      - name: Check installation on Latest
-        shell: pwsh
-        run: |
-          $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
-          Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pip list" -NoNewWindow -Wait
-
-      - name: Check installation on LTR
-        shell: pwsh
-        run: |
-          $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
-          Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "-m pip list" -NoNewWindow -Wait
-
       - name: Check packages installed
         shell: pwsh
         run: |
