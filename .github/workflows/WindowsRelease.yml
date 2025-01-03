@@ -40,5 +40,6 @@ jobs:
       - name: Check installation
         shell: pwsh
         run: |
+          $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pip list" -NoNewWindow -Wait
           Get-ChildItem -Path "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae\packages" -Name
