@@ -10,11 +10,11 @@ on:
 jobs:
   windows_test:
     runs-on: windows-latest
-    strategy:
-      matrix:
-      # we test the minimum LTR version required, the newest LTR, and the latest.
-      # version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
-      version: [qgis]
+    # strategy:
+    #   matrix:
+    #   # we test the minimum LTR version required, the newest LTR, and the latest.
+    #   # version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
+    #   version: [qgis]
 
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
       - name: Install QGIS on Chocolatey
         uses: crazy-max/ghaction-chocolatey@v3
         with:
-          args: install ${{ matrix.version }} -y
+          args: install qgis -y
 
       - name: Setup plugin on Latest
         shell: pwsh
