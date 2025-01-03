@@ -10,11 +10,10 @@ on:
 jobs:
   windows_test:
     runs-on: windows-latest
-    # strategy:
-    #   matrix:
-    #   # we test the minimum LTR version required, the newest LTR, and the latest.
-    #   # version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
-    #   version: [qgis]
+    strategy:
+      matrix:
+      # we test the minimum LTR version required, the newest LTR, and the latest.
+      version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
 
     steps:
       - uses: actions/checkout@v4
@@ -22,10 +21,11 @@ jobs:
       - name: Install QGIS on Chocolatey
         uses: crazy-max/ghaction-chocolatey@v3
         with:
-          args: install qgis -y
+          args: install ${{ matrix.version }} -y
 
       - name: Setup plugin on Latest
         shell: pwsh
+        if: ${{ (matrix.version == 'qgis')}}
         run: |
           Copy-Item "qaequilibrae" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Recurse
           $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
@@ -37,9 +37,30 @@ jobs:
         # we can run the tests, but they're timing out (and I don't know why...)
         # Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pytest test" -NoNewWindow -Wait
 
-      - name: Check installation
+      - name: Setup plugin on LTR
+        shell: pwsh
+        if: ${{ (matrix.version != 'qgis')}}
+        run: |
+          Copy-Item "qaequilibrae" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Recurse
+          $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
+          $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
+          $env:QT_QPA_PLATFORM = "offscreen"
+          Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "-m pip install -r test/requirements-test.txt" -NoNewWindow -Wait
+          Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "qaequilibrae\download_extra_packages_class.py" -NoNewWindow -Wait
+          $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
+
+      - name: Check installation on Latest
         shell: pwsh
         run: |
           $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pip list" -NoNewWindow -Wait
+
+      - name: Check installation on LTR
+        shell: pwsh
+        run: |
+          $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
+          Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "-m pip list" -NoNewWindow -Wait
+
+      - name: Check packages installed
+        shell: pwsh
           Get-ChildItem -Path "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae\packages" -Name
