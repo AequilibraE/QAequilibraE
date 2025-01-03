@@ -12,8 +12,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-      # we test the minimum LTR version required, the newest LTR, and the latest.
-      version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
+        # we test the minimum LTR version required, the newest LTR, and the latest.
+        version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
 
     steps:
       - uses: actions/checkout@v4
