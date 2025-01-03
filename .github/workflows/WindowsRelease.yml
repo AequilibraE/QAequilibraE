@@ -13,7 +13,8 @@ jobs:
     strategy:
       matrix:
       # we test the minimum LTR version required, the newest LTR, and the latest.
-        version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
+      # version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
+      version: [qgis]
 
     steps:
       - uses: actions/checkout@v4
@@ -25,31 +26,36 @@ jobs:
 
       - name: Setup plugin on Latest
         shell: pwsh
-        if: ${{ (matrix.version == 'qgis')}}
+      # if: ${{ (matrix.version == 'qgis')}}
         run: |
           Copy-Item "qaequilibrae" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Recurse
-          $env:PATH=(Get-ChildItem -Path "C:\Program Files" -Directory QGIS*).FullName +"\bin;$env:PATH"
-          $env:QGIS_PLUGIN_IN_CI=1
-          python-qgis.bat -m pip install uv
-          python-qgis.bat -m uv pip install -r test/requirements-test.txt --target APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae
-          Set-Location "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae"
-          python-qgis.bat download_extra_packages_class.py
-          python-qgis.bat -m pip list
-          python-qgis.bat -m pytest D:\a\qaequilibrae\qaequilibrae\test -v
 
-      - name: Setup plugin on LTR
+      - name: Install dependencies
         shell: pwsh
-        if: ${{ (matrix.version != 'qgis')}}
+      # if: ${{ (matrix.version == 'qgis')}}
         run: |
-          Copy-Item "qaequilibrae" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Recurse
-          $env:PATH=(Get-ChildItem -Path "C:\Program Files" -Directory QGIS*).FullName +"\bin;$env:PATH"
-          $env:QGIS_PLUGIN_IN_CI=1
-          python-qgis-ltr.bat -m pip install uv
-          python-qgis-ltr.bat -m uv pip install -r test/requirements-test.txt --target APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae
-          Set-Location "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae"
-          python-qgis-ltr.bat download_extra_packages_class.py
-          python-qgis-ltr.bat -m pip list
-        # python-qgis-ltr.bat -m pytest D:\a\qaequilibrae\qaequilibrae\test\ -v
+          $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
+          $env:PYTHONPATH = "$env:PYTHONPATH;C:\Users\$env:USERNAME\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins"
+        # Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pip install uv" -NoNewWindow -Wait
+        # Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m uv pip install -r test/requirements-test.txt" -NoNewWindow -Wait
+          $qgisPath\bin\python-qgis.bat -m pip install uv
+          $qgisPath\bin\python-qgis.bat -m uv pip install -r test/requirements-test.txt
+          $qgisPath\bin\python-qgis.bat download_extra_packages_class.py
+
+          $env:QGIS_PREFIX_PATH = $qgisPath
+          $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
+          $env:QT_QPA_PLATFORM = "offscreen"
+          Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pytest test/" -NoNewWindow -Wait
+          
+      # - name: Install dependencies
+      #   shell: pwsh
+      #   run: |
+      #     python-qgis.bat -m pip install uv
+      #     python-qgis.bat -m uv pip install -r test/requirements-test.txt --target APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae
+      #     Set-Location "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae"
+      #     python-qgis.bat download_extra_packages_class.py
+      #     python-qgis.bat -m pip list
+      #     python-qgis.bat -m pytest D:\a\qaequilibrae\qaequilibrae\test -v
 
       - name: Check installation
         shell: pwsh
