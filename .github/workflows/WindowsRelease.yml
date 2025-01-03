@@ -63,4 +63,5 @@ jobs:
 
       - name: Check packages installed
         shell: pwsh
+        run: |
           Get-ChildItem -Path "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae\packages" -Name
