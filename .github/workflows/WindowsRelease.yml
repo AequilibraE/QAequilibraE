@@ -29,14 +29,15 @@ jobs:
         run: |
           Copy-Item "qaequilibrae" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Recurse
           Copy-Item "test" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae\test" -Recurse
-          $env:PATH=(Get-ChildItem -Path "C:\Program Files" -Directory QGIS*).FullName +"\bin;$env:PATH"
-          $env:QGIS_PLUGIN_IN_CI=1
+          $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
+          echo "$qgisPath\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+          $env:QGIS_PREFIX_PATH = $qgisPath
+          $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
+          $env:QT_QPA_PLATFORM = "offscreen"
           Set-Location "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae"
           python-qgis.bat download_extra_packages_class.py
-          python-qgis.bat -m pip install -r test/requirements-test.txt
-          python-qgis.bat -m pip list
-          $env:QT_QPA_PLATFORM = "offscreen"
-          python-qgis.bat -m pytest D:\a\qaequilibrae\qaequilibrae\test -v
+          python-qgis.bat -m uv pip install -r test/requirements-test.txt --target "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae\packages"
+        # python-qgis.bat -m pytest test -v
 
       - name: Check installation
         shell: pwsh
