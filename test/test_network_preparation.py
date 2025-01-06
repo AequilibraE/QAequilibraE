@@ -1,4 +1,5 @@
 import pytest
+import sys
 from qgis.core import QgsProject
 
 from .utilities import load_test_layer
@@ -6,6 +7,7 @@ from qaequilibrae.modules.network.network_preparation_dialog import NetworkPrepa
 from qaequilibrae.modules.network.Network_preparation_procedure import NetworkPreparationProcedure
 
 
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 @pytest.mark.parametrize("is_node", [True, False])
 def test_prepare_network(folder_path, ae, is_node):
 

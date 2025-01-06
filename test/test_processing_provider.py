@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from shapely.geometry import Point
+import sys
 
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.project import Project
@@ -48,7 +49,7 @@ def test_provider_exists(qgis_app):
     assert "aequilibrae" in provider_names
 
 
-@pytest.mark.skip("Windows release test")
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 @pytest.mark.parametrize("format", [0, 1, 2])
 @pytest.mark.parametrize("source_file", ["sfalls_skims.omx", "demand.aem"])
 def test_export_matrix(folder_path, source_file, format):
@@ -69,7 +70,7 @@ def test_export_matrix(folder_path, source_file, format):
     assert isfile(result["Output"])
 
 
-@pytest.mark.skip("Windows release test")
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_matrix_from_layer(folder_path):
     os.makedirs(folder_path)
 
@@ -108,7 +109,7 @@ def test_matrix_from_layer(folder_path):
     assert np.sum(info["matrix"][parameters["matrix_core"]][:, :]) == 360600
 
 
-@pytest.mark.skip("Windows release test")
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_project_from_layer(folder_path):
     load_sfalls_from_layer(folder_path)
 
@@ -151,7 +152,7 @@ def test_project_from_layer(folder_path):
     assert project.network.count_nodes() == 24
 
 
-@pytest.mark.skip("Windows release test")
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_add_centroid_connector(pt_no_feed):
     project = pt_no_feed.project
     project_folder = project.project_base_path
@@ -182,7 +183,7 @@ def test_add_centroid_connector(pt_no_feed):
     assert link_count == 3
 
 
-@pytest.mark.skip("Windows release test")
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_renumber_from_centroids(ae_with_project, tmp_path):
     load_sfalls_from_layer(tmp_path)
 
@@ -215,7 +216,7 @@ def test_renumber_from_centroids(ae_with_project, tmp_path):
     assert node_count == list(range(1001, 1025))
 
 
-@pytest.mark.skip("Windows release test")
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_assign_from_yaml(ae_with_project):
     folder = ae_with_project.project.project_base_path
     file_path = join(folder, "config.yml")
