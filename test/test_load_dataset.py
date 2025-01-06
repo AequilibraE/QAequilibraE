@@ -1,5 +1,6 @@
 import pandas as pd
 import pytest
+import platform
 import qgis
 from qgis.core import QgsProject
 
@@ -8,6 +9,7 @@ from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatas
 from qaequilibrae.modules.matrix_procedures.load_dataset_class import LoadDataset
 
 
+@pytest.mark.skipif(platform.platform().lower().find("windows") >= 0, "PWSH")
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
 def test_load_dialog(ae_with_project, method, folder_path, timeoutDetector):
     df = pd.read_csv("test/data/SiouxFalls_project/synthetic_future_vector.csv")

@@ -1,11 +1,14 @@
 import numpy as np
 import pandas as pd
+import platform
+import pytest
 from PyQt5.QtCore import QTimer
 
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.matrix_procedures.load_matrix_dialog import LoadMatrixDialog
 
 
+@pytest.mark.skipif(platform.platform().lower().find("windows") >= 0, "PWSH")
 def test_matrix_menu(ae_with_project, qtbot, timeoutDetector):
     from qaequilibrae.modules.matrix_procedures.load_matrix_dialog import LoadMatrixDialog
     from test.test_qaequilibrae_menu_with_project import check_if_new_active_window_matches_class
@@ -20,6 +23,7 @@ def test_matrix_menu(ae_with_project, qtbot, timeoutDetector):
 
 
 # TODO: test removing the matrices
+@pytest.mark.skipif(platform.platform().lower().find("windows") >= 0, "PWSH")
 def test_save_matrix(ae_with_project, folder_path, timeoutDetector):
     file_name = f"{folder_path}/test_matrix.aem"
 

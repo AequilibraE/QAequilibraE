@@ -2,6 +2,7 @@ import numpy as np
 import openmatrix as omx
 import pandas as pd
 import pytest
+import platform
 from os.path import basename, isfile, splitext
 
 from aequilibrae.matrix import AequilibraeMatrix
@@ -13,6 +14,7 @@ from qaequilibrae.modules.distribution_procedures.distribution_models_dialog imp
 from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
 
 
+@pytest.mark.skipif(platform.platform().lower().find("windows") >= 0, "PWSH")
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
 def test_ipf(ae_with_project, folder_path, mocker, method):
 

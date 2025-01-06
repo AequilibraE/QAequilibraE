@@ -35,7 +35,7 @@ jobs:
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "qaequilibrae\download_extra_packages_class.py" -NoNewWindow -Wait
           $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
         # we can run the tests, but they're timing out (and I don't know why...)
-        # Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pytest test" -NoNewWindow -Wait
+          Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pytest test" -NoNewWindow -Wait
 
       - name: Setup plugin on LTR
         shell: pwsh
@@ -48,6 +48,7 @@ jobs:
           Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "-m pip install -r test/requirements-test.txt" -NoNewWindow -Wait
           Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "qaequilibrae\download_extra_packages_class.py" -NoNewWindow -Wait
           $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
+          Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pytest test" -NoNewWindow -Wait
 
       - name: Check packages installed
         shell: pwsh
