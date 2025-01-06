@@ -4,17 +4,17 @@ import sys
 from functools import partial
 from os.path import join
 
-from qgis._core import QgsExpressionContextUtils, QgsLineSymbol, QgsSimpleLineSymbolLayer
-
 import qgis
 from qgis.PyQt import QtGui, QtWidgets, uic
+from qgis._core import QgsExpressionContextUtils, QgsLineSymbol, QgsSimpleLineSymbolLayer
 from qgis.core import QgsExpression
 from qgis.core import QgsProject
 from qgis.core import QgsVectorLayerJoinInfo
-from qaequilibrae.modules.common_tools import get_parameter_chain
+
 from qaequilibrae.modules.common_tools import find_table_fields
-from qaequilibrae.modules.matrix_procedures.load_result_table import load_result_table
+from qaequilibrae.modules.common_tools import get_parameter_chain
 from qaequilibrae.modules.matrix_procedures import list_results
+from qaequilibrae.modules.matrix_procedures.load_result_table import load_result_table
 
 sys.modules["qgsfieldcombobox"] = qgis.gui
 sys.modules["qgsmaplayercombobox"] = qgis.gui

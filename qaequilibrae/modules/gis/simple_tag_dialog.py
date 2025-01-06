@@ -1,6 +1,8 @@
 import os
 
 import qgis
+from qgis.PyQt import QtWidgets, uic
+
 from qaequilibrae.modules.common_tools import get_vector_layer_by_name
 from qaequilibrae.modules.common_tools.global_parameters import (
     multi_line,
@@ -10,7 +12,6 @@ from qaequilibrae.modules.common_tools.global_parameters import (
     poly_types,
 )
 from qaequilibrae.modules.common_tools.global_parameters import multi_point
-from qgis.PyQt import QtWidgets, uic
 from .simple_tag_procedure import SimpleTAG
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_simple_tag.ui"))

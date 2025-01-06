@@ -1,8 +1,11 @@
 import logging
-import numpy as np
 import os
-import pandas as pd
 import sys
+from tempfile import gettempdir
+
+import numpy as np
+import pandas as pd
+import qgis
 from PyQt5.QtCore import Qt
 from aequilibrae.parameters import Parameters
 from aequilibrae.paths.traffic_assignment import TrafficAssignment
@@ -10,11 +13,9 @@ from aequilibrae.paths.traffic_class import TrafficClass
 from aequilibrae.paths.vdf import all_vdf_functions
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
-from tempfile import gettempdir
-
-import qgis
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QLineEdit, QComboBox, QCheckBox, QPushButton, QAbstractItemView
+
 from qaequilibrae.modules.common_tools import PandasModel, ReportDialog, standard_path
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui

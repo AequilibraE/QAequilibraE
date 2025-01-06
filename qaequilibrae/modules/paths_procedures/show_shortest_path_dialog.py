@@ -1,15 +1,16 @@
 import logging
 import os
 import sys
-from aequilibrae.paths.results import PathResults
-from qgis._core import QgsProject, QgsVectorLayer, QgsSpatialIndex
 
 import qgis
+from aequilibrae.paths.results import PathResults
 from qgis.PyQt import QtCore, QtWidgets, uic
+from qgis._core import QgsProject, QgsVectorLayer, QgsSpatialIndex
 from qgis.utils import iface
-from qaequilibrae.modules.paths_procedures.point_tool import PointTool
+
 from qaequilibrae.modules.common_tools import LoadGraphLayerSettingDialog
 from qaequilibrae.modules.common_tools import standard_path
+from qaequilibrae.modules.paths_procedures.point_tool import PointTool
 
 logger = logging.getLogger("AequilibraEGUI")
 

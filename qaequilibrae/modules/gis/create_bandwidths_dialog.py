@@ -1,11 +1,16 @@
 import os
 import sys
+from dataclasses import dataclass
 from functools import partial
 from random import randint
-from dataclasses import dataclass
 from typing import Tuple, Literal, Dict, Union
 
+import qgis
 from PyQt5.QtGui import QColor
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QPushButton, QTableWidgetItem, QTableWidget
+from qgis.PyQt.QtWidgets import QToolButton, QHBoxLayout, QWidget, QDialog
 from qgis._core import QgsLineSymbol, QgsVectorLayer, QgsSymbol
 from qgis._core import (
     QgsMapLayerProxyModel,
@@ -17,13 +22,8 @@ from qgis._core import (
     QgsStyle,
 )
 
-import qgis
-from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QPushButton, QTableWidgetItem, QTableWidget
-from qgis.PyQt.QtWidgets import QToolButton, QHBoxLayout, QWidget, QDialog
-from .set_color_ramps_dialog import LoadColorRampSelector
 from qaequilibrae.modules.common_tools import get_parameter_chain
+from .set_color_ramps_dialog import LoadColorRampSelector
 
 sys.modules["qgsfieldcombobox"] = qgis.gui
 sys.modules["qgscolorbutton"] = qgis.gui

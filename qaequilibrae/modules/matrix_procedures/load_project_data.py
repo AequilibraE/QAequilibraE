@@ -1,18 +1,19 @@
 import os
 from os.path import join
-import pandas as pd
-from aequilibrae.utils.db_utils import commit_and_close
-from aequilibrae.project.database_connection import database_connection
 
+import pandas as pd
 import qgis
+from aequilibrae.project.database_connection import database_connection
+from aequilibrae.utils.db_utils import commit_and_close
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QAbstractItemView, QTabWidget
 from qgis.core import QgsProject, QgsVectorLayerJoinInfo
+
+from qaequilibrae.modules.common_tools import PandasModel
 from qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog import DisplayAequilibraEFormatsDialog
 from qaequilibrae.modules.matrix_procedures.load_result_table import load_result_table
 from qaequilibrae.modules.matrix_procedures.matrix_lister import list_matrices
 from qaequilibrae.modules.matrix_procedures.results_lister import list_results
-from qaequilibrae.modules.common_tools import PandasModel
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_project_data.ui"))
 

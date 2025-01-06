@@ -1,8 +1,7 @@
 from os.path import join
 
-from qgis._core import QgsProject, QgsVectorLayer, QgsDataSourceUri
-
 import qgis
+from qgis._core import QgsProject, QgsVectorLayer, QgsDataSourceUri
 
 
 def load_result_table(project_base_path: str, table_name: str) -> QgsVectorLayer:

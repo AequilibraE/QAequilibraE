@@ -1,21 +1,21 @@
 import importlib.util as iutil
 import os
 
-import numpy as np
-from aequilibrae.matrix.aequilibrae_matrix import AequilibraeMatrix, CORE_NAME_MAX_LENGTH
-
 import aequilibrae
+import numpy as np
 import qgis
+from aequilibrae.matrix.aequilibrae_matrix import AequilibraeMatrix, CORE_NAME_MAX_LENGTH
 from qgis.PyQt import QtWidgets, uic, QtCore
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem
-from qaequilibrae.modules.matrix_procedures.load_matrix_class import LoadMatrix
-from qaequilibrae.modules.matrix_procedures.mat_reblock import MatrixReblocking
+
 from qaequilibrae.modules.common_tools.all_layers_from_toc import all_layers_from_toc
 from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path, get_vector_layer_by_name
 from qaequilibrae.modules.common_tools.get_output_file_name import GetOutputFileName
 from qaequilibrae.modules.common_tools.global_parameters import float_types, integer_types
 from qaequilibrae.modules.common_tools.report_dialog import ReportDialog
+from qaequilibrae.modules.matrix_procedures.load_matrix_class import LoadMatrix
+from qaequilibrae.modules.matrix_procedures.mat_reblock import MatrixReblocking
 
 spec = iutil.find_spec("openmatrix")
 has_omx = spec is not None

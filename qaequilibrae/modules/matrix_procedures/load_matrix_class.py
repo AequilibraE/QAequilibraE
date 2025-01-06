@@ -4,7 +4,6 @@ import uuid
 
 import numpy as np
 from aequilibrae.utils.interface.worker_thread import WorkerThread
-
 from qgis.PyQt.QtCore import pyqtSignal
 
 
