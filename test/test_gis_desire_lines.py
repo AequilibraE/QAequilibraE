@@ -1,12 +1,11 @@
 import pytest
-import platform
 from PyQt5.QtCore import Qt
 
 from .utilities import load_sfalls_from_layer
 from qaequilibrae.modules.gis.desire_lines_dialog import DesireLinesDialog
 
 
-@pytest.mark.skipif(platform.platform().lower().find("windows") >= 0, "PWSH")
+@pytest.mark.timeout(5)
 def test_click_create_without_layers(ae_with_project, qtbot, timeoutDetector):
     dialog = DesireLinesDialog(ae_with_project)
     dialog.show()
@@ -23,7 +22,7 @@ def test_click_create_without_layers(ae_with_project, qtbot, timeoutDetector):
     ), "Level 1 error message is missing"
 
 
-@pytest.mark.skipif(platform.platform().lower().find("windows") >= 0, "PWSH")
+@pytest.mark.timeout(5)
 def test_click_create_with_layers(ae_with_project, qtbot, timeoutDetector):
     load_sfalls_from_layer(ae_with_project.project.project_base_path)
 
@@ -41,7 +40,7 @@ def test_click_create_with_layers(ae_with_project, qtbot, timeoutDetector):
     # test that something cool happened on the map?
 
 
-@pytest.mark.skipif(platform.platform().lower().find("windows") >= 0, "PWSH")
+@pytest.mark.timeout(5)
 def test_click_create_with_layers_desired_selected(ae_with_project, qtbot, timeoutDetector):
     load_sfalls_from_layer(ae_with_project.project.project_base_path)
 

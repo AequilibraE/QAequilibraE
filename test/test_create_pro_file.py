@@ -1,12 +1,9 @@
 import os
-import platform
-import pytest
 from pathlib import Path
 
 from qaequilibrae.i18n.create_pro_file import create_file
 
 
-@pytest.mark.skipif(platform.platform().lower().find("windows") >= 0, "PWSH")
 def test_file_creation():
     create_file()
     output_path = Path("qaequilibrae/i18n/qaequilibrae.pro")

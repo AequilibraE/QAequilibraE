@@ -1,4 +1,5 @@
 from os.path import join
+import pytest
 
 from aequilibrae import Project
 
@@ -10,6 +11,7 @@ from qaequilibrae.modules.project_procedures.creates_transponet_dialog import Cr
 from qaequilibrae.modules.project_procedures.creates_transponet_procedure import CreatesTranspoNetProcedure
 
 
+@pytest.mark.timeout(5)
 def test_dialog(ae, folder_path):
     load_test_layer(folder_path, "node")
     load_test_layer(folder_path, "link")
@@ -73,6 +75,7 @@ def test_dialog(ae, folder_path):
         assert mode in modes.all_modes().keys()
 
 
+@pytest.mark.timeout(5)
 def test_procedure(ae, folder_path):
     load_test_layer(folder_path, "node")
     load_test_layer(folder_path, "link")
