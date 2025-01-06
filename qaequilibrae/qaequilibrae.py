@@ -1,13 +1,15 @@
 import glob
 import logging
 import os
-import qgis
 import subprocess
 import sys
 import tempfile
 import webbrowser
 from functools import partial
 from pathlib import Path
+from uuid import uuid4
+
+import qgis
 from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QTranslator
 from qgis.PyQt.QtCore import Qt, QCoreApplication
@@ -15,7 +17,6 @@ from qgis.PyQt.QtWidgets import QVBoxLayout, QApplication
 from qgis.PyQt.QtWidgets import QWidget, QDockWidget, QAction, QMenu, QTabWidget, QCheckBox, QToolBar, QToolButton
 from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsVectorFileWriter
 from qgis.core import QgsProject, QgsExpressionContextUtils, QgsApplication
-from uuid import uuid4
 
 from qaequilibrae.message import messages
 from qaequilibrae.modules.menu_actions import load_matrices, run_add_connectors, run_stacked_bandwidths, run_tag

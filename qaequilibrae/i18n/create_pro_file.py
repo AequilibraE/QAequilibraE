@@ -1,5 +1,5 @@
-import os
 import mmap
+import os
 import sys
 from pathlib import Path
 
