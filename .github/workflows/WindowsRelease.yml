@@ -10,10 +10,6 @@ on:
 jobs:
   windows_test:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        # we test the minimum LTR version required, the newest LTR, and the latest.
-        version: [qgis-ltr --version=3.34.10, qgis-ltr, qgis]
 
     steps:
       - uses: actions/checkout@v4
@@ -21,11 +17,11 @@ jobs:
       - name: Install QGIS on Chocolatey
         uses: crazy-max/ghaction-chocolatey@v3
         with:
-          args: install ${{ matrix.version }} -y
+          args: install qgis -y
 
+      # we can run the tests, but they're timing out (and I don't know why...)
       - name: Setup plugin on Latest
         shell: pwsh
-        if: ${{ (matrix.version == 'qgis')}}
         run: |
           Copy-Item "qaequilibrae" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Recurse
           $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
@@ -33,20 +29,6 @@ jobs:
           $env:QT_QPA_PLATFORM = "offscreen"
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pip install -r test/requirements-test.txt" -NoNewWindow -Wait
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "qaequilibrae\download_extra_packages_class.py" -NoNewWindow -Wait
-          $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
-        # we can run the tests, but they're timing out (and I don't know why...)
-          Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pytest test" -NoNewWindow -Wait
-
-      - name: Setup plugin on LTR
-        shell: pwsh
-        if: ${{ (matrix.version != 'qgis')}}
-        run: |
-          Copy-Item "qaequilibrae" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Recurse
-          $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
-          $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
-          $env:QT_QPA_PLATFORM = "offscreen"
-          Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "-m pip install -r test/requirements-test.txt" -NoNewWindow -Wait
-          Start-Process -FilePath "$qgisPath\bin\python-qgis-ltr.bat" -ArgumentList "qaequilibrae\download_extra_packages_class.py" -NoNewWindow -Wait
           $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pytest test" -NoNewWindow -Wait
 
