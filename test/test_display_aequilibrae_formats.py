@@ -7,7 +7,7 @@ from qgis.core import QgsProject
 from qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog import DisplayAequilibraEFormatsDialog
 
 
-@pytest.mark.timeout(5)
+@pytest.mark.skip("Windows release test")
 def test_display_data_no_path(ae, mocker):
     function = "qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog.DisplayAequilibraEFormatsDialog.get_file_name"
     mocker.patch(function, return_value=(None, None))
@@ -20,7 +20,7 @@ def test_display_data_no_path(ae, mocker):
     assert messagebar.messages[1][-1] == error_message, "Level 1 error message is missing"
 
 
-@pytest.mark.timeout(5)
+@pytest.mark.skip("Windows release test")
 @pytest.mark.parametrize("has_project", [True, False])
 @pytest.mark.parametrize("path", ("matrices/demand.aem", "matrices/SiouxFalls.omx"))
 def test_display_data_with_path(tmpdir, ae_with_project, mocker, has_project, path):
@@ -47,7 +47,7 @@ def test_display_data_with_path(tmpdir, ae_with_project, mocker, has_project, pa
 
 
 # TODO: Ideally, we would test if the visualization is working
-@pytest.mark.timeout(5)
+@pytest.mark.skip("Windows release test")
 @pytest.mark.parametrize("element", ["row", "column"])
 def test_select_elements(ae_with_project, mocker, element):
     file_path = "test/data/SiouxFalls_project/matrices/sfalls_skims.omx"

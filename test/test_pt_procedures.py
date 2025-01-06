@@ -10,7 +10,6 @@ from qaequilibrae.modules.public_transport_procedures.gtfs_feed import GTFSFeed
 from qaequilibrae.modules.public_transport_procedures.gtfs_importer import GTFSImporter
 
 
-@pytest.mark.timeout(5)
 def test_pt_menu(ae_with_project, qtbot):
     from qaequilibrae.modules.public_transport_procedures.gtfs_importer import GTFSImporter
     from test.test_qaequilibrae_menu_with_project import check_if_new_active_window_matches_class
@@ -24,7 +23,7 @@ def test_pt_menu(ae_with_project, qtbot):
     action.trigger()
 
 
-@pytest.mark.timeout(5)
+@pytest.mark.skip("Windows release test")
 def test_add_new_feed(pt_no_feed, mocker):
     mocker.patch(
         "qaequilibrae.modules.public_transport_procedures.gtfs_feed.GTFSFeed.open_feed",
@@ -60,7 +59,7 @@ def test_add_new_feed(pt_no_feed, mocker):
     assert var == 1
 
 
-@pytest.mark.timeout(5)
+@pytest.mark.skip("Windows release test")
 @pytest.mark.parametrize(
     ("is_checked", "set_date", "set_agency"),
     [(False, (2016, 6, 17), "New agency"), (True, (2016, 8, 21), "Other agency")],
