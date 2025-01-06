@@ -36,14 +36,14 @@ def create_file():
 
         pro_file.write("\n")
 
-        pro_file.write(f"\nSOURCES = ../qaequilibrae.py \\")
+        pro_file.write("\nSOURCES = ../qaequilibrae.py \\")
         for s in sources[:-1]:
             pro_file.write(f"\n {s} \\")
         pro_file.write(f"\n {sources[-1]}")
 
         pro_file.write("\n")
 
-        pro_file.write(f"\nTRANSLATIONS = qaequilibrae.ts")
+        pro_file.write("\nTRANSLATIONS = qaequilibrae.ts")
 
 
 if __name__ == "__main__":

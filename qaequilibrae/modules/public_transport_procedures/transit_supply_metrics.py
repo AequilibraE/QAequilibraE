@@ -24,7 +24,7 @@ class SupplyMetrics:
         patt_sql = """Select pattern_id, route_id, seated_capacity s_capacity, total_capacity t_capacity from routes"""
 
         stop_sql = (
-            f"""Select stop_id, stop, name stop_name, agency_id, route_type, transit_fare_zone zone_id from stops"""
+            """Select stop_id, stop, name stop_name, agency_id, route_type, transit_fare_zone zone_id from stops"""
         )
 
         stop_pat_sql = """Select pattern_id, cast(from_stop as text) stop_id from route_links
@@ -39,7 +39,7 @@ class SupplyMetrics:
         trp_pat_lnk_sql = """select pattern_id, seq stop_order, cast(from_stop as text) from_stop, 
                              cast(to_stop as text) to_stop from route_links"""
 
-        connection = database_connection("transit") if path == None else path
+        connection = database_connection("transit") if path is None else path
         with read_and_close(connection) as conn:
             self.__raw_routes = pd.read_sql(rt_sql, conn).fillna(0)
             self.__raw_patterns = pd.read_sql(patt_sql, conn).fillna(0)

@@ -3,9 +3,7 @@ import tempfile
 import uuid
 
 import numpy as np
-from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.utils.interface.worker_thread import WorkerThread
-from scipy.sparse import coo_matrix
 
 from qgis.PyQt.QtCore import pyqtSignal
 

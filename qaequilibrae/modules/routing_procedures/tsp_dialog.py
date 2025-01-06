@@ -2,7 +2,6 @@ import numpy as np
 import os
 from aequilibrae.paths import path_computation
 from aequilibrae.paths.results import PathResults
-from aequilibrae.project import Project
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 

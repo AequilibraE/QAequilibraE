@@ -15,7 +15,6 @@ from qgis.PyQt.QtWidgets import QVBoxLayout, QApplication
 from qgis.PyQt.QtWidgets import QWidget, QDockWidget, QAction, QMenu, QTabWidget, QCheckBox, QToolBar, QToolButton
 from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsVectorFileWriter
 from qgis.core import QgsProject, QgsExpressionContextUtils, QgsApplication
-from typing import Dict
 from uuid import uuid4
 
 from qaequilibrae.message import messages
@@ -42,7 +41,7 @@ from qaequilibrae.modules.processing_provider.provider import Provider
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "packages"))
 
 if Path(os.path.join(os.path.dirname(__file__), "packages", "requirements.txt")).exists():
-    from aequilibrae.project import Project
+    pass
 else:
     version = sys.version_info
 
@@ -330,7 +329,7 @@ class AequilibraEMenu:
         if self.project is None:
             return
         uri = QgsDataSourceUri()
-        if not "transit_" in layer_name:
+        if "transit_" not in layer_name:
             uri.setDatabase(self.project.path_to_file)
             lname = layer_name
         else:

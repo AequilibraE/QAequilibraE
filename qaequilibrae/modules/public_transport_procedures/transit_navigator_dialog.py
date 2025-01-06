@@ -68,7 +68,7 @@ class TransitNavigatorDialog(QDialog, FORM_CLASS):
         for layer in [self.zones_layer, self.patterns_layer, self.routes_layer, self.stops_layer]:
             QgsProject.instance().addMapLayer(layer)
 
-        agency_sql = f"Select agency_id, agency from agencies"
+        agency_sql = "Select agency_id, agency from agencies"
         sql = """SELECT pattern_id, 
                         coalesce(ST_X(ST_StartPoint(geometry))-ST_X(ST_EndPoint(geometry)),0) dx,
                         coalesce(ST_Y(ST_StartPoint(geometry))-ST_Y(ST_EndPoint(geometry)),0) dy

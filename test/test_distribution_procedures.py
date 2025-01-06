@@ -155,7 +155,7 @@ def test_apply_gravity(ae_with_project, method, folder_path, mocker):
     dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_data)
 
     temp = list(dialog.matrices["name"])
-    imped_idx = temp.index(f"trafficassignment_dp_x_car_omx")
+    imped_idx = temp.index("trafficassignment_dp_x_car_omx")
     dialog.cob_imped_mat.setCurrentIndex(imped_idx)
     dialog.cob_imped_field.setCurrentText("free_flow_time_final")
 

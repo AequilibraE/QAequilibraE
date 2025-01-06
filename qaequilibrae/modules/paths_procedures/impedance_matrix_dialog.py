@@ -1,7 +1,7 @@
 import importlib.util as iutil
 import os
 
-from aequilibrae.paths import Graph, SkimResults, NetworkSkimming
+from aequilibrae.paths import SkimResults, NetworkSkimming
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 
