@@ -21,7 +21,6 @@ def test_matrix_menu(ae_with_project, qtbot, timeoutDetector):
 
 
 # TODO: test removing the matrices
-@pytest.mark.skip("Windows release test")
 def test_save_matrix(ae_with_project, folder_path, timeoutDetector):
     file_name = f"{folder_path}/test_matrix.aem"
 

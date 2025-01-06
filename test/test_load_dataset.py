@@ -8,7 +8,6 @@ from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatas
 from qaequilibrae.modules.matrix_procedures.load_dataset_class import LoadDataset
 
 
-@pytest.mark.skip("Windows release test")
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
 def test_load_dialog(ae_with_project, method, folder_path, timeoutDetector):
     df = pd.read_csv("test/data/SiouxFalls_project/synthetic_future_vector.csv")
@@ -45,7 +44,6 @@ def test_load_dialog(ae_with_project, method, folder_path, timeoutDetector):
     assert (dialog.dataset.sum(axis=0)["origins"] == dialog.dataset.sum(axis=0)["destinations"]) > 0
 
 
-@pytest.mark.skip("Windows release test")
 def test_load_dataset_class(folder_path):
     df = pd.read_csv("test/data/SiouxFalls_project/synthetic_future_vector.csv")
     layer = layer_from_dataframe(df, "synthetic_future_vector")

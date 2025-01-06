@@ -23,14 +23,18 @@ jobs:
       - name: Setup plugin on Latest
         shell: pwsh
         run: |
-          Copy-Item "qaequilibrae" -Destination "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Recurse
+          $aeqPath = "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae"
+          Copy-Item "qaequilibrae" -Destination "$aeqPath" -Recurse
+          Copy-Item "test" -Destination "$aeqPath\test" -Recurse
           $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
           $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
           $env:QT_QPA_PLATFORM = "offscreen"
+          Set-Location "$aeqPath"
+          pwd
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pip install -r test/requirements-test.txt" -NoNewWindow -Wait
-          Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "qaequilibrae\download_extra_packages_class.py" -NoNewWindow -Wait
-          $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
-          Get-ChildItem -Path "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae\packages" -Name
+          Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "download_extra_packages_class.py" -NoNewWindow -Wait
+          $env:PYTHONPATH = "$aeqPath\plugins"
+          Get-ChildItem -Path "$aeqPath\packages" -Name
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "ci\sys_info.py" -NoNewWindow -Wait
           Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pytest test" -NoNewWindow -Wait
         # Start-Process -FilePath "$qgisPath\bin\python-qgis.bat" -ArgumentList "-m pip list" -NoNewWindow -Wait

@@ -7,7 +7,6 @@ from qgis.core import QgsProject
 from qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog import DisplayAequilibraEFormatsDialog
 
 
-# @pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_display_data_no_path(ae, mocker):
     function = "qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog.DisplayAequilibraEFormatsDialog.get_file_name"
     mocker.patch(function, return_value=(None, None))
