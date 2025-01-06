@@ -24,21 +24,20 @@ jobs:
         shell: pwsh
         run: |
           $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
-          $qgisFile = "$qgisPath\bin\python-qgis.bat"
+          $qgisExec = "$qgisPath\bin\python-qgis.bat"
           $aeqPath = "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae"
+          $localPath = pwd
           Copy-Item "qaequilibrae" -Destination "$aeqPath" -Recurse
-          Copy-Item "test" -Destination "$aeqPath\test" -Recurse
           $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
           $env:QT_QPA_PLATFORM = "offscreen"
-          Start-Process -FilePath "$qgisFile" -ArgumentList "ci\sys_info.py" -NoNewWindow -Wait
+          Start-Process -FilePath "$qgisExec" -ArgumentList "-m pip install -r test/requirements-test.txt" -NoNewWindow -Wait
           Set-Location "$aeqPath"
-          Start-Process -FilePath "$qgisFile" -ArgumentList "-m pip install -r test/requirements-test.txt" -NoNewWindow -Wait
-          Start-Process -FilePath "$qgisFile" -ArgumentList "download_extra_packages_class.py" -NoNewWindow -Wait
-          $env:PYTHONPATH = "$aeqPath\plugins"
-          Get-ChildItem -Path "$aeqPath\packages" -Name
-          Start-Process -FilePath "$qgisFile" -ArgumentList "-m pytest test" -NoNewWindow -Wait
+          Start-Process -FilePath "$qgisExec" -ArgumentList "download_extra_packages_class.py" -NoNewWindow -Wait
+          $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
+          Set-Location "$localPath"
+          Start-Process -FilePath "$qgisExec" -ArgumentList "-m pytest test" -NoNewWindow -Wait
 
-      # - name: Check packages installed
-      #   shell: pwsh
-      #   run: |
-      #     Get-ChildItem -Path "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae\packages" -Name
+      - name: Check packages installed
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae" -Name
