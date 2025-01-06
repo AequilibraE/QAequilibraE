@@ -3,15 +3,15 @@ import os
 from os.path import isdir, join
 
 from PyQt5.QtCore import Qt
-from shapely.geometry import box
 from aequilibrae.project import Project
 from aequilibrae.project.network.osm.place_getter import placegetter
-
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QProgressBar, QLabel, QVBoxLayout, QGroupBox
 from qgis.PyQt.QtWidgets import QRadioButton, QGridLayout, QPushButton, QLineEdit
 from qgis.PyQt.QtWidgets import QWidget, QFileDialog
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem
+from shapely.geometry import box
+
 from qaequilibrae.modules.common_tools import reporter, ReportDialog, standard_path
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "../common_tools/forms/ui_empty.ui"))

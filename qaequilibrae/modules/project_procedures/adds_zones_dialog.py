@@ -2,16 +2,16 @@ import os
 import sys
 
 import pandas as pd
+import qgis
+from PyQt5.QtCore import Qt
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import commit_and_close
-from PyQt5.QtCore import Qt
-
-import qgis
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QWidget, QHBoxLayout
 from qgis.core import QgsMapLayerProxyModel
-from qaequilibrae.modules.project_procedures.add_zones_procedure import AddZonesProcedure
+
 from qaequilibrae.modules.common_tools import standard_path
+from qaequilibrae.modules.project_procedures.add_zones_procedure import AddZonesProcedure
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_add_zoning.ui"))

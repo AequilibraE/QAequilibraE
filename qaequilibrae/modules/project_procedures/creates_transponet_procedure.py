@@ -1,12 +1,13 @@
-import numpy as np
 from string import ascii_letters
-from PyQt5.QtCore import pyqtSignal
 
+import numpy as np
+from PyQt5.QtCore import pyqtSignal
 from aequilibrae import Project
 from aequilibrae.context import get_logger
+from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import commit_and_close
 from aequilibrae.utils.interface.worker_thread import WorkerThread
-from aequilibrae.project.database_connection import database_connection
+
 from qaequilibrae.modules.common_tools.geodataframe_from_data_layer import geodataframe_from_layer
 
 logger = get_logger()

@@ -1,7 +1,6 @@
 from typing import List, Optional
 
 import pandas as pd
-
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 

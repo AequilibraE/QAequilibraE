@@ -4,8 +4,8 @@ import sys
 from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessingAlgorithm
 from qgis.core import QgsProcessingParameterFile, QgsProcessingParameterNumber, QgsProcessingParameterString
 
-from qaequilibrae.modules.common_tools import standard_path
 from qaequilibrae.i18n.translate import trlt
+from qaequilibrae.modules.common_tools import standard_path
 
 
 class AddConnectors(QgsProcessingAlgorithm):

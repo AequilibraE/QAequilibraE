@@ -3,19 +3,18 @@ from math import ceil
 from os.path import dirname, join
 
 import pandas as pd
+from aequilibrae.project.database_connection import database_connection
+from aequilibrae.utils.db_utils import read_and_close
 from qgis.PyQt import uic, QtGui
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView
-from qgis.core import QgsRendererRange
 from qgis.core import QgsProject, QgsStyle, QgsVectorLayerJoinInfo, QgsGraduatedSymbolRenderer, QgsApplication
+from qgis.core import QgsRendererRange
 from qgis.core import QgsSymbol, QgsPalLayerSettings, QgsTextFormat
 from qgis.core import QgsTextBufferSettings, QgsVectorLayerSimpleLabeling
 
 from qaequilibrae.modules.common_tools import layer_from_dataframe, PandasModel
 from qaequilibrae.modules.gis.color_ramp_shades import color_ramp_shades
 from qaequilibrae.modules.public_transport_procedures.transit_supply_metrics import SupplyMetrics
-from aequilibrae.project.database_connection import database_connection
-from aequilibrae.utils.db_utils import read_and_close
-
 
 FORM_CLASS, _ = uic.loadUiType(join(dirname(__file__), "forms/transit_navigator.ui"))
 
