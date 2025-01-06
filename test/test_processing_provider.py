@@ -6,13 +6,9 @@ from os.path import isfile, join
 import numpy as np
 import pandas as pd
 import pytest
-from shapely.geometry import Point
-
+from PyQt5.QtCore import QVariant
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.project import Project
-
-from PyQt5.QtCore import QVariant
-
 from qgis.core import (
     QgsApplication,
     QgsField,
@@ -20,8 +16,8 @@ from qgis.core import (
     QgsProcessingFeedback,
     QgsProject,
 )
+from shapely.geometry import Point
 
-from .utilities import load_sfalls_from_layer
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
 from qaequilibrae.modules.processing_provider.assign_from_yaml import TrafficAssignYAML
@@ -30,6 +26,7 @@ from qaequilibrae.modules.processing_provider.matrix_from_layer import MatrixFro
 from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
 from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
+from .utilities import load_sfalls_from_layer
 
 
 def qgis_app():

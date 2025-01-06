@@ -1,10 +1,9 @@
 import pytest
 from qgis.core import QgsProject
 
-from .utilities import load_test_layer
 from qaequilibrae.modules.gis.create_bandwidths_dialog import CreateBandwidthsDialog
 from qaequilibrae.modules.gis.set_color_ramps_dialog import LoadColorRampSelector
-
+from .utilities import load_test_layer
 
 link_layer = "link"
 
