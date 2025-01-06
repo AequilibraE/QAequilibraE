@@ -20,6 +20,7 @@
  """
 
 import os
+
 from qgis.PyQt import QtWidgets, uic
 
 from .auxiliary_functions import standard_path

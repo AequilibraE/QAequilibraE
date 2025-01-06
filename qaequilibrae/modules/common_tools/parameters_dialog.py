@@ -1,7 +1,7 @@
 import logging
 import os
-import yaml
 
+import yaml
 from aequilibrae.parameters import Parameters
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.Qsci import QsciLexerYAML

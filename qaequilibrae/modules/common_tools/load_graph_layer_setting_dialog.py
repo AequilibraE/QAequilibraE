@@ -1,8 +1,8 @@
 import os
+
 from aequilibrae.project import Project
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
-
 from qgis.PyQt import QtWidgets, uic, QtCore
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_load_network_info.ui"))
