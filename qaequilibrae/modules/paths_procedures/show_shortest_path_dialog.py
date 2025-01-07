@@ -23,7 +23,6 @@ class ShortestPathDialog(QtWidgets.QDialog, FORM_CLASS):
     clickTool = PointTool(iface.mapCanvas())
 
     def __init__(self, qgis_project) -> None:
-        # QtWidgets.QDialog.__init__(self)
         QtWidgets.QDialog.__init__(self)
         self.iface = qgis_project.iface
         self.project = qgis_project.project  # type: Project

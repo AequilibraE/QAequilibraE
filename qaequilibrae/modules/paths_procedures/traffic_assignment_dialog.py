@@ -158,7 +158,6 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         table = self.tbl_project_properties
         table.setRowCount(2)
 
-        # i.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
         table.setItem(0, 0, QTableWidgetItem("Project path"))
         table.setItem(0, 1, QTableWidgetItem(self.project.path_to_file))
 

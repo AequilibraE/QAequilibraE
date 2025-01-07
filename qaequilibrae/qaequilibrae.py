@@ -11,31 +11,19 @@ from uuid import uuid4
 
 import qgis
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import QTranslator
-from qgis.PyQt.QtCore import Qt, QCoreApplication
-from qgis.PyQt.QtWidgets import QVBoxLayout, QApplication
-from qgis.PyQt.QtWidgets import QWidget, QDockWidget, QAction, QMenu, QTabWidget, QCheckBox, QToolBar, QToolButton
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QTranslator
+from qgis.PyQt.QtWidgets import QVBoxLayout, QApplication, QToolBar, QToolButton
+from qgis.PyQt.QtWidgets import QWidget, QDockWidget, QAction, QMenu, QTabWidget, QCheckBox
 from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsVectorFileWriter
 from qgis.core import QgsProject, QgsExpressionContextUtils, QgsApplication
 
 from qaequilibrae.message import messages
 from qaequilibrae.modules.menu_actions import load_matrices, run_add_connectors, run_stacked_bandwidths, run_tag
-from qaequilibrae.modules.menu_actions import run_add_zones, run_show_project_data
+from qaequilibrae.modules.menu_actions import run_add_zones, run_show_project_data, run_tsp
 from qaequilibrae.modules.menu_actions import run_desire_lines, run_scenario_comparison, run_import_gtfs
-from qaequilibrae.modules.menu_actions import (
-    run_distribution_models,
-    run_tsp,
-    run_change_parameters,
-    prepare_network,
-)
-from qaequilibrae.modules.menu_actions import (
-    run_load_project,
-    project_from_osm,
-    run_create_transponet,
-    show_log,
-    create_example,
-)
-from qaequilibrae.modules.menu_actions import run_pt_explore
+from qaequilibrae.modules.menu_actions import run_distribution_models, run_change_parameters, prepare_network
+from qaequilibrae.modules.menu_actions import run_load_project, project_from_osm, run_create_transponet
+from qaequilibrae.modules.menu_actions import run_pt_explore, show_log, create_example
 from qaequilibrae.modules.menu_actions import run_shortest_path, run_dist_matrix, run_traffic_assig
 from qaequilibrae.modules.processing_provider.provider import Provider
 
