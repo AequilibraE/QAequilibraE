@@ -24,7 +24,6 @@ def test_pt_menu(ae_with_project, qtbot):
     action.trigger()
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_add_new_feed(pt_no_feed, mocker):
     mocker.patch(
         "qaequilibrae.modules.public_transport_procedures.gtfs_feed.GTFSFeed.open_feed",
@@ -60,7 +59,6 @@ def test_add_new_feed(pt_no_feed, mocker):
     assert var == 1
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 @pytest.mark.parametrize(
     ("is_checked", "set_date", "set_agency"),
     [(False, (2016, 6, 17), "New agency"), (True, (2016, 8, 21), "Other agency")],

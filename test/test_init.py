@@ -19,7 +19,6 @@ import sys
 LOGGER = logging.getLogger("QGIS")
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows, path is not correct")
 @pytest.mark.parametrize("expectation", ["name", "description", "version", "qgisMinimumVersion", "email", "author"])
 def test_read_init(expectation):
     """Test that the plugin __init__ will validate on plugins.qgis.org.

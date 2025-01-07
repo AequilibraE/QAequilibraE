@@ -8,7 +8,6 @@ from .utilities import run_sfalls_assignment
 from qaequilibrae.modules.matrix_procedures.load_project_data import LoadProjectDataDialog
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_no_project(ae, mocker, qtbot):
     file_func = "qaequilibrae.modules.matrix_procedures.load_project_data.DisplayAequilibraEFormatsDialog"
     mocker.patch(file_func)
@@ -22,7 +21,7 @@ def test_no_project(ae, mocker, qtbot):
 
 
 # TODO: Re-write the tests - they're really time consuming
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Time-consuming")
+@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 @pytest.mark.parametrize("button_clicked", [True, False])
 def test_project(ae_with_project, mocker, qtbot, button_clicked):
     proj = run_sfalls_assignment(ae_with_project)
