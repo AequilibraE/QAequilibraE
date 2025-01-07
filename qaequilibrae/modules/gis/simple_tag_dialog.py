@@ -10,8 +10,8 @@ from qaequilibrae.modules.common_tools.global_parameters import (
     line_types,
     point_types,
     poly_types,
+    multi_point,
 )
-from qaequilibrae.modules.common_tools.global_parameters import multi_point
 from .simple_tag_procedure import SimpleTAG
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_simple_tag.ui"))

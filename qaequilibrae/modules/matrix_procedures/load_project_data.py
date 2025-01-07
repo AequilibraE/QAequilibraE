@@ -127,4 +127,3 @@ class LoadProjectDataDialog(QtWidgets.QDialog, FORM_CLASS):
     def exit_procedure(self):
         self.show()
         self.close()
-        # sys.exit(app.exec_())
