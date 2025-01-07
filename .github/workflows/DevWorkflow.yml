@@ -20,7 +20,7 @@ jobs:
           pip install -r test/requirements-test.txt
 
       - name: Lint with ruff
-        run: ruff .
+        run: ruff check
 
       - name: Check code format with Black
         run: black --check .
