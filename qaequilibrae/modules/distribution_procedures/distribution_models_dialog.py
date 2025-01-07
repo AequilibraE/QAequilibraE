@@ -159,9 +159,7 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.user_chosen_model = QComboBox()
         for f in valid_functions:
             self.user_chosen_model.addItem(f)
-        # self.user_chosen_model.blockSignals(True)
         self.user_chosen_model.setCurrentIndex(valid_functions.index(self.model.function))
-        # self.user_chosen_model.blockSignals(False)
         self.user_chosen_model.currentIndexChanged.connect(self.change_model_by_user)
 
         self.table_model.setRowCount(2)

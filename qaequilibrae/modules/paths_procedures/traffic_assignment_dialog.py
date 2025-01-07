@@ -177,8 +177,6 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         for m in modes:
             self.cob_mode_for_class.addItem(m)
 
-        # self.project.network.build_graphs()
-
         flds = self.project.network.skimmable_fields()
         for cob in [self.cob_skims_available, self.cob_capacity, self.cob_ffttime, self.cob_fixed_cost]:
             cob.clear()

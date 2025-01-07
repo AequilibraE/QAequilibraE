@@ -85,7 +85,6 @@ class NetworkPreparationDialog(QtWidgets.QDialog, FORM_CLASS):
             for i in for_using_existing_nodes:
                 i.setVisible(False)
 
-            # self.cbb_node_layer.hideEvent()
             self.np_node_start.setEnabled(True)
 
     def job_finished_from_thread(self):
