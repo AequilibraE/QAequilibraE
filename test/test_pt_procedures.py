@@ -1,7 +1,6 @@
 import os
 import sqlite3
 import pytest
-import sys
 from datetime import datetime
 
 from aequilibrae.transit import Transit

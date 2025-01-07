@@ -35,8 +35,8 @@ jobs:
           Start-Process -FilePath "$qgisExec" -ArgumentList "-m pip install -r $pluginPath\test\requirements-test.txt" -NoNewWindow -Wait
           Set-Location "$aeqPath"
           Start-Process -FilePath "$qgisExec" -ArgumentList "download_extra_packages_class.py" -NoNewWindow -Wait
-          Set-Location "$pluginPath"
           $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
+          Set-Location "$pluginPath"
           Start-Process -FilePath "$qgisExec" -ArgumentList "-m pytest test" -NoNewWindow -Wait
 
       - name: Check packages installed

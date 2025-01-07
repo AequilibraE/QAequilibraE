@@ -14,7 +14,6 @@ import os
 import logging
 import configparser
 import pytest
-import sys
 
 LOGGER = logging.getLogger("QGIS")
 
