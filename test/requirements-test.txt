@@ -5,4 +5,4 @@ pytest-qt
 pytest-cov
 pytest-mock
 black==24.4.2
-ruff==0.1.14
+ruff==0.8.6
