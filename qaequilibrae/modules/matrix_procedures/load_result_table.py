@@ -1,12 +1,12 @@
 from os.path import join
 
-import qgis
+from qgis.utils import spatialite_connect
 from qgis._core import QgsProject, QgsVectorLayer, QgsDataSourceUri
 
 
 def load_result_table(project_base_path: str, table_name: str) -> QgsVectorLayer:
     pth = join(project_base_path, "results_database.sqlite")
-    conn = qgis.utils.spatialite_connect(pth)
+    conn = spatialite_connect(pth)
     conn.execute("PRAGMA temp_store = 0;")
     conn.execute("SELECT InitSpatialMetaData();")
     conn.commit()

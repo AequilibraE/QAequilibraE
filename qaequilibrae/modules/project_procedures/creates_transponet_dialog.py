@@ -93,7 +93,7 @@ class CreatesTranspoNetDialog(QtWidgets.QDialog, FORM_CLASS):
                     break
                 final_table.removeRow(row)
 
-            counter = table.rowCount()
+            counter = table.row_count()
             for field in old_fields:
                 if field not in required_fields:
                     table.setRowCount(counter + 1)
@@ -110,7 +110,7 @@ class CreatesTranspoNetDialog(QtWidgets.QDialog, FORM_CLASS):
             for row in range(i.bottomRow(), i.topRow() - 1, -1):
                 table.removeRow(row)
 
-            counter = final_table.rowCount()
+            counter = final_table.row_count()
             for field in new_fields:
                 final_table.setRowCount(counter + 1)
                 item1 = QtWidgets.QTableWidgetItem(field)
@@ -241,7 +241,7 @@ class CreatesTranspoNetDialog(QtWidgets.QDialog, FORM_CLASS):
         if layer_fields is not None:
             ch_box = self.sender()
             parent = ch_box.parent()
-            for i in range(final_table.rowCount()):
+            for i in range(final_table.row_count()):
                 if final_table.cellWidget(i, 1) is parent:
                     row = i
                     break
@@ -305,7 +305,7 @@ class CreatesTranspoNetDialog(QtWidgets.QDialog, FORM_CLASS):
     def assembles_data(self):
         def compile_fields(layer, table):
             fields = {}
-            for row in range(table.rowCount()):
+            for row in range(table.row_count()):
                 f = table.item(row, 0).text()
                 if table.cellWidget(row, 1).findChildren(QtWidgets.QCheckBox)[0].isChecked():
                     val = -1

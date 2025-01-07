@@ -321,7 +321,7 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
             if self.job == "apply":
                 self.out_name = self.browse_outfile("aem")
                 if self.out_name is not None:
-                    for i in range(1, self.table_model.rowCount()):
+                    for i in range(1, self.table_model.row_count()):
                         if str(self.table_model.item(i, 0).text()) == "Alpha":
                             self.model.alpha = float(self.table_model.cellWidget(i, 1).value())
                         if str(self.table_model.item(i, 0).text()) == "Beta":

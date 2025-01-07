@@ -81,7 +81,7 @@ class ImpedanceMatrixDialog(QtWidgets.QDialog, FORM_CLASS):
             for row in range(i.bottomRow(), i.topRow() - 1, -1):
                 final_table.removeRow(row)
 
-            counter = table.rowCount()
+            counter = table.row_count()
             for field in old_fields:
                 table.setRowCount(counter + 1)
                 item1 = QTableWidgetItem(field)
@@ -101,7 +101,7 @@ class ImpedanceMatrixDialog(QtWidgets.QDialog, FORM_CLASS):
             for row in range(i.bottomRow(), i.topRow() - 1, -1):
                 table.removeRow(row)
 
-            counter = final_table.rowCount()
+            counter = final_table.row_count()
             for field in new_fields:
                 final_table.setRowCount(counter + 1)
                 item1 = QTableWidgetItem(field)

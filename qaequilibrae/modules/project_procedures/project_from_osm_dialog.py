@@ -146,8 +146,8 @@ class ProjectFromOSMDialog(QtWidgets.QDialog, FORM_CLASS):
             self.progress_label.setText(val[1])
             self.progressbar.reset()
         elif val[0] == "finished":
-            # lines = self.qgis_project.project.network.count_links()
-            # nodes = self.qgis_project.project.network.count_nodes()
-            # self.report.append(reporter(f"{lines:,} links generated"))
-            # self.report.append(reporter(f"{nodes:,} nodes generated"))
+            lines = self.qgis_project.project.network.count_links()
+            nodes = self.qgis_project.project.network.count_nodes()
+            self.report.append(reporter(f"{lines:,} links generated"))
+            self.report.append(reporter(f"{nodes:,} nodes generated"))
             self.leave()

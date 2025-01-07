@@ -75,7 +75,7 @@ class GTFSFeed(QDialog, FORM_CLASS):
         self.feed.set_date(date)
 
         caps = {}
-        for row in range(self.tbl_capacities.rowCount()):
+        for row in range(self.tbl_capacities.row_count()):
             key = self.tbl_capacities.item(row, 0).text()
             key = int(key) if key.isdigit() else key
             v1 = float(self.tbl_capacities.item(row, 1).text())
@@ -89,4 +89,4 @@ class GTFSFeed(QDialog, FORM_CLASS):
         self.close()
 
     def new_route_capacities(self):
-        self.tbl_capacities.setRowCount(self.tbl_capacities.rowCount() + 1)
+        self.tbl_capacities.setRowCount(self.tbl_capacities.row_count() + 1)

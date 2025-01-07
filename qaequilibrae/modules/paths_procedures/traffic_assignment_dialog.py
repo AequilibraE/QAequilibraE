@@ -297,7 +297,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
             raise AttributeError("No skims set")
 
         table = self.skim_list_table
-        idx = table.rowCount()
+        idx = table.row_count()
         table.setRowCount(idx + 1)
 
         for i, val in enumerate([self.cob_skim_class.currentText(), field]):
@@ -415,7 +415,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
                 cls.graph.set_blocked_centroid_flows(dt)
 
         table = self.tbl_vdf_parameters
-        for i in range(table.rowCount()):
+        for i in range(table.row_count()):
             k = table.item(i, 0).text()
             val = table.cellWidget(i, 1).text()
             if len(val) == 0:

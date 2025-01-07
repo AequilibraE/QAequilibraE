@@ -2,8 +2,6 @@ import numpy as np
 
 from qgis.PyQt import QtCore
 
-Qt = QtCore.Qt
-
 
 # This class was adapted from https://www.mail-archive.com/pyqt@riverbankcomputing.com/msg17575.html
 # Provided by David Douard
@@ -28,7 +26,7 @@ class NumpyModel(QtCore.QAbstractTableModel):
             self.empties = np.iinfo(aeq_matrix.dtype).min
             self.decimals = 0
 
-    def rowCount(self, parent=None):
+    def row_count(self, parent=None):
         if self._array.matrix_view is None:
             return 0
         else:
@@ -40,9 +38,9 @@ class NumpyModel(QtCore.QAbstractTableModel):
         else:
             return self._array.matrix_view.shape[1]
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=QtCore.Qt.DisplayRole):
         if index.isValid():
-            if role == Qt.DisplayRole:
+            if role == QtCore.Qt.DisplayRole:
                 row = index.row()
                 col = index.column()
 
@@ -65,10 +63,10 @@ class NumpyModel(QtCore.QAbstractTableModel):
                             self._array.matrix_view[row, col]
                         )
 
-    def headerData(self, col, orientation, role=Qt.DisplayRole):
-        if role == Qt.DisplayRole and orientation == Qt.Horizontal:
+    def headerData(self, col, orientation, role=QtCore.Qt.DisplayRole):
+        if role == QtCore.Qt.DisplayRole and orientation == QtCore.Qt.Horizontal:
             return self.header_data[col]
-        if role == Qt.DisplayRole and orientation != Qt.Horizontal:
+        if role == QtCore.Qt.DisplayRole and orientation != QtCore.Qt.Horizontal:
             return self.row_headers_data[col]
 
         return QtCore.QAbstractTableModel.headerData(self, col, orientation, role)

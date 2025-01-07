@@ -71,10 +71,10 @@ class GTFSImporter(QDialog, FORM_CLASS):
             return
 
         self.feeds.append(feed)
-        self.list_feeds.setRowCount(self.list_feeds.rowCount() + 1)
+        self.list_feeds.setRowCount(self.list_feeds.row_count() + 1)
         feed_txt = QTableWidgetItem(f"{feed.gtfs_data.agency.agency} ({feed.gtfs_data.feed_date})")
         feed_txt.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-        self.list_feeds.setItem(self.list_feeds.rowCount() - 1, 0, feed_txt)
+        self.list_feeds.setItem(self.list_feeds.row_count() - 1, 0, feed_txt)
 
     def execute_importer(self):
         for item in self.items:

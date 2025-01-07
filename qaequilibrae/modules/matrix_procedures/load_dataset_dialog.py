@@ -77,10 +77,10 @@ class LoadDatasetDialog(QtWidgets.QDialog, FORM_CLASS):
             comb = [(self.table_fields_to_import, self.selected_fields), (self.table_all_fields, self.ignore_fields)]
             for table, fields in comb:
                 for field in fields:
-                    table.setRowCount(table.rowCount() + 1)
+                    table.setRowCount(table.row_count() + 1)
                     item1 = QtWidgets.QTableWidgetItem(field)
                     item1.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-                    table.setItem(table.rowCount() - 1, 0, item1)
+                    table.setItem(table.row_count() - 1, 0, item1)
 
     def size_it_accordingly(self, final=False):
         def set_size(w, h):
