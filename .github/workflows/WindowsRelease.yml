@@ -20,21 +20,23 @@ jobs:
           args: install qgis -y
 
       # we can run the tests, but they're timing out (and I don't know why...)
+      # currently skipping tests with relative path to test folder
       - name: Setup plugin on Latest
         shell: pwsh
         run: |
           $qgisPath = (Get-ChildItem -Path "C:\Program Files" -Filter "QGIS*" -Directory).FullName
           $qgisExec = "$qgisPath\bin\python-qgis.bat"
-          $aeqPath = "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins\qaequilibrae"
-          $localPath = pwd
+          $pluginPath = "$env:APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
+          $aeqPath = "$pluginPath\qaequilibrae"
           Copy-Item "qaequilibrae" -Destination "$aeqPath" -Recurse
+          Copy-Item "test" -Destination "$pluginPath\test" -Recurse
           $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
           $env:QT_QPA_PLATFORM = "offscreen"
-          Start-Process -FilePath "$qgisExec" -ArgumentList "-m pip install -r test/requirements-test.txt" -NoNewWindow -Wait
+          Start-Process -FilePath "$qgisExec" -ArgumentList "-m pip install -r $pluginPath\test\requirements-test.txt" -NoNewWindow -Wait
           Set-Location "$aeqPath"
           Start-Process -FilePath "$qgisExec" -ArgumentList "download_extra_packages_class.py" -NoNewWindow -Wait
+          Set-Location "$pluginPath"
           $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
-          Set-Location "$localPath"
           Start-Process -FilePath "$qgisExec" -ArgumentList "-m pytest test" -NoNewWindow -Wait
 
       - name: Check packages installed
