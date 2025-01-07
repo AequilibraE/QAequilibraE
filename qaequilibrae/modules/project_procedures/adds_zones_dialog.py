@@ -39,7 +39,7 @@ class AddZonesDialog(QtWidgets.QDialog, FORM_CLASS):
         layer = self.cob_lyr.currentLayer()
         field_correspondence = {}
 
-        for row in range(self.table_fields.row_count()):
+        for row in range(self.table_fields.rowCount()):
             f = self.table_fields.item(row, 1).text()
             if not self.table_fields.cellWidget(row, 0).findChildren(QtWidgets.QCheckBox)[0].isChecked():
                 continue
