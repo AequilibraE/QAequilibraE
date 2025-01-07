@@ -1,48 +1,36 @@
 import glob
 import logging
 import os
-import qgis
 import subprocess
 import sys
 import tempfile
 import webbrowser
 from functools import partial
 from pathlib import Path
+from uuid import uuid4
+
+import qgis
 from qgis.PyQt import QtCore
-from qgis.PyQt.QtCore import QTranslator
-from qgis.PyQt.QtCore import Qt, QCoreApplication
-from qgis.PyQt.QtWidgets import QVBoxLayout, QApplication
-from qgis.PyQt.QtWidgets import QWidget, QDockWidget, QAction, QMenu, QTabWidget, QCheckBox, QToolBar, QToolButton
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QTranslator
+from qgis.PyQt.QtWidgets import QVBoxLayout, QApplication, QToolBar, QToolButton
+from qgis.PyQt.QtWidgets import QWidget, QDockWidget, QAction, QMenu, QTabWidget, QCheckBox
 from qgis.core import QgsDataSourceUri, QgsVectorLayer, QgsVectorFileWriter
 from qgis.core import QgsProject, QgsExpressionContextUtils, QgsApplication
-from typing import Dict
-from uuid import uuid4
 
 from qaequilibrae.message import messages
 from qaequilibrae.modules.menu_actions import load_matrices, run_add_connectors, run_stacked_bandwidths, run_tag
-from qaequilibrae.modules.menu_actions import run_add_zones, run_show_project_data
+from qaequilibrae.modules.menu_actions import run_add_zones, run_show_project_data, run_tsp
 from qaequilibrae.modules.menu_actions import run_desire_lines, run_scenario_comparison, run_import_gtfs
-from qaequilibrae.modules.menu_actions import (
-    run_distribution_models,
-    run_tsp,
-    run_change_parameters,
-    prepare_network,
-)
-from qaequilibrae.modules.menu_actions import (
-    run_load_project,
-    project_from_osm,
-    run_create_transponet,
-    show_log,
-    create_example,
-)
-from qaequilibrae.modules.menu_actions import run_pt_explore
-from qaequilibrae.modules.paths_procedures import run_shortest_path, run_dist_matrix, run_traffic_assig
+from qaequilibrae.modules.menu_actions import run_distribution_models, run_change_parameters, prepare_network
+from qaequilibrae.modules.menu_actions import run_load_project, project_from_osm, run_create_transponet
+from qaequilibrae.modules.menu_actions import run_pt_explore, show_log, create_example
+from qaequilibrae.modules.menu_actions import run_shortest_path, run_dist_matrix, run_traffic_assig
 from qaequilibrae.modules.processing_provider.provider import Provider
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "packages"))
 
 if Path(os.path.join(os.path.dirname(__file__), "packages", "requirements.txt")).exists():
-    from aequilibrae.project import Project
+    pass
 else:
     version = sys.version_info
 
@@ -205,7 +193,7 @@ class AequilibraEMenu:
         self.dock.setWidget(self.manager)
         self.dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dock)
-        QgsProject.instance().layerRemoved.connect(self.layerRemoved)
+        QgsProject.instance().layerRemoved.connect(self.layer_removed)
 
         # # # ########################################################################
         # ##################        SAVING PROJECT CONFIGS       #####################
@@ -259,18 +247,12 @@ class AequilibraEMenu:
         else:
             webbrowser.open_new_tab(url)
 
-    # def trlt(self, message):
-    #     # In the near future, we will use this function to automatically translate the AequilibraE menu
-    #     # To any language we can get people to translate it to
-    #     # return QCoreApplication.translate('AequilibraE', message)
-    #     return message
-
-    def initProcessing(self):
+    def init_processing(self):
         self.provider = Provider()
         QgsApplication.processingRegistry().addProvider(self.provider)
 
-    def initGui(self):
-        self.initProcessing()
+    def init_gui(self):
+        self.init_processing()
 
     def unload(self):
         if self.provider in QgsApplication.processingRegistry().providers():
@@ -297,7 +279,7 @@ class AequilibraEMenu:
         self.matrices.clear()
         self.layers.clear()
 
-    def layerRemoved(self, layer):
+    def layer_removed(self, layer):
         layers_to_re_create = [key for key, val in self.layers.items() if val[1] == layer]
 
         # Clears the pool of layers
@@ -330,7 +312,7 @@ class AequilibraEMenu:
         if self.project is None:
             return
         uri = QgsDataSourceUri()
-        if not "transit_" in layer_name:
+        if "transit_" not in layer_name:
             uri.setDatabase(self.project.path_to_file)
             lname = layer_name
         else:

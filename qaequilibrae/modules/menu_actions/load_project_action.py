@@ -1,4 +1,5 @@
 from os.path import exists, join
+
 import qgis
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QTableWidget

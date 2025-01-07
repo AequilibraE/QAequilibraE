@@ -1,13 +1,12 @@
 from os.path import join
 
 from aequilibrae import Project
-
 from qgis.PyQt import QtWidgets
 from qgis.core import QgsProject
 
-from .utilities import load_test_layer
 from qaequilibrae.modules.project_procedures.creates_transponet_dialog import CreatesTranspoNetDialog
 from qaequilibrae.modules.project_procedures.creates_transponet_procedure import CreatesTranspoNetProcedure
+from .utilities import load_test_layer
 
 
 def test_dialog(ae, folder_path):

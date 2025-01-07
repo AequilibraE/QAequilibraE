@@ -2,8 +2,8 @@ import sqlite3
 from os.path import join, isfile
 
 import pandas as pd
-from aequilibrae.utils.db_utils import read_and_close
 from aequilibrae.project.database_connection import database_connection
+from aequilibrae.utils.db_utils import read_and_close
 
 
 def list_results(project_base_path) -> pd.DataFrame:

@@ -1,9 +1,10 @@
 from time import sleep
+
 import qgis
 
-from .utilities import create_polygons_layer
-from qaequilibrae.modules.project_procedures.adds_zones_dialog import AddZonesDialog
 from qaequilibrae.modules.project_procedures.add_zones_procedure import AddZonesProcedure
+from qaequilibrae.modules.project_procedures.adds_zones_dialog import AddZonesDialog
+from .utilities import create_polygons_layer
 
 
 def test_add_zones_dialog(pt_project):

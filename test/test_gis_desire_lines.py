@@ -1,8 +1,8 @@
 import pytest
 from PyQt5.QtCore import Qt
 
-from .utilities import load_sfalls_from_layer
 from qaequilibrae.modules.gis.desire_lines_dialog import DesireLinesDialog
+from .utilities import load_sfalls_from_layer
 
 
 def test_click_create_without_layers(ae_with_project, qtbot, timeoutDetector):

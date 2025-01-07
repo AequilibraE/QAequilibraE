@@ -44,8 +44,6 @@ def test_click_configure_graph(ae_with_project, qtbot, timeoutDetector):
 # Graph preparation is intertwined with the LoadGraphLayerSettingDialog, so they cannot be tested independently
 # TODO: for some reason, there is a segfault after this test is finished, couldn't find out why
 def test_prepare_graph_and_network(ae_with_project, qtbot, timeoutDetector):
-    from qaequilibrae.modules.common_tools import LoadGraphLayerSettingDialog
-
     dialog = ShortestPathDialog(ae_with_project)
     dialog.show()
     qtbot.addWidget(dialog)

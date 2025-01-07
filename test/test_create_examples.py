@@ -1,6 +1,7 @@
-import pytest
 from os.path import isdir
 from pathlib import Path
+
+import pytest
 
 from qaequilibrae.modules.project_procedures.create_examples_dialog import CreateExampleDialog
 

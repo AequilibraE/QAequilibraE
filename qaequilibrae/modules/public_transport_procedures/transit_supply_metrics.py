@@ -1,7 +1,6 @@
 from typing import List, Optional
 
 import pandas as pd
-
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 
@@ -16,7 +15,7 @@ class SupplyMetrics:
 
     def __init__(self, path: None):
         """
-        :param supply_file: Path to the supply file we want to compute metrics for
+        :param path: Path to the supply file we want to compute metrics for
         """
 
         rt_sql = """Select route_id, route, agency_id, route_type, seated_capacity s_capacity, total_capacity t_capacity from routes"""
@@ -24,7 +23,7 @@ class SupplyMetrics:
         patt_sql = """Select pattern_id, route_id, seated_capacity s_capacity, total_capacity t_capacity from routes"""
 
         stop_sql = (
-            f"""Select stop_id, stop, name stop_name, agency_id, route_type, transit_fare_zone zone_id from stops"""
+            """Select stop_id, stop, name stop_name, agency_id, route_type, transit_fare_zone zone_id from stops"""
         )
 
         stop_pat_sql = """Select pattern_id, cast(from_stop as text) stop_id from route_links
@@ -39,7 +38,7 @@ class SupplyMetrics:
         trp_pat_lnk_sql = """select pattern_id, seq stop_order, cast(from_stop as text) from_stop, 
                              cast(to_stop as text) to_stop from route_links"""
 
-        connection = database_connection("transit") if path == None else path
+        connection = database_connection("transit") if path is None else path
         with read_and_close(connection) as conn:
             self.__raw_routes = pd.read_sql(rt_sql, conn).fillna(0)
             self.__raw_patterns = pd.read_sql(patt_sql, conn).fillna(0)
@@ -80,15 +79,16 @@ class SupplyMetrics:
         patterns: Optional[List[int]] = None,
         stops: Optional[List[int]] = None,
     ) -> pd.DataFrame:
-        """Returns a dataframe with all supported supply metrics for stops
-            Capacities correspond to the sum of the capacities of all vehicles
-            for all trips that went through the stop.
+        """Returns a dataframe with all supported supply metrics for stops.
 
-            :param from_minute: (`Optional`) Start of time window to compute metrics for
-            :param to_minute: (`Optional`) End of time window to compute metrics for
-            :param patterns: (`Optional`) List of patterns to consider
-            :param routes: (`Optional`) List of routes to consider
-            :param stops: (`Optional`) List of stops to consider
+        Capacities correspond to the sum of the capacities of all vehicles
+        for all trips that went through the stop.
+
+        :param from_minute: (`Optional`) Start of time window to compute metrics for
+        :param to_minute: (`Optional`) End of time window to compute metrics for
+        :param patterns: (`Optional`) List of patterns to consider
+        :param routes: (`Optional`) List of routes to consider
+        :param stops: (`Optional`) List of stops to consider
 
         :return: stop_metrics (`pd.DataFrame`)
 
@@ -113,7 +113,8 @@ class SupplyMetrics:
         routes: Optional[List[int]] = None,
         stops: Optional[List[int]] = None,
     ) -> pd.DataFrame:
-        """Returns a dataframe with all supported supply metrics for Patterns
+        """Returns a dataframe with all supported supply metrics for Patterns.
+
         Capacities correspond to the sum of the capacities of all vehicles
         for all trips for each pattern
 
@@ -144,7 +145,8 @@ class SupplyMetrics:
         routes: Optional[List[int]] = None,
         stops: Optional[List[int]] = None,
     ) -> pd.DataFrame:
-        """Returns a dataframe with all supported supply metrics for Routes
+        """Returns a dataframe with all supported supply metrics for Routes.
+
         Capacities correspond to the sum of the capacities of all vehicles
         for all trips fort each route
 
@@ -177,13 +179,14 @@ class SupplyMetrics:
         """Computes metrics for all stop within each zone. Allows constraining to a given
         time interval, set of routes, set of patterns and/or transit agency.
 
-            All parameters are optional.
+        All parameters are optional.
 
         :param from_minute: Start of the interval for computation. Zero if not provided
         :param to_minute: End of the interval for computation. Maximum time from the dataset if not provided
         :param stops: List of stops we want to compute data for
         :param patterns: List of pattern_id to consider in the computation
         :param routes: List of route_id to consider in the computation
+
         :return: Statistics DataFrame
         """
         if all(x is None for x in [from_minute, to_minute, routes, patterns, stops]):
@@ -199,9 +202,9 @@ class SupplyMetrics:
 
     @staticmethod
     def list_stop_metrics():
-        """Helper method to identify metrics available for transit stops
-            Capacities correspond to the sum of the capacities of all vehicles
-            for all trips that went through the stop
+        """Helper method to identify metrics available for transit stops.
+        Capacities correspond to the sum of the capacities of all vehicles
+        for all trips that went through the stop
 
         :return: Lists of metrics available for stops
         """
@@ -210,8 +213,8 @@ class SupplyMetrics:
     @staticmethod
     def list_pattern_metrics():
         """Helper method to identify metrics available for transit patterns.
-           Capacities correspond to the sum of the capacities of all vehicles
-           for all trips for each pattern
+        Capacities correspond to the sum of the capacities of all vehicles
+        for all trips for each pattern
 
         :return: Lists of metrics available for patterns
         """
@@ -220,8 +223,8 @@ class SupplyMetrics:
     @staticmethod
     def list_route_metrics():
         """Helper method to identify metrics available for transit routes
-            Capacities correspond to the sum of the capacities of all vehicles
-            for all trips for each route
+        Capacities correspond to the sum of the capacities of all vehicles
+        for all trips for each route
 
         :return: Lists of metrics available for routes
         """

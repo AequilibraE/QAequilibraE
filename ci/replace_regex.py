@@ -1,6 +1,6 @@
+import mmap
 import os
 import re
-import mmap
 import sys
 from pathlib import Path
 

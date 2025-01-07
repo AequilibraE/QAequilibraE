@@ -83,7 +83,7 @@ html_theme_options = {
 }
 
 # The name for this set of Sphinx documents. If None, it defaults to
-html_title = f"AequilibraE for QGIS"
+html_title = "AequilibraE for QGIS"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

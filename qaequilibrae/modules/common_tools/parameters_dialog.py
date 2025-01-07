@@ -1,7 +1,7 @@
 import logging
 import os
-import yaml
 
+import yaml
 from aequilibrae.parameters import Parameters
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.Qsci import QsciLexerYAML
@@ -13,17 +13,16 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui
 class ParameterDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, qgis_project, parent=None):
         super(ParameterDialog, self).__init__(parent)
-        # QDialog.__init__(self)
         self.iface = qgis_project.iface
         self.setupUi(self)
 
         self.p = Parameters()
         self.path = self.p.file
-
         self.default_values = self.p._default
         self.parameter_values = self.p.parameters
         self.current_data = None
         self.error = False
+
         # Configures the text editor
         font = QFont()
         font.setFamily("Courier")

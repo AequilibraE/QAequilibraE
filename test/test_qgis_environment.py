@@ -1,4 +1,5 @@
 from qgis.core import QgsProviderRegistry
+
 from .utilities import get_qgis_app
 
 

@@ -10,9 +10,10 @@ __copyright__ = "Copyright 2012, Australia Indonesia Facility for "
 __copyright__ += "Disaster Reduction"
 """
 
-import os
-import logging
 import configparser
+import logging
+import os
+
 import pytest
 
 LOGGER = logging.getLogger("QGIS")

@@ -1,5 +1,6 @@
-from qgis.PyQt.QtWidgets import QFileDialog
 import tempfile
+
+from qgis.PyQt.QtWidgets import QFileDialog
 
 
 def GetOutputFileName(clss, box_name, file_types, default_type, start_path):

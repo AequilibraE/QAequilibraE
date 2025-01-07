@@ -1,8 +1,8 @@
 import os
+
 from aequilibrae.project import Project
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
-
 from qgis.PyQt import QtWidgets, uic, QtCore
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_load_network_info.ui"))
@@ -10,7 +10,6 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui
 
 class LoadGraphLayerSettingDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, iface, project: Project):
-        # QtWidgets.QDialog.__init__(self)
         QtWidgets.QDialog.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         self.iface = iface
         self.project = project

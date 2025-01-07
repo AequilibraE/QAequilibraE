@@ -4,8 +4,8 @@ import qgis
 from qgis.core import QgsProject
 
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
-from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
 from qaequilibrae.modules.matrix_procedures.load_dataset_class import LoadDataset
+from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
 
 
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])

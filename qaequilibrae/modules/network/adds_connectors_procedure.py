@@ -1,8 +1,7 @@
 import shapely.wkb
-from shapely.geometry import Point
-
-from aequilibrae.utils.interface.worker_thread import WorkerThread
 from PyQt5.QtCore import pyqtSignal
+from aequilibrae.utils.interface.worker_thread import WorkerThread
+from shapely.geometry import Point
 
 
 class AddsConnectorsProcedure(WorkerThread):

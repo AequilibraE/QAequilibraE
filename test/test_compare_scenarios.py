@@ -1,13 +1,13 @@
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
 from aequilibrae.distribution import Ipf
 from aequilibrae.paths import TrafficAssignment, TrafficClass
-
 from qgis.core import QgsProject
-from .utilities import run_sfalls_assignment
-from qaequilibrae.modules.menu_actions.load_project_action import _run_load_project_from_path
+
 from qaequilibrae.modules.gis.compare_scenarios_dialog import CompareScenariosDialog
+from qaequilibrae.modules.menu_actions.load_project_action import _run_load_project_from_path
+from .utilities import run_sfalls_assignment
 
 
 @pytest.fixture

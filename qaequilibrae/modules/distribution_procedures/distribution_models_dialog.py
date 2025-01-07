@@ -1,24 +1,24 @@
 import os
-import numpy as np
-import pandas as pd
 from collections import OrderedDict
 from functools import partial
 
+import numpy as np
+import pandas as pd
+import qgis
 from aequilibrae.context import get_logger
-from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.distribution import SyntheticGravityModel
 from aequilibrae.distribution.synthetic_gravity_model import valid_functions
-
-import qgis
+from aequilibrae.matrix import AequilibraeMatrix
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QDoubleSpinBox, QAbstractItemView
-from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path
+
 from qaequilibrae.modules.common_tools import PandasModel, ReportDialog, GetOutputFileName
-from qaequilibrae.modules.distribution_procedures.ipf_procedure import IpfProcedure
+from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path
 from qaequilibrae.modules.distribution_procedures.apply_gravity_procedure import ApplyGravityProcedure
 from qaequilibrae.modules.distribution_procedures.calibrate_gravity_procedure import CalibrateGravityProcedure
-from qaequilibrae.modules.matrix_procedures.matrix_lister import list_matrices
+from qaequilibrae.modules.distribution_procedures.ipf_procedure import IpfProcedure
 from qaequilibrae.modules.matrix_procedures import LoadDatasetDialog, DisplayAequilibraEFormatsDialog
+from qaequilibrae.modules.matrix_procedures.matrix_lister import list_matrices
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_distribution.ui"))
 
@@ -159,9 +159,7 @@ class DistributionModelsDialog(QtWidgets.QDialog, FORM_CLASS):
         self.user_chosen_model = QComboBox()
         for f in valid_functions:
             self.user_chosen_model.addItem(f)
-        # self.user_chosen_model.blockSignals(True)
         self.user_chosen_model.setCurrentIndex(valid_functions.index(self.model.function))
-        # self.user_chosen_model.blockSignals(False)
         self.user_chosen_model.currentIndexChanged.connect(self.change_model_by_user)
 
         self.table_model.setRowCount(2)

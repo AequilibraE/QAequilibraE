@@ -4,8 +4,8 @@ from os.path import isdir
 from time import localtime, strftime
 
 import qgis
-from qgis.core import QgsProject
 from aequilibrae import Parameters
+from qgis.core import QgsProject
 
 
 def user_message(message, level):

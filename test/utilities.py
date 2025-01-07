@@ -4,8 +4,8 @@
 import logging
 import os
 import sys
-from shutil import copyfile
 from os.path import abspath, dirname, exists, join
+from shutil import copyfile
 
 from PyQt5.QtCore import QVariant
 from qgis.core import (
@@ -17,7 +17,6 @@ from qgis.core import (
     QgsProject,
     QgsVectorLayer,
 )
-
 
 LOGGER = logging.getLogger("QGIS")
 QGIS_APP = None  # Static variable used to hold hand to running QGIS app

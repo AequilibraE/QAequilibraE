@@ -1,18 +1,19 @@
 import logging
 import os
-import openmatrix as omx
-import numpy as np
-import pandas as pd
 from math import ceil
-from aequilibrae.matrix import AequilibraeMatrix
 
+import numpy as np
+import openmatrix as omx
+import pandas as pd
 import qgis
+from aequilibrae.matrix import AequilibraeMatrix
 from qgis.PyQt import QtWidgets, uic, QtCore
 from qgis.PyQt.QtWidgets import QComboBox, QCheckBox, QSpinBox, QLabel, QSpacerItem
 from qgis.PyQt.QtWidgets import QHBoxLayout, QTableView, QPushButton, QVBoxLayout
 from qgis.PyQt.QtWidgets import QRadioButton, QAbstractItemView
-from qgis._core import QgsVectorLayer, QgsVectorLayerJoinInfo, QgsSymbol, QgsApplication
 from qgis._core import QgsRendererRange, QgsGraduatedSymbolRenderer, QgsProject, QgsStyle
+from qgis._core import QgsVectorLayer, QgsVectorLayerJoinInfo, QgsSymbol, QgsApplication
+
 from qaequilibrae.modules.common_tools import NumpyModel, GetOutputFileName
 from qaequilibrae.modules.common_tools import layer_from_dataframe
 from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path

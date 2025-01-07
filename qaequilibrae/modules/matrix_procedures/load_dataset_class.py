@@ -1,5 +1,6 @@
-import numpy as np
 import struct
+
+import numpy as np
 import pandas as pd
 from aequilibrae.utils.interface.worker_thread import WorkerThread
 from qgis.PyQt.QtCore import pyqtSignal, QVariant

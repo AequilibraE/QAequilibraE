@@ -1,10 +1,10 @@
 import pytest
 from PyQt5.QtCore import Qt
-from qgis.core import QgsProject
 from qgis.PyQt.QtWidgets import QTabWidget
+from qgis.core import QgsProject
 
-from .utilities import run_sfalls_assignment
 from qaequilibrae.modules.matrix_procedures.load_project_data import LoadProjectDataDialog
+from .utilities import run_sfalls_assignment
 
 
 def test_no_project(ae, mocker, qtbot):

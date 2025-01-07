@@ -1,5 +1,6 @@
-from qaequilibrae.qaequilibrae import AequilibraEMenu
 from qgis.utils import iface
+
+from qaequilibrae.qaequilibrae import AequilibraEMenu
 from .utilities import get_qgis_app
 
 

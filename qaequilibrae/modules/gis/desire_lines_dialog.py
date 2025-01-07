@@ -2,18 +2,17 @@ import logging
 import os
 
 import pandas as pd
-
 import qgis
-
 from qgis.PyQt import uic, QtCore
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
 from qgis.core import QgsProject
-from .desire_lines_procedure import DesireLinesProcedure
+
 from qaequilibrae.modules.common_tools import ReportDialog
 from qaequilibrae.modules.common_tools import standard_path, get_vector_layer_by_name
 from qaequilibrae.modules.common_tools.global_parameters import poly_types, numeric_types, point_types
 from qaequilibrae.modules.matrix_procedures import list_matrices
+from .desire_lines_procedure import DesireLinesProcedure
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_DesireLines.ui"))
 
