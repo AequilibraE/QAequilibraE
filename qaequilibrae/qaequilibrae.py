@@ -36,7 +36,7 @@ from qaequilibrae.modules.menu_actions import (
     create_example,
 )
 from qaequilibrae.modules.menu_actions import run_pt_explore
-from qaequilibrae.modules.paths_procedures import run_shortest_path, run_dist_matrix, run_traffic_assig
+from qaequilibrae.modules.menu_actions import run_shortest_path, run_dist_matrix, run_traffic_assig
 from qaequilibrae.modules.processing_provider.provider import Provider
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "packages"))
@@ -205,7 +205,7 @@ class AequilibraEMenu:
         self.dock.setWidget(self.manager)
         self.dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dock)
-        QgsProject.instance().layerRemoved.connect(self.layerRemoved)
+        QgsProject.instance().layerRemoved.connect(self.layer_removed)
 
         # # # ########################################################################
         # ##################        SAVING PROJECT CONFIGS       #####################
@@ -259,18 +259,12 @@ class AequilibraEMenu:
         else:
             webbrowser.open_new_tab(url)
 
-    # def trlt(self, message):
-    #     # In the near future, we will use this function to automatically translate the AequilibraE menu
-    #     # To any language we can get people to translate it to
-    #     # return QCoreApplication.translate('AequilibraE', message)
-    #     return message
-
-    def initProcessing(self):
+    def init_processing(self):
         self.provider = Provider()
         QgsApplication.processingRegistry().addProvider(self.provider)
 
-    def initGui(self):
-        self.initProcessing()
+    def init_gui(self):
+        self.init_processing()
 
     def unload(self):
         if self.provider in QgsApplication.processingRegistry().providers():
@@ -297,7 +291,7 @@ class AequilibraEMenu:
         self.matrices.clear()
         self.layers.clear()
 
-    def layerRemoved(self, layer):
+    def layer_removed(self, layer):
         layers_to_re_create = [key for key, val in self.layers.items() if val[1] == layer]
 
         # Clears the pool of layers
