@@ -26,7 +26,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y --fix-missing latexmk texlive-latex-extra
         python -m pip install -U pip
-        pip install -r docs/requirements-docs.txt
+        pip install -r docs/requirements_docs.txt
 
     - name: Prepare links for DEV
       if: ${{ (github.event_name == 'pull_request')}}
