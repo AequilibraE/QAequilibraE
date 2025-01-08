@@ -11,15 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
+    
     steps:
     - uses: actions/checkout@v4
       with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
-    - name: Set up Python 3.9
+  
+    - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: 3.12
   
     - name: Install packages
       run: |
@@ -52,8 +54,8 @@ jobs:
         if-no-files-found: warn
   
     - name: Release plugin in QGIS
-      run: >-
-        qgis-plugin-ci release ${ env.PLUGIN_VERSION } -c
-        --github-token ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        qgis-plugin-ci release ${GITHUB_REF/refs\/tags\//}
+        --github-token ${{ secrets.GITHUB_TOKEN }} -c
         --osgeo-username ${{ secrets.QGIS_PLUGIN_REPO_USER }}
         --osgeo-password ${{ secrets.QGIS_PLUGIN_REPO_PASSWORD }}
