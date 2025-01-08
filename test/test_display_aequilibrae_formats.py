@@ -8,10 +8,9 @@ from qgis.core import QgsProject
 from qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog import DisplayAequilibraEFormatsDialog
 
 
-WINDOWS_SKIP_MARKER = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
+pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_display_data_no_path(ae, mocker):
     function = "qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog.DisplayAequilibraEFormatsDialog.get_file_name"
     mocker.patch(function, return_value=(None, None))
@@ -27,10 +26,10 @@ def test_display_data_no_path(ae, mocker):
 @pytest.mark.parametrize(
     ("has_project", "path"),
     [
-        pytest.param(True, "matrices/demand.aem", marks=WINDOWS_SKIP_MARKER),
-        pytest.param(False, "matrices/demand.aem", marks=WINDOWS_SKIP_MARKER),
-        pytest.param(True, "matrices/SiouxFalls.omx", marks=WINDOWS_SKIP_MARKER),
-        pytest.param(False, "matrices/SiouxFalls.omx", marks=WINDOWS_SKIP_MARKER),
+        (True, "matrices/demand.aem"),
+        (False, "matrices/demand.aem"),
+        (True, "matrices/SiouxFalls.omx"),
+        (False, "matrices/SiouxFalls.omx"),
     ],
 )
 def test_display_data_with_path(tmpdir, ae_with_project, mocker, has_project, path):
@@ -57,13 +56,7 @@ def test_display_data_with_path(tmpdir, ae_with_project, mocker, has_project, pa
 
 
 # TODO: Ideally, we would test if the visualization is working
-@pytest.mark.parametrize(
-    "element",
-    [
-        pytest.param("row", marks=WINDOWS_SKIP_MARKER),
-        pytest.param("column", marks=WINDOWS_SKIP_MARKER),
-    ],
-)
+@pytest.mark.parametrize("element", ["row", "columns"])
 def test_select_elements(ae_with_project, mocker, element):
     file_path = "test/data/SiouxFalls_project/matrices/sfalls_skims.omx"
     _, extension = file_path.split(".")

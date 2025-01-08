@@ -8,9 +8,9 @@ from qaequilibrae.modules.gis.set_color_ramps_dialog import LoadColorRampSelecto
 
 
 link_layer = "link"
+pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 def test_bandwidth(ae, folder_path):
     load_test_layer(folder_path, "link")
 
@@ -34,7 +34,6 @@ def test_bandwidth(ae, folder_path):
     assert f"{link_layer} (Width)" in prj_layers
 
 
-@pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 @pytest.mark.parametrize("dual_fields", [True, False])
 def test_color_ramp(ae, folder_path, dual_fields):
     load_test_layer(folder_path, "link")
