@@ -1,5 +1,8 @@
 name: VersionRelease
 
+env:
+  PLUGIN_VERSION: $(python qaequilibrae/get_version.py)
+
 on:
   push:
     branches: [develop]
@@ -36,7 +39,7 @@ jobs:
         git add qaequilibrae/
 
     - name: Build the package
-      run: qgis-plugin-ci package ${GITHUB_REF/refs\/tags\//} -c
+      run: qgis-plugin-ci package ${{ env.PLUGIN_VERSION }} -c
 
     - name: Download artifact
       uses: actions/upload-artifact@v4
@@ -48,7 +51,7 @@ jobs:
     - name: Release plugin in QGIS
       if: ${{ (github.event_name == 'release')}}
       run: |
-        qgis-plugin-ci release ${GITHUB_REF/refs\/tags\//}
+        qgis-plugin-ci release ${{ env.PLUGIN_VERSION }}
         --github-token ${{ secrets.GITHUB_TOKEN }} -c
         --osgeo-username ${{ secrets.QGIS_PLUGIN_REPO_USER }}
         --osgeo-password ${{ secrets.QGIS_PLUGIN_REPO_PASSWORD }}
