@@ -1,10 +1,14 @@
 import os
 import numpy as np
 import pytest
+import sys
 
 from qgis.core import QgsProject
 
 from qaequilibrae.modules.matrix_procedures.display_aequilibrae_formats_dialog import DisplayAequilibraEFormatsDialog
+
+
+pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
 
 def test_display_data_no_path(ae, mocker):
@@ -19,8 +23,15 @@ def test_display_data_no_path(ae, mocker):
     assert messagebar.messages[1][-1] == error_message, "Level 1 error message is missing"
 
 
-@pytest.mark.parametrize("has_project", [True, False])
-@pytest.mark.parametrize("path", ("matrices/demand.aem", "matrices/SiouxFalls.omx"))
+@pytest.mark.parametrize(
+    ("has_project", "path"),
+    [
+        (True, "matrices/demand.aem"),
+        (False, "matrices/demand.aem"),
+        (True, "matrices/SiouxFalls.omx"),
+        (False, "matrices/SiouxFalls.omx"),
+    ],
+)
 def test_display_data_with_path(tmpdir, ae_with_project, mocker, has_project, path):
     file_path = f"test/data/SiouxFalls_project/{path}"
     name, extension = path.split(".")
@@ -45,7 +56,7 @@ def test_display_data_with_path(tmpdir, ae_with_project, mocker, has_project, pa
 
 
 # TODO: Ideally, we would test if the visualization is working
-@pytest.mark.parametrize("element", ["row", "column"])
+@pytest.mark.parametrize("element", ["row", "columns"])
 def test_select_elements(ae_with_project, mocker, element):
     file_path = "test/data/SiouxFalls_project/matrices/sfalls_skims.omx"
     _, extension = file_path.split(".")

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pytest
 from PyQt5.QtCore import QTimer
 
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe

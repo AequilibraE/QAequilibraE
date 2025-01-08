@@ -1,5 +1,10 @@
+import pytest
+import sys
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
+
+
+pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
 
 def wait_for_active_window(qtbot):

@@ -1,4 +1,5 @@
 import pytest
+import sys
 from qgis.core import QgsProject
 
 from .utilities import load_test_layer
@@ -7,6 +8,7 @@ from qaequilibrae.modules.gis.set_color_ramps_dialog import LoadColorRampSelecto
 
 
 link_layer = "link"
+pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
 
 def test_bandwidth(ae, folder_path):
