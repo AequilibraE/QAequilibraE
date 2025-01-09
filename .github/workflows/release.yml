@@ -50,8 +50,9 @@ jobs:
   
     - name: Release plugin in QGIS
       if: ${{ (github.event_name == 'release')}}
-      run: |
-        qgis-plugin-ci release ${{ env.PLUGIN_VERSION }}
-        --github-token ${{ secrets.GITHUB_TOKEN }} -c
-        --osgeo-username ${{ secrets.QGIS_PLUGIN_REPO_USER }}
+      run: >-
+        qgis-plugin-ci release ${{ env.PLUGIN_VERSION }} 
+        --github-token ${{ secrets.GITHUB_TOKEN }} -c 
+        --osgeo-username ${{ secrets.QGIS_PLUGIN_REPO_USER }} 
         --osgeo-password ${{ secrets.QGIS_PLUGIN_REPO_PASSWORD }}
+        --create-plugin-repo
