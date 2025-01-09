@@ -1,4 +1,3 @@
-
 Version 0.3 - Release date: 21\August\2016
 
 %%%%%%%%%%     MAJOR BUG FIXES:     %%%%%%%%%%

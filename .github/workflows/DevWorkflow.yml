@@ -2,7 +2,6 @@ name: DevelopmentTests
 
 on:  [pull_request]
 
-
 jobs:
   unittest:
 #    needs: linting
@@ -22,7 +21,7 @@ jobs:
           . /tmp/.venv/bin/activate
           python3 -m pip install -U pip setuptools uv
           python3 ./ci/dependency_installation.py
-          python3 -m uv pip install -r test/requirements-test.txt --constraint ./ci/constraints.txt
+          python3 -m uv pip install -r test/requirements_test.txt --constraint ./ci/constraints.txt
           export PYTHONPATH=$(pwd)/qaequilibrae/packages:$PYTHONPATH
           echo "PYTHONPATH=$PYTHONPATH" >> $GITHUB_ENV
 
@@ -31,4 +30,4 @@ jobs:
           . /tmp/.venv/bin/activate
           export QT_QPA_PLATFORM=offscreen
           pwd
-          python3 -m pytest --cov-config=.coveragerc --cov-report term-missing --cov=qaequilibrae test
+          python3 -m pytest --cov-report term-missing --cov=qaequilibrae test

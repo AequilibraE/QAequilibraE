@@ -12,19 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
+
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
+
+    - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: 3.12
 
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y --fix-missing latexmk texlive-latex-extra
         python -m pip install -U pip
-        pip install -r docs/requirements-docs.txt
+        pip install -r docs/requirements_docs.txt
 
     - name: Prepare links for DEV
       if: ${{ (github.event_name == 'pull_request')}}

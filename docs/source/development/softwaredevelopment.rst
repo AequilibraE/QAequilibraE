@@ -50,7 +50,7 @@ that using a virtual environment would be a good practice. ::
   python3 -m venv .venv --system-site-package
   . .venv/bin/activate
   python3 -m pip install - U pip setuptools uv
-  python3 -m pip install -r test/requirements-test.txt
+  python3 -m pip install -r test/requirements_test.txt
   python3 ./ci/dependency_installation.py
   export PYTHONPATH=$(pwd)/qaequilibrae/packages:$PYTHONPATH
   export QT_QPA_PLATFORM=offscreen
