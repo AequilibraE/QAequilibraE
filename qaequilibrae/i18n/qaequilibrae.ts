@@ -2942,7 +2942,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/project_procedures/forms/ui_transponet_construction.ui" line="180"/>
+        <location filename="../modules/project_procedures/forms/ui_add_zoning.ui" line="178"/>
         <source>Layer field</source>
         <translation type="unfinished"></translation>
     </message>
