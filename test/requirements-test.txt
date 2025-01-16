@@ -5,3 +5,4 @@ pytest-qt
 pytest-cov
 pytest-mock
 black
+pytest-reportlog
