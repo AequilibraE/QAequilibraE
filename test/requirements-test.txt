@@ -6,3 +6,4 @@ pytest-cov
 pytest-mock
 black==24.4.2
 ruff==0.8.6
+pytest-reportlog
