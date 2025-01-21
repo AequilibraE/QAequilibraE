@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from shapely.geometry import Point
+import sys
 
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.project import Project
@@ -30,6 +31,9 @@ from qaequilibrae.modules.processing_provider.matrix_from_layer import MatrixFro
 from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
 from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
+
+
+pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
 
 def qgis_app():
