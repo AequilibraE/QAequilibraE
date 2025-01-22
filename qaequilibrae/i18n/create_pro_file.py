@@ -1,5 +1,5 @@
-import mmap
 import os
+import mmap
 import sys
 from pathlib import Path
 
@@ -12,16 +12,17 @@ def create_file():
     forms = []
     sources = []
 
-    for path, subdirs, files in os.walk("qaequilibrae/modules"):
+    for path, _, files in os.walk("qaequilibrae/modules"):
         for name in files:
             if name in ["__init__.py", "metadata.txt"]:
                 pass
             elif name[-2:] == "ui":
                 forms.append(os.path.join(path, name))
             else:
-                with open(os.path.join(path, name), "rb", 0) as file, mmap.mmap(
-                    file.fileno(), 0, access=mmap.ACCESS_READ
-                ) as s:
+                with (
+                    open(os.path.join(path, name), "rb", 0) as file,
+                    mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_READ) as s,
+                ):
                     if s.find(b"self.tr") != -1:
                         sources.append(os.path.join(path, name))
 
