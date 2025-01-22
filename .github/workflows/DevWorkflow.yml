@@ -3,8 +3,29 @@ name: DevelopmentTests
 on:  [pull_request]
 
 jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          architecture: x64
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r test/requirements_test.txt
+
+      - name: Lint with ruff
+        run: ruff check
+
+      - name: Check code format with Black
+        run: black --check .
+        
   unittest:
-#    needs: linting
+    needs: linting
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4

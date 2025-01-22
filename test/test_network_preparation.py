@@ -2,9 +2,9 @@ import pytest
 import sys
 from qgis.core import QgsProject
 
-from .utilities import load_test_layer
-from qaequilibrae.modules.network.network_preparation_dialog import NetworkPreparationDialog
 from qaequilibrae.modules.network.Network_preparation_procedure import NetworkPreparationProcedure
+from qaequilibrae.modules.network.network_preparation_dialog import NetworkPreparationDialog
+from .utilities import load_test_layer
 
 
 pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")

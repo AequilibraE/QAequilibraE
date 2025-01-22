@@ -1,16 +1,16 @@
+from os.path import basename, isfile, splitext
+
 import numpy as np
 import openmatrix as omx
 import pandas as pd
 import pytest
-from os.path import basename, isfile, splitext
-
 from aequilibrae.matrix import AequilibraeMatrix
 from qgis.core import QgsProject
 
-from .utilities import run_sfalls_assignment
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.distribution_procedures.distribution_models_dialog import DistributionModelsDialog
 from qaequilibrae.modules.matrix_procedures.load_dataset_dialog import LoadDatasetDialog
+from .utilities import run_sfalls_assignment
 
 
 @pytest.mark.parametrize("method", ["csv", "parquet", "open layer"])
@@ -155,7 +155,7 @@ def test_apply_gravity(ae_with_project, method, folder_path, mocker):
     dialog.load_comboboxes(dialog.datasets.keys(), dialog.cob_data)
 
     temp = list(dialog.matrices["name"])
-    imped_idx = temp.index(f"trafficassignment_dp_x_car_omx")
+    imped_idx = temp.index("trafficassignment_dp_x_car_omx")
     dialog.cob_imped_mat.setCurrentIndex(imped_idx)
     dialog.cob_imped_field.setCurrentText("free_flow_time_final")
 

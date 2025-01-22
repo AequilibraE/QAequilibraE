@@ -1,9 +1,9 @@
 import numpy as np
 from PyQt5.QtCore import pyqtSignal
+from aequilibrae.utils.interface.worker_thread import WorkerThread
+from qgis.PyQt.QtCore import QVariant
 from qgis._core import QgsField, QgsFeatureRequest, QgsPointXY, QgsVectorLayer, QgsGeometry, QgsFeature, QgsSpatialIndex
 
-from qgis.PyQt.QtCore import QVariant
-from aequilibrae.utils.interface.worker_thread import WorkerThread
 from qaequilibrae.modules.common_tools import get_vector_layer_by_name
 
 

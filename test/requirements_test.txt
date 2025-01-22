@@ -4,5 +4,6 @@ pytest-qgis
 pytest-qt
 pytest-cov
 pytest-mock
-black
+black==24.4.2
+ruff
 pytest-reportlog

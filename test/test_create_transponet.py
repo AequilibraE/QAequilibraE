@@ -3,13 +3,12 @@ import pytest
 import sys
 
 from aequilibrae import Project
-
 from qgis.PyQt import QtWidgets
 from qgis.core import QgsProject
 
-from .utilities import load_test_layer
 from qaequilibrae.modules.project_procedures.creates_transponet_dialog import CreatesTranspoNetDialog
 from qaequilibrae.modules.project_procedures.creates_transponet_procedure import CreatesTranspoNetProcedure
+from .utilities import load_test_layer
 
 pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
