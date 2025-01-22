@@ -36,7 +36,7 @@ jobs:
           Copy-Item "test" -Destination "$pluginPath\test" -Recurse
           $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
           $env:QT_QPA_PLATFORM = "offscreen"
-          Start-Process -FilePath "$qgisExec" -ArgumentList "-m pip install -r $pluginPath\test\requirements-test.txt" -NoNewWindow -Wait
+          Start-Process -FilePath "$qgisExec" -ArgumentList "-m pip install -r $pluginPath\test\requirements_test.txt" -NoNewWindow -Wait
           Set-Location "$aeqPath"
           Start-Process -FilePath "$qgisExec" -ArgumentList "download_extra_packages_class.py" -NoNewWindow -Wait
           $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
@@ -55,7 +55,7 @@ jobs:
           Copy-Item "test" -Destination "$pluginPath\test" -Recurse
           $env:PYTHONPATH = "$qgisPath\apps\qgis\python"
           $env:QT_QPA_PLATFORM = "offscreen"
-          Start-Process -FilePath "$qgisExec" -ArgumentList "-m pip install -r $pluginPath\test\requirements-test.txt" -NoNewWindow -Wait
+          Start-Process -FilePath "$qgisExec" -ArgumentList "-m pip install -r $pluginPath\test\requirements_test.txt" -NoNewWindow -Wait
           Set-Location "$aeqPath"
           Start-Process -FilePath "$qgisExec" -ArgumentList "download_extra_packages_class.py" -NoNewWindow -Wait
           $env:PYTHONPATH = "$env:PYTHONPATH;APPDATA\QGIS\QGIS3\profiles\default\python\plugins"
