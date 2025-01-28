@@ -3,10 +3,10 @@ from os.path import isdir, join
 from pathlib import Path
 
 from aequilibrae.utils.create_example import create_example
-
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QGridLayout, QPushButton, QLineEdit, QComboBox, QLabel, QVBoxLayout
 from qgis.PyQt.QtWidgets import QWidget, QFileDialog
+
 from qaequilibrae.modules.common_tools import standard_path
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "../common_tools/forms/ui_empty.ui"))

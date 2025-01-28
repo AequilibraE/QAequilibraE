@@ -1,14 +1,14 @@
 import os
 import sys
 
+import qgis
+from qgis.PyQt import QtWidgets, uic
 from qgis._core import QgsProject
 
-import qgis
+from qaequilibrae.modules.common_tools import ReportDialog
 from qaequilibrae.modules.common_tools import standard_path, get_vector_layer_by_name
 from qaequilibrae.modules.common_tools.global_parameters import line_types, point_types
-from qgis.PyQt import QtWidgets, uic
 from qaequilibrae.modules.network.Network_preparation_procedure import NetworkPreparationProcedure
-from qaequilibrae.modules.common_tools import ReportDialog
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
 sys.modules["qgsfieldcombobox"] = qgis.gui
@@ -85,7 +85,6 @@ class NetworkPreparationDialog(QtWidgets.QDialog, FORM_CLASS):
             for i in for_using_existing_nodes:
                 i.setVisible(False)
 
-            # self.cbb_node_layer.hideEvent()
             self.np_node_start.setEnabled(True)
 
     def job_finished_from_thread(self):

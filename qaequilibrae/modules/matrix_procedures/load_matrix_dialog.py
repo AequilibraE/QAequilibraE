@@ -2,25 +2,27 @@ import importlib.util as iutil
 import os
 
 import numpy as np
-from aequilibrae.matrix.aequilibrae_matrix import AequilibraeMatrix, CORE_NAME_MAX_LENGTH
-
-import aequilibrae
 import qgis
+from aequilibrae.context import get_logger
+from aequilibrae.matrix.aequilibrae_matrix import AequilibraeMatrix, CORE_NAME_MAX_LENGTH
 from qgis.PyQt import QtWidgets, uic, QtCore
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem
-from qaequilibrae.modules.matrix_procedures.load_matrix_class import LoadMatrix
-from qaequilibrae.modules.matrix_procedures.mat_reblock import MatrixReblocking
+
 from qaequilibrae.modules.common_tools.all_layers_from_toc import all_layers_from_toc
 from qaequilibrae.modules.common_tools.auxiliary_functions import standard_path, get_vector_layer_by_name
 from qaequilibrae.modules.common_tools.get_output_file_name import GetOutputFileName
 from qaequilibrae.modules.common_tools.global_parameters import float_types, integer_types
 from qaequilibrae.modules.common_tools.report_dialog import ReportDialog
+from qaequilibrae.modules.matrix_procedures.load_matrix_class import LoadMatrix
+from qaequilibrae.modules.matrix_procedures.mat_reblock import MatrixReblocking
 
 spec = iutil.find_spec("openmatrix")
 has_omx = spec is not None
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_matrix_loader.ui"))
+
+logger = get_logger()
 
 
 # TODO: Add possibility to add a centroid list to guarantee the match between matrix index and graph
@@ -45,7 +47,6 @@ class LoadMatrixDialog(QtWidgets.QDialog, FORM_CLASS):
         self.matrix = AequilibraeMatrix()
         self.error = None
         self.__current_name = None
-        self.logger = aequilibrae.logger
 
         # For changing the network layer
         self.matrix_layer.currentIndexChanged.connect(self.load_fields_to_combo_boxes)

@@ -2,10 +2,30 @@ name: DevelopmentTests
 
 on:  [pull_request]
 
-
 jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set Python environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          architecture: x64
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r test/requirements_test.txt
+
+      - name: Lint with ruff
+        run: ruff check
+
+      - name: Check code format with Black
+        run: black --check .
+        
   unittest:
-#    needs: linting
+    needs: linting
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -22,7 +42,7 @@ jobs:
           . /tmp/.venv/bin/activate
           python3 -m pip install -U pip setuptools uv
           python3 ./ci/dependency_installation.py
-          python3 -m uv pip install -r test/requirements-test.txt --constraint ./ci/constraints.txt
+          python3 -m uv pip install -r test/requirements_test.txt --constraint ./ci/constraints.txt
           export PYTHONPATH=$(pwd)/qaequilibrae/packages:$PYTHONPATH
           echo "PYTHONPATH=$PYTHONPATH" >> $GITHUB_ENV
 
@@ -31,4 +51,4 @@ jobs:
           . /tmp/.venv/bin/activate
           export QT_QPA_PLATFORM=offscreen
           pwd
-          python3 -m pytest --cov-config=.coveragerc --cov-report term-missing --cov=qaequilibrae test
+          python3 -m pytest --cov-report term-missing --cov=qaequilibrae test

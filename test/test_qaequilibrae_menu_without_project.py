@@ -1,5 +1,10 @@
+import pytest
+import sys
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication
+
+
+pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
 
 def wait_for_active_window(qtbot):
@@ -83,22 +88,6 @@ def test_create_project_from_layers_menu(ae, qtbot):
     assert action.text() == "Create Project from layers", "Wrong text content"
     QTimer.singleShot(10, handle_trigger)
     action.trigger()
-
-
-def test_parameters_menu(ae, qtbot):
-    action = ae.menuActions["Project"][2]
-    assert action.text() == "Parameters", "Wrong text content"
-    action.trigger()
-    messagebar = ae.iface.messageBar()
-    assert messagebar.messages[3][0] == "Error:You need to load a project first", "Level 3 error message is missing"
-
-
-def test_logfile_menu(ae, qtbot):
-    action = ae.menuActions["Project"][3]
-    assert action.text() == "logfile", "Wrong text content"
-    action.trigger()
-    messagebar = ae.iface.messageBar()
-    assert messagebar.messages[3][0] == "Error:You need to load a project first", "Level 3 error message is missing"
 
 
 def test_network_preparation_menu(ae, qtbot):

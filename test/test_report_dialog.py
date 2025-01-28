@@ -1,7 +1,7 @@
 from os.path import isfile, join
 
-from .utilities import run_sfalls_assignment
 from qaequilibrae.modules.common_tools.report_dialog import ReportDialog
+from .utilities import run_sfalls_assignment
 
 
 def test_report_dialog(ae_with_project, mocker, qtbot):

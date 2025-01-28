@@ -1,11 +1,11 @@
 __author__ = "Arthur Evrard"
 
-from os.path import join
 import sys
+from os.path import join
 from pathlib import Path
 
-from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
+from qgis.core import QgsProcessingProvider
 
 provider_path = Path(__file__).parent.parent.parent
 if str(provider_path) not in sys.path:

@@ -12,11 +12,19 @@ from aequilibrae.transit import Transit
 from os import environ, makedirs
 from os.path import isfile, join
 from PyQt5.QtCore import QVariant
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
-from qgis.core import QgsProject, QgsField, QgsVectorLayer
 from shapely.geometry import Point
+import sys
 
-from .utilities import load_test_layer, load_sfalls_from_layer
+from aequilibrae.matrix import AequilibraeMatrix
+from aequilibrae.project import Project
+from qgis.core import (
+    QgsApplication,
+    QgsField,
+    QgsProcessingContext,
+    QgsProcessingFeedback,
+    QgsProject,
+)
+
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
@@ -32,6 +40,10 @@ from qaequilibrae.modules.processing_provider.matrix_calculator import MatrixCal
 from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
 from qaequilibrae.modules.processing_provider.project_from_OSM import ProjectFromOSM
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
+from .utilities import load_sfalls_from_layer
+
+
+pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 
 
 def qgis_app():

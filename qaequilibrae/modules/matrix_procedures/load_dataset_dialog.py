@@ -1,7 +1,7 @@
 import os
-import pandas as pd
 from functools import partial
 
+import pandas as pd
 import qgis
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtCore import Qt, QSize

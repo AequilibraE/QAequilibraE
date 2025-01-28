@@ -1,10 +1,11 @@
+"""From https://stackoverflow.com/a/31557937/1480643"""
+
 from qgis.PyQt import QtCore
 
 
-# From https://stackoverflow.com/a/31557937/1480643
 class PandasModel(QtCore.QAbstractTableModel):
     """
-    Class to populate a table view with a pandas dataframe
+    This class populates a table view with a pandas dataframe.
     """
 
     def __init__(self, data, parent=None):
@@ -23,7 +24,7 @@ class PandasModel(QtCore.QAbstractTableModel):
                 return str(self._data.iloc[index.row()][index.column()])
         return None
 
-    def headerData(self, col, orientation, role):
+    def header_data(self, col, orientation, role):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return self._data.columns[col]
         return None

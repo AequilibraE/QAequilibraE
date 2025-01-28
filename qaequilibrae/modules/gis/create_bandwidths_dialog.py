@@ -1,29 +1,22 @@
 import os
 import sys
+from dataclasses import dataclass
 from functools import partial
 from random import randint
-from dataclasses import dataclass
 from typing import Tuple, Literal, Dict, Union
 
-from PyQt5.QtGui import QColor
-from qgis._core import QgsLineSymbol, QgsVectorLayer, QgsSymbol
-from qgis._core import (
-    QgsMapLayerProxyModel,
-    QgsSimpleLineSymbolLayer,
-    QgsExpressionContextUtils,
-    QgsProject,
-    QgsSingleSymbolRenderer,
-    QgsRuleBasedRenderer,
-    QgsStyle,
-)
-
 import qgis
+from PyQt5.QtGui import QColor
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QPushButton, QTableWidgetItem, QTableWidget
 from qgis.PyQt.QtWidgets import QToolButton, QHBoxLayout, QWidget, QDialog
-from .set_color_ramps_dialog import LoadColorRampSelector
+from qgis._core import QgsLineSymbol, QgsVectorLayer, QgsSymbol, QgsProject
+from qgis._core import QgsMapLayerProxyModel, QgsSimpleLineSymbolLayer, QgsExpressionContextUtils
+from qgis._core import QgsSingleSymbolRenderer, QgsRuleBasedRenderer, QgsStyle
+
 from qaequilibrae.modules.common_tools import get_parameter_chain
+from .set_color_ramps_dialog import LoadColorRampSelector
 
 sys.modules["qgsfieldcombobox"] = qgis.gui
 sys.modules["qgscolorbutton"] = qgis.gui
@@ -59,7 +52,7 @@ class CreateBandwidthsDialog(QDialog, FORM_CLASS):
         self.ramps = None
         self.drive_side = get_parameter_chain(["system", "driving side"])
 
-        # layers and fields        # For adding skims
+        # layers and fields for adding skims
         self.mMapLayerComboBox.layerChanged.connect(self.add_fields_to_cboxes)
         self.mMapLayerComboBox.setFilters(QgsMapLayerProxyModel.LineLayer)
         self.mMapLayerComboBox.setLayer(self.iface.activeLayer())
@@ -79,8 +72,6 @@ class CreateBandwidthsDialog(QDialog, FORM_CLASS):
 
         self.but_add_band.clicked.connect(self.add_to_bands_list)
         self.bands_list.setEditTriggers(QTableWidget.NoEditTriggers)
-
-        # self.bands_list.doubleClicked.connect(self.slot_double_clicked)
 
         self.rdo_color.toggled.connect(self.color_origins)
 
@@ -143,8 +134,6 @@ class CreateBandwidthsDialog(QDialog, FORM_CLASS):
 
     def add_to_bands_list(self):
         if self.ab_FieldComboBox.currentIndex() >= 0 and self.ba_FieldComboBox.currentIndex() >= 0:
-            # ab_band = self.layer.dataProvider().fieldNameIndex(self.ab_FieldComboBox.currentText())
-            # ba_band = self.layer.dataProvider().fieldNameIndex(self.ba_FieldComboBox.currentText())
             self.bands_list.setRowCount(self.tot_bands + 1)
 
             # Field names
