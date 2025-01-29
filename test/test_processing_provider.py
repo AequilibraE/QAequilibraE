@@ -1,22 +1,18 @@
+import re
+import shutil
+import sqlite3
+import sys
+from os import environ, makedirs
+from os.path import isfile, join
+
 import numpy as np
 import openmatrix as omx
 import pandas as pd
 import pytest
-import re
-import shutil
-import sqlite3
-
+from PyQt5.QtCore import QVariant
 from aequilibrae import Project
 from aequilibrae.matrix import AequilibraeMatrix
 from aequilibrae.transit import Transit
-from os import environ, makedirs
-from os.path import isfile, join
-from PyQt5.QtCore import QVariant
-from shapely.geometry import Point
-import sys
-
-from aequilibrae.matrix import AequilibraeMatrix
-from aequilibrae.project import Project
 from qgis.core import (
     QgsApplication,
     QgsField,
@@ -24,24 +20,24 @@ from qgis.core import (
     QgsProcessingFeedback,
     QgsProject,
 )
+from shapely.geometry import Point
 
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
-from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.Add_connectors import AddConnectors
 from qaequilibrae.modules.processing_provider.add_links_from_layer import AddLinksFromLayer
 from qaequilibrae.modules.processing_provider.add_matrix_from_layer import AddMatrixFromLayer
-from qaequilibrae.modules.processing_provider.assign_transit_from_yaml import TransitAssignYAML
 from qaequilibrae.modules.processing_provider.assign_traffic_from_yaml import TrafficAssignYAML
+from qaequilibrae.modules.processing_provider.assign_transit_from_yaml import TransitAssignYAML
 from qaequilibrae.modules.processing_provider.create_matrix_from_layer import CreateMatrixFromLayer
 from qaequilibrae.modules.processing_provider.create_transit_graph import CreatePTGraph
 from qaequilibrae.modules.processing_provider.export_matrix import ExportMatrix
 from qaequilibrae.modules.processing_provider.import_gtfs import ImportGTFS
 from qaequilibrae.modules.processing_provider.matrix_calculator import MatrixCalculator
-from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
 from qaequilibrae.modules.processing_provider.project_from_OSM import ProjectFromOSM
+from qaequilibrae.modules.processing_provider.project_from_layer import ProjectFromLayer
+from qaequilibrae.modules.processing_provider.provider import Provider
 from qaequilibrae.modules.processing_provider.renumber_nodes_from_layer import RenumberNodesFromLayer
-from .utilities import load_sfalls_from_layer
-
+from .utilities import load_sfalls_from_layer, load_test_layer
 
 pytestmark = pytest.mark.skipif(sys.platform.startswith("win"), reason="Running on Windows")
 

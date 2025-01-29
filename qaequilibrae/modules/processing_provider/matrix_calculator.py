@@ -1,8 +1,7 @@
 import importlib.util as iutil
 import sys
-import yaml
 
-from qgis.core import QgsProcessingException
+import yaml
 from qgis.core import (
     QgsProcessingAlgorithm,
     QgsProcessingMultiStepFeedback,
@@ -10,6 +9,7 @@ from qgis.core import (
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
 )
+from qgis.core import QgsProcessingException
 
 from qaequilibrae.i18n.translate import trlt
 

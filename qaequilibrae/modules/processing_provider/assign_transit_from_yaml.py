@@ -1,7 +1,7 @@
 import importlib.util as iutil
 import sys
-import yaml
 
+import yaml
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
 
 from qaequilibrae.i18n.translate import trlt

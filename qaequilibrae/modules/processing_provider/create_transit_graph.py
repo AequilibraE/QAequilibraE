@@ -52,10 +52,8 @@ class CreatePTGraph(QgsProcessingAlgorithm):
 
         feedback.pushInfo(" ")
         feedback.pushInfo(self.tr("Creating graph"))
-        # Creating graph
-        if "has_zones" in parameters and parameters["has_zones"] == True:
-            graph.add_zones(project.zoning)
 
+        # Creating graph
         graph = data.create_graph(
             with_outer_stop_transfers=parameters["outer_stops_transfers"],
             with_walking_edges=parameters["walking_edges"],
@@ -63,6 +61,9 @@ class CreatePTGraph(QgsProcessingAlgorithm):
             connector_method="overlapping_regions",
         )
         feedback.pushInfo(" ")
+
+        if "has_zones" in parameters and parameters["has_zones"]:
+            graph.add_zones(project.zoning)
 
         # Connector matching
         project.network.build_graphs()

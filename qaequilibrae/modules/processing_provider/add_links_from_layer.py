@@ -2,8 +2,8 @@ import importlib.util as iutil
 import sys
 from string import ascii_letters
 
-from qgis.core import QgsProcessingAlgorithm
 from qgis.core import QgsProcessing, QgsProcessingMultiStepFeedback, QgsProcessingParameterVectorLayer
+from qgis.core import QgsProcessingAlgorithm
 from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFile
 
 from qaequilibrae.i18n.translate import trlt

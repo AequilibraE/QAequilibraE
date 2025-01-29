@@ -8,7 +8,6 @@ from qgis.core import QgsProcessingParameterVectorLayer, QgsProcessingParameterF
 from shapely.wkt import loads, dumps
 
 from qaequilibrae.i18n.translate import trlt
-from qaequilibrae.modules.common_tools import standard_path
 
 
 class RenumberNodesFromLayer(QgsProcessingAlgorithm):

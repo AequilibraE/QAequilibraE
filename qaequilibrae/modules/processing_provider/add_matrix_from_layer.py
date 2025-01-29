@@ -1,12 +1,12 @@
 import importlib.util as iutil
 import sys
+
 import numpy as np
 import pandas as pd
-from scipy.sparse import coo_matrix
-
+from qgis.core import QgsProcessingAlgorithm, QgsProcessingParameterFileDestination
 from qgis.core import QgsProcessingMultiStepFeedback, QgsProcessingParameterString
 from qgis.core import QgsProcessingParameterField, QgsProcessingParameterMapLayer
-from qgis.core import QgsProcessingAlgorithm, QgsProcessingParameterFileDestination
+from scipy.sparse import coo_matrix
 
 from qaequilibrae.i18n.translate import trlt
 
@@ -52,7 +52,6 @@ class AddMatrixFromLayer(QgsProcessingAlgorithm):
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
-        from aequilibrae.matrix import AequilibraeMatrix
         import openmatrix as omx
 
         feedback = QgsProcessingMultiStepFeedback(3, model_feedback)
