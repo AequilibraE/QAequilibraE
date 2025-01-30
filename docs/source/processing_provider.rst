@@ -1,10 +1,10 @@
 Processing Tools
 ================
 
-Some of AequilibraE's plugin functionalities are now available in a processing plugin.
+Some of AequilibraE's plugin functionalities are also available in a processing plugin.
 The processing plugin is automatically installed with QAequilibraE and allows you to perform
 several tasks, such as creating project from links, exporting matrices, and much more,
-as a batch process or not. To use the processing plugin, you don't have to directly open
+as a batch process. To use the processing plugin, you don't have to directly open
 the AequilibraE project, nor have the widget open, although it is mandatory to have 
 AequilibraE installed.
 

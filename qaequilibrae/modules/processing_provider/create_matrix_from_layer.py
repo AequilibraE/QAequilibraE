@@ -148,7 +148,7 @@ class CreateMatrixFromLayer(QgsProcessingAlgorithm):
 
     def shortHelpString(self):
         help_messages = [
-            self.tr("Saves layer as a new *.aem file. Notice that:"),
+            self.tr("Saves layer as a new *.aem file. Note that:"),
             self.tr("- the original matrix stored in the layer needs to be in list format"),
             self.tr("- origin and destination fields need to be integers"),
             self.tr("- value field can be either integer or real"),
