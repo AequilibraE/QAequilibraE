@@ -101,7 +101,7 @@ loaded in QGIS, and the menus are the ones presented in the figure below.
     :align: center
     :alt: Processing provider import matrices
 
-The upper fields are mandatory and are res.. note::ponsible for selecting the layer, indicating
+The upper fields are mandatory and are responsible for selecting the layer, indicating
 which columns correspond to the origin, destination, and flow, creating a core name for your
 matrix, and specifying the output file name and path. In the *Advanced Parameters*, you can add
 extra information about your AequilibraE matrix using the fields ``Matrix name`` and 
