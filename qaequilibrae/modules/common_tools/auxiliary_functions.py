@@ -1,12 +1,14 @@
 import math
 import tempfile
 from os.path import isdir
-from shapely.geometry import Point
 from time import localtime, strftime
 
 import qgis
 from aequilibrae import Parameters
+from pyproj import CRS, Transformer
 from qgis.core import QgsProject
+from shapely.geometry import Point
+from shapely.ops import transform
 
 
 def user_message(message, level):
@@ -92,5 +94,15 @@ def only_str(str_input):
 
 
 def polygon_from_radius(point: Point, radius):
-    # We approximate with the radius of the Earth at the equator
-    return point.buffer(radius / 110000)
+    # Use a local azimuthal equidistant projection centered on the input point
+    aeqd = CRS.from_proj4(f"+proj=aeqd +lat_0={point.y} +lon_0={point.x} +datum=WGS84 +units=m")
+
+    # Create the transformer
+    projection = Transformer.from_crs(CRS("EPSG:4326"), aeqd, always_xy=True).transform
+    projection_back = Transformer.from_crs(aeqd, CRS("EPSG:4326"), always_xy=True).transform
+
+    # Project point, create buffer, and project back
+    projected_point = transform(projection, point)
+    buffered_point = projected_point.buffer(radius)
+
+    return transform(projection_back, buffered_point)
