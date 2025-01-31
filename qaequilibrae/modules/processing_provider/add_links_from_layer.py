@@ -4,27 +4,27 @@ from string import ascii_letters
 
 from qgis.core import QgsProcessing, QgsProcessingMultiStepFeedback, QgsProcessingParameterVectorLayer
 from qgis.core import QgsProcessingAlgorithm
-from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFolderDestination
+from qgis.core import QgsProcessingParameterField, QgsProcessingParameterFile
 
 from qaequilibrae.i18n.translate import trlt
 from qaequilibrae.modules.common_tools import geodataframe_from_layer
 
 
-class ProjectFromLayer(QgsProcessingAlgorithm):
+class AddLinksFromLayer(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
-            QgsProcessingParameterVectorLayer(
-                "links", self.tr("Links"), types=[QgsProcessing.TypeVectorLine], defaultValue=None
+            QgsProcessingParameterFile(
+                "project_path",
+                self.tr("Project path"),
+                behavior=QgsProcessingParameterFile.Folder,
             )
         )
         self.addParameter(
-            QgsProcessingParameterField(
-                "link_id",
-                self.tr("Link ID"),
-                type=QgsProcessingParameterField.Numeric,
-                parentLayerParameterName="links",
-                allowMultiple=False,
+            QgsProcessingParameterVectorLayer(
+                "links",
+                self.tr("Links"),
+                types=[QgsProcessing.TypeVectorLine],
             )
         )
         self.addParameter(
@@ -54,9 +54,6 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
                 allowMultiple=False,
             )
         )
-        self.addParameter(
-            QgsProcessingParameterFolderDestination("project_path", self.tr("Output folder"), createByDefault=True)
-        )
 
     def processAlgorithm(self, parameters, context, model_feedback):
         # Checks if we have access to aequilibrae library
@@ -66,10 +63,11 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
         from aequilibrae import Project
 
         feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
-        feedback.pushInfo(self.tr("Creating project"))
+        feedback.pushInfo(self.tr("Opening project"))
 
+        project_path = parameters["project_path"]
         project = Project()
-        project.new(parameters["project_path"])
+        project.open(project_path)
 
         feedback.pushInfo(self.tr("Importing links layer"))
 
@@ -77,15 +75,10 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
         layer = self.parameterAsVectorLayer(parameters, "links", context)
         gdf = geodataframe_from_layer(layer).infer_objects()
 
-        columns = [
-            parameters["link_id"],
-            parameters["link_type"],
-            parameters["direction"],
-            parameters["modes"],
-            "geometry",
-        ]
+        columns = [parameters["link_type"], parameters["direction"], parameters["modes"], "geometry"]
+
         gdf = gdf[columns]
-        gdf.columns = ["link_id", "link_type", "direction", "modes", "geometry"]
+        gdf.columns = ["link_type", "direction", "modes", "geometry"]
 
         # We check if all modes exist in the project
         all_modes = set("".join(gdf["modes"].unique()))
@@ -112,41 +105,40 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
             new_link_type.description = "Link type automatically added during project creation from layers"
             new_link_type.save()
 
-        links = project.network.links
-
-        # Add `source_id` field
-        links.fields.add("source_id", "link_id from the data source")
-        links.refresh_fields()
-
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
+
+        links = project.network.links
 
         # Now let's add all the fields we had
         for _, record in gdf.iterrows():
             new_link = links.new()
 
-            new_link.source_id = record.link_id
             new_link.direction = record.direction
             new_link.modes = record.modes
             new_link.link_type = record.link_type
             new_link.geometry = record.geometry
             new_link.save()
 
+        links.refresh()
+
+        feedback.pushInfo(" ")
+        feedback.setCurrentStep(2)
+
         feedback.pushInfo(self.tr("Adding links"))
+
         feedback.pushInfo(" ")
         feedback.setCurrentStep(3)
-
         project.close()
-
         feedback.pushInfo(self.tr("Closing project"))
 
-        return {"Output": parameters["project_path"]}
+        return {"Output": project.network.count_links()}
 
     def name(self):
-        return "projectfromlayer"
+        return "addlinksfromlayer"
 
     def displayName(self):
-        return self.tr("Create project from link layer")
+        return self.tr("Add links from layer to project")
 
     def group(self):
         return self.tr("1. Model Building")
@@ -155,10 +147,10 @@ class ProjectFromLayer(QgsProcessingAlgorithm):
         return "modelbuilding"
 
     def shortHelpString(self):
-        return self.tr("Creates an AequilibraE project from a given link layer")
+        return self.tr("Adds links from a layer to an existing AequilibraE project")
 
     def createInstance(self):
-        return ProjectFromLayer()
+        return AddLinksFromLayer()
 
     def tr(self, message):
-        return trlt("ProjectFromLayer", message)
+        return trlt("AddLinksFromLayer", message)

@@ -1,6 +1,7 @@
 import importlib.util as iutil
 import sys
 
+import yaml
 from qgis.core import QgsProcessingAlgorithm, QgsProcessingMultiStepFeedback, QgsProcessingParameterFile
 
 from qaequilibrae.i18n.translate import trlt
@@ -12,33 +13,31 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFile(
                 "conf_file",
-                self.tr("Configuration file (.yaml)"),
+                self.tr("Configuration file (*.yaml)"),
                 behavior=QgsProcessingParameterFile.File,
-                fileFilter="*.yaml",
-                defaultValue=None,
             )
         )
 
     def processAlgorithm(self, parameters, context, model_feedback):
-        feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
-
         # Checks if we have access to aequilibrae library
         if iutil.find_spec("aequilibrae") is None:
             sys.exit(self.tr("AequilibraE module not found"))
 
-        from aequilibrae.paths import TrafficAssignment, TrafficClass
-        from aequilibrae.project import Project
+        from aequilibrae import Project
         from aequilibrae.matrix import AequilibraeMatrix
-        import yaml
+        from aequilibrae.paths import TrafficAssignment, TrafficClass
 
+        feedback = QgsProcessingMultiStepFeedback(5, model_feedback)
         feedback.pushInfo(self.tr("Getting parameters from YAML"))
+
         pathfile = parameters["conf_file"]
         with open(pathfile, "r") as f:
             params = yaml.safe_load(f)
+
         feedback.pushInfo(" ")
         feedback.setCurrentStep(1)
-
         feedback.pushInfo(self.tr("Opening project"))
+
         # Opening project
         project = Project()
         project.open(params["project"])
@@ -49,6 +48,12 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
         # Creating traffic classes
         traffic_classes = []
         feedback.pushInfo(self.tr("{} traffic classes have been found").format(len(params["traffic_classes"])))
+        select_links = True if "select_links" in params and params["select_links"] is not None else False
+        if select_links:
+            selection_dict = {}
+            for selections in params["select_links"]:
+                for name, pairs in selections.items():
+                    selection_dict[name] = [tuple(p) for p in pairs]
 
         for classes in params["traffic_classes"]:
             for traffic in classes:
@@ -61,9 +66,9 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
                 # Getting graph
                 graph = project.network.graphs[classes[traffic]["network_mode"]]
                 graph.set_graph(params["assignment"]["time_field"])
-                graph.set_blocked_centroid_flows(False)
+                graph.set_blocked_centroid_flows(classes[traffic]["blocked_centroid_flows"])
 
-                if "skims" in classes[traffic] and classes[traffic]["skims"]:
+                if classes[traffic]["skims"] is not None:
                     skims = [sk.strip() for sk in classes[traffic]["skims"].split(",")]
                     graph.set_skimming(skims)
 
@@ -71,17 +76,21 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
                 assigclass = TrafficClass(name=traffic, graph=graph, matrix=demand)
                 assigclass.set_pce(classes[traffic]["pce"])
 
-                if "fixed_cost" in classes[traffic] and classes[traffic]["fixed_cost"]:
+                if "fixed_cost" in classes[traffic] and classes[traffic]["fixed_cost"] is not None:
                     if isinstance(classes[traffic]["vot"], (int, float)):
                         assigclass.set_fixed_cost(classes[traffic]["fixed_cost"])
                         assigclass.set_vot(classes[traffic]["vot"])
                     else:
-                        sys.exit("error: fixed_cost must come with a correct value of time")
+                        sys.exit("Error: fixed_cost must come with a correct value of time")
+
+                # Adding select links analysis
+                if select_links:
+                    assigclass.set_select_links(selection_dict)
 
                 # Adding class
+                traffic_classes.append(assigclass)
                 feedback.pushInfo(f"\t- {traffic} ' ' {str(classes[traffic])}")
 
-                traffic_classes.append(assigclass)
         feedback.pushInfo(" ")
         feedback.setCurrentStep(2)
 
@@ -105,15 +114,19 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
 
         # Running assignment
         feedback.pushInfo(self.tr("Running assignment"))
-        assig.execute()
         feedback.pushInfo(" ")
         feedback.setCurrentStep(4)
+        assig.execute()
 
         # Saving outputs
         feedback.pushInfo(self.tr("Saving outputs"))
-        feedback.pushInfo(str(assig.report()))
         assig.save_results(params["result_name"])
         assig.save_skims(params["result_name"], which_ones="all", format="omx")
+
+        if select_links:
+            assig.procedure_id += "SLA"
+            sl_name = f"{params["result_name"]}_select_link_analysis"
+            assig.save_select_link_results(sl_name)
         feedback.pushInfo(" ")
         feedback.setCurrentStep(5)
 
@@ -122,58 +135,26 @@ class TrafficAssignYAML(QgsProcessingAlgorithm):
         return {"Output": "Traffic assignment successfully completed"}
 
     def name(self):
-        return self.tr("Traffic assignment from file")
+        return "assignmentfromyaml"
 
     def displayName(self):
         return self.tr("Traffic assignment from file")
 
     def group(self):
-        return self.tr("Paths and assignment")
+        return self.tr("3. Paths and assignment")
 
     def groupId(self):
-        return self.tr("Paths and assignment")
+        return "pathsandassignment"
 
     def shortHelpString(self):
-        return "\n".join([self.string_order(1), self.string_order(2), self.string_order(3)])
+        help_messages = [
+            self.tr("Runs traffic assignment using a YAML configuration file."),
+            self.tr("Example of valid configuration is provided in the plugin documentation."),
+        ]
+        return "\n".join(help_messages)
 
     def createInstance(self):
         return TrafficAssignYAML()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Run a traffic assignment using a YAML configuration file.")
-        elif order == 2:
-            return self.tr("Example of valid configuration file:")
-        elif order == 3:
-            return """
-                    project: D:/AequilibraE/Project/
-                    result_name: sce_from_yaml
-                    traffic_classes:
-                        - car:
-                            matrix_path: D:/AequilibraE/Project/matrices/demand.aem
-                            matrix_core: car
-                            network_mode: c
-                            pce: 1
-                            blocked_centroid_flows: True
-                            skims: travel_time, distance
-                        - truck:
-                            matrix_path: D:/AequilibraE/Project/matrices/demand.aem
-                            matrix_core: truck
-                            network_mode: c
-                            pce: 2
-                            fixed_cost: toll
-                            vot: 12
-                            blocked_centroid_flows: True
-                    assignment:
-                        algorithm: bfw
-                        vdf: BPR2
-                        alpha: 0.15
-                        beta: power
-                        capacity_field: capacity
-                        time_field: travel_time
-                        max_iter: 250
-                        rgap: 0.00001
-            """
 
     def tr(self, message):
         return trlt("TrafficAssignYAML", message)

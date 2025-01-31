@@ -16,25 +16,39 @@ class Provider(QgsProcessingProvider):
 
     def loadAlgorithms(self):
         from .Add_connectors import AddConnectors
-        from .assign_from_yaml import TrafficAssignYAML
+        from .add_links_from_layer import AddLinksFromLayer
+        from .add_matrix_from_layer import AddMatrixFromLayer
+        from .assign_transit_from_yaml import TransitAssignYAML
+        from .assign_traffic_from_yaml import TrafficAssignYAML
+        from .create_matrix_from_layer import CreateMatrixFromLayer
+        from .create_transit_graph import CreatePTGraph
         from .export_matrix import ExportMatrix
-        from .matrix_from_layer import MatrixFromLayer
+        from .import_gtfs import ImportGTFS
+        from .matrix_calculator import MatrixCalculator
         from .project_from_layer import ProjectFromLayer
+        from .project_from_OSM import ProjectFromOSM
         from .renumber_nodes_from_layer import RenumberNodesFromLayer
 
-        self.addAlgorithm(MatrixFromLayer())
-        self.addAlgorithm(ExportMatrix())
-        self.addAlgorithm(ProjectFromLayer())
-        self.addAlgorithm(RenumberNodesFromLayer())
         self.addAlgorithm(AddConnectors())
+        self.addAlgorithm(AddLinksFromLayer())
+        self.addAlgorithm(AddMatrixFromLayer())
+        self.addAlgorithm(TransitAssignYAML())
         self.addAlgorithm(TrafficAssignYAML())
+        self.addAlgorithm(CreateMatrixFromLayer())
+        self.addAlgorithm(CreatePTGraph())
+        self.addAlgorithm(ExportMatrix())
+        self.addAlgorithm(ImportGTFS())
+        self.addAlgorithm(MatrixCalculator())
+        self.addAlgorithm(ProjectFromLayer())
+        self.addAlgorithm(ProjectFromOSM())
+        self.addAlgorithm(RenumberNodesFromLayer())
 
     def id(self):
         """The ID used for identifying the provider.
         This string should be a unique, short, character only string,
         eg "qgis" or "gdal". This string should not be localised.
         """
-        return "AequilibraE"
+        return "aequilibrae"
 
     def name(self):
         """The human friendly name of the plugin in Processing.

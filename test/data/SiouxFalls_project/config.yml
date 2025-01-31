@@ -17,3 +17,6 @@ assignment:
     time_field: free_flow_time
     max_iter: 10
     rgap: 0.001
+select_links:
+    - from_node_1: [[1, 1], [2, 1]]
+    - random_nodes: [[3, 1], [5, 1]]

@@ -8,15 +8,23 @@ from qgis.core import QgsProcessingParameterVectorLayer, QgsProcessingParameterF
 from shapely.wkt import loads, dumps
 
 from qaequilibrae.i18n.translate import trlt
-from qaequilibrae.modules.common_tools import standard_path
 
 
 class RenumberNodesFromLayer(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(
+            QgsProcessingParameterFile(
+                "project_path",
+                self.tr("Project path"),
+                behavior=QgsProcessingParameterFile.Folder,
+            )
+        )
+        self.addParameter(
             QgsProcessingParameterVectorLayer(
-                "nodes", self.tr("Centroids"), types=[QgsProcessing.TypeVectorPoint], defaultValue=None
+                "nodes",
+                self.tr("Centroids"),
+                types=[QgsProcessing.TypeVectorPoint],
             )
         )
         self.addParameter(
@@ -26,15 +34,6 @@ class RenumberNodesFromLayer(QgsProcessingAlgorithm):
                 type=QgsProcessingParameterField.Numeric,
                 parentLayerParameterName="nodes",
                 allowMultiple=False,
-                defaultValue=None,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterFile(
-                "project_path",
-                self.tr("Output folder"),
-                behavior=QgsProcessingParameterFile.Folder,
-                defaultValue=standard_path(),
             )
         )
 
@@ -98,7 +97,7 @@ class RenumberNodesFromLayer(QgsProcessingAlgorithm):
             elif matching.shape[0] == 0:
                 create += 1
                 new = nodes.new_centroid(zone[parameters["node_id"]])
-                new.geometry = loads(zone["geom"])
+                new.geometry = loads(zone["geometry"])
                 new.save()
             elif matching.shape[0] > 1:
                 fail += 1
@@ -122,30 +121,27 @@ class RenumberNodesFromLayer(QgsProcessingAlgorithm):
         return {"Output": parameters["project_path"]}
 
     def name(self):
-        return self.tr("Add/Renumber nodes from layer")
+        return "renumbernodes"
 
     def displayName(self):
         return self.tr("Add/Renumber nodes from layer")
 
     def group(self):
-        return self.tr("Model Building")
+        return self.tr("1. Model Building")
 
     def groupId(self):
-        return self.tr("Model Building")
+        return "modelbuilding"
 
     def shortHelpString(self):
-        return f"{self.string_order(1)}\n{self.string_order(2)} {self.string_order(3)}"
+        help_messages = [
+            self.tr("Adds or renumbers nodes in an AequilibraE project to match a layer of centroids."),
+            self.tr("WARNING: you may have to change existing node_id (ex. using QGIS field calculator)"),
+            self.tr("to ensure that changed node IDs (coming from Zone ID) are not already used."),
+        ]
+        return "\n".join(help_messages)
 
     def createInstance(self):
         return RenumberNodesFromLayer()
-
-    def string_order(self, order):
-        if order == 1:
-            return self.tr("Add or renumber nodes in an AequilibraE project to match a layer of centroids.")
-        elif order == 2:
-            return self.tr("WARNING: you may have to change existing node_id (ex. using QGIS field calculator)")
-        elif order == 3:
-            return self.tr("to ensure that changed node IDs (coming from Zone ID) are not already used.")
 
     def tr(self, message):
         return trlt("RenumberNodesFromLayer", message)
