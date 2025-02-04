@@ -697,7 +697,7 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="5" column="3">
            <widget class="QLineEdit" name="input_link_id">
             <property name="placeholderText">
              <string>10001</string>
@@ -711,7 +711,23 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0" colspan="2">
+          <item row="6" column="3">
+           <widget class="QPushButton" name="but_clean">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Clear</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2" colspan="2">
+           <widget class="QComboBox" name="cob_direction"/>
+          </item>
+          <item row="7" column="0" colspan="4">
            <widget class="QGroupBox" name="gridGroupBox">
             <property name="title">
              <string>Outputs</string>
@@ -743,13 +759,6 @@
             </layout>
            </widget>
           </item>
-          <item row="6" column="1">
-           <widget class="QPushButton" name="but_build_query">
-            <property name="text">
-             <string>Build Query</string>
-            </property>
-           </widget>
-          </item>
           <item row="8" column="0">
            <spacer name="verticalSpacer">
             <property name="orientation">
@@ -775,11 +784,11 @@
              </size>
             </property>
             <property name="text">
-             <string>Select link analysis</string>
+             <string>Set select link analysis</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
+          <item row="3" column="3">
            <widget class="QLineEdit" name="input_qry_name">
             <property name="inputMask">
              <string/>
@@ -798,11 +807,14 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QComboBox" name="cob_direction"/>
-          </item>
           <item row="6" column="0">
            <widget class="QPushButton" name="but_add_query">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Add Query</string>
             </property>
@@ -812,6 +824,19 @@
            <widget class="QLabel" name="label_12">
             <property name="text">
              <string>Query name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QPushButton" name="but_build_query">
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Build Query</string>
             </property>
            </widget>
           </item>
