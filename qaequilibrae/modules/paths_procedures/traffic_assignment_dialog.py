@@ -49,6 +49,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.rgap = "Undefined"
         self.iter = 0
         self.miter = 1000
+        self.select_links = {}
 
         # Signals for the matrix_procedures tab
         self.but_add_skim.clicked.connect(self._add_skimming)
@@ -80,8 +81,8 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         # Queries
         tables = [self.select_link_list, self.list_link_extraction]
         for table in tables:
-            table.setColumnWidth(0, 280)
-            table.setColumnWidth(1, 40)
+            table.setColumnWidth(0, 240)
+            table.setColumnWidth(1, 120)
             table.setColumnWidth(2, 150)
             table.setColumnWidth(3, 40)
 
@@ -89,9 +90,6 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.tbl_project_properties.setColumnWidth(1, 450)
 
         # Disabling resources not yet implemented
-        self.do_select_link.setEnabled(False)
-        self.but_build_query.setEnabled(False)
-        self.select_link_list.setEnabled(False)
         self.do_extract_link_flows.setEnabled(False)
         self.but_build_query_extract.setEnabled(False)
         self.list_link_extraction.setEnabled(False)
@@ -111,6 +109,22 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.change_matrix_selected()
         self.change_class_name()
         self.set_fixed_cost_use()
+
+        # For select link analysis
+        self.cob_direction.addItems(["AB", "Both", "BA"])
+        self.but_add_query.clicked.connect(self._add_query)
+        self.but_build_query.clicked.connect(self.build_query)
+        self.select_link_list.cellDoubleClicked.connect(self.__remove_select_link_item)
+
+        if not self.do_select_link.isChecked():
+            self.input_qry_name.setEnabled(False)
+            self.cob_direction.setEnabled(False)
+            self.input_link_id.setEnabled(False)
+            self.select_links_list.setEnabled(False)
+            self.but_add_query.setEnabled(False)
+            self.but_build_query.setEnabled(False)
+            self.sl_mat_name.setEnabled(False)
+        
 
     def set_fixed_cost_use(self):
         for item in [self.cob_fixed_cost, self.lbl_vot, self.vot_setter]:
@@ -313,6 +327,45 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.skims[name].append(field)
         self.skimming = True
 
+    def _add_query(self):
+
+        query_name = self.input_qry_name.text()
+        if len(query_name) == 0:
+            self.error = self.tr("Missing query name")
+        
+        if query_name not in self.select_links:
+            self.select_links[query_name] = []
+        else:
+            self.error = "Query name already used"
+
+        link_id = int(self.input_link_id.text())
+        direction = self.cob_direction.currentText()
+
+        if direction in ["AB", "Both"]:
+            self.select_links[query_name].extend([(link_id, 1)])
+        
+        if direction in ["BA", "Both"]:
+            self.select_links[query_name].extend([(link_id, -1)])
+
+    def build_query(self):
+
+        self.select_link_list.clearContents()
+        self.select_link_list.setRowCount(len(self.select_links.keys()))
+
+        for i, (name, links) in enumerate(self.select_links.items()):
+            self.select_link_list.setItem(i, 0, QTableWidgetItem(str(links)))
+            self.select_link_list.setItem(i, 1, QTableWidgetItem(str(name)))
+
+        # TODO: Check if matrix name exists in the project.
+        # output_name = self.sl_mat_name.text()
+        # if self.chb_save_flow.isChecked():
+        #     self.assignment.save_select_link_results(output_name)
+        # else:
+        #     self.assignment.save_select_link_matrices(output_name)
+    
+    def __remove_select_link_item(self, line):
+        self.select_link_list.removeRow(line)
+        
     def __remove_class(self):
         self.__edit_skimming_modes()
 
