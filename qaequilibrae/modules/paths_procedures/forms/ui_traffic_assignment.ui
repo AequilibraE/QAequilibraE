@@ -724,9 +724,6 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2" colspan="2">
-           <widget class="QComboBox" name="cob_direction"/>
-          </item>
           <item row="7" column="0" colspan="4">
            <widget class="QGroupBox" name="gridGroupBox">
             <property name="title">
@@ -839,6 +836,9 @@
              <string>Build Query</string>
             </property>
            </widget>
+          </item>
+          <item row="4" column="3">
+           <widget class="QComboBox" name="cob_direction"/>
           </item>
          </layout>
         </widget>

@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import sys
 from tempfile import gettempdir
 
@@ -51,6 +52,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.miter = 1000
         self.select_links = {}
         self.__current_links = []
+        self.__project_links = self.project.network.links.data.link_id
 
         # Signals for the matrix_procedures tab
         self.but_add_skim.clicked.connect(self._add_skimming)
@@ -321,7 +323,8 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.skimming = True
 
     def add_query(self):
-        link_id = int(self.input_link_id.text())
+        link_id = self.validate_link_id()
+
         direction = self.cob_direction.currentText()
 
         if direction in ["AB", "Both"]:
@@ -330,22 +333,40 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         if direction in ["BA", "Both"]:
             self.__current_links.extend([(link_id, -1)])
 
+    def validate_link_id(self):
+        link_id = str(self.input_link_id.text())
+
+        # Check if we have only numbers
+        if not link_id.isdigit():
+            self.error = self.tr("Wrong value for link ID")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+        # Check if link_id exists
+        link_id = int(link_id)
+        if link_id not in self.__project_links:
+            self.error = self.tr("Link ID doesn't exist in project")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=2, duration=5)
+            return
+
+        return link_id
+
     def build_query(self):
         query_name = self.input_qry_name.text()
 
         if len(query_name) == 0 or not query_name:
             self.error = self.tr("Missing query name")
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
-        
+
         if query_name in self.select_links:
             self.error = self.tr("Query name already used")
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
-        
+
         if not self.__current_links:
             self.error = self.tr("Please set a link selection")
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
         else:
             self.select_links[query_name] = self.__current_links
@@ -386,7 +407,8 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def run(self):
         if not self.check_data():
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=3, duration=10)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
 
         self.miter = int(self.max_iter.text())
         for q in [self.progressbar, self.progress_label]:
@@ -403,10 +425,9 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.assignment.set_algorithm(self.cb_choose_algorithm.currentText())
         self.assignment.log_specification()
 
-        if self.chb_save_flow.isChecked():
-            self.assignment.save_select_link_results(self.output_name)
-        else:
-            self.assignment.save_select_link_matrices(self.output_name)
+        if self.do_select_link.isChecked():
+            for traffic_class in self.traffic_classes.values():
+                traffic_class.set_select_links(self.select_links)
 
         self.worker_thread = self.assignment.assignment
         self.run_thread()
@@ -429,14 +450,15 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
             self.error = self.tr("Result table name already exists. Choose a new name")
             return False
 
-        self.output_name = self.sl_mat_name.text()
-        if not self.output_name:
-            self.error = self.tr("Missing select link matrix name.")
-            return False
+        if self.do_select_link.isChecked():
+            self.output_name = self.sl_mat_name.text()
+            if len(self.output_name) == 0:
+                self.error = self.tr("Missing select link matrix name.")
+                return False
 
-        if self.output_name in self.matrices:
-            self.error = self.tr("Result matrix name already exists. Choose a new name.")
-            return False
+            if self.output_name in self.matrices:
+                self.error = self.tr("Result matrix name already exists. Choose a new name.")
+                return False
 
         self.temp_path = gettempdir()
         tries_setup = self.set_assignment()
@@ -455,6 +477,11 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
 
     # Save link flows to disk
     def produce_all_outputs(self):
+        if self.do_select_link.isChecked():
+            if self.chb_save_flow.isChecked():
+                self.assignment.save_select_link_results(self.output_name)
+            else:
+                self.assignment.save_select_link_matrices(self.output_name)
         self.assignment.save_results(self.scenario_name)
         if self.skimming:
             self.assignment.save_skims(self.scenario_name, which_ones="all", format="omx")
