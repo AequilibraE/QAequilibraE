@@ -91,10 +91,6 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.tbl_project_properties.setColumnWidth(0, 120)
         self.tbl_project_properties.setColumnWidth(1, 450)
 
-        # Disabling resources not yet implemented
-        # self.do_extract_link_flows.setEnabled(False)
-        # self.but_build_query_extract.setEnabled(False)
-        # self.list_link_extraction.setEnabled(False)
         # We'll temporarily remove the tab instead of disabling its resources
         self.tabWidget.removeTab(4)
 
@@ -485,8 +481,9 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
                     os.path.join(self.project.project_base_path, "matrices", self.output_name)
                 )
 
-            if self.chb_save_result.isChecked():
-                self.assignment.save_select_link_flows(self.output_name)
+            # These two lines are raising an sqlite3 error
+            # if self.chb_save_result.isChecked():
+            #     self.assignment.save_select_link_flows(self.output_name)
 
         self.assignment.save_results(self.scenario_name)
         if self.skimming:
