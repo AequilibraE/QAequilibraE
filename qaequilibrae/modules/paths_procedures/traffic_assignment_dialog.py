@@ -1,6 +1,5 @@
 import logging
 import os
-import re
 import sys
 from tempfile import gettempdir
 
@@ -93,9 +92,11 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.tbl_project_properties.setColumnWidth(1, 450)
 
         # Disabling resources not yet implemented
-        self.do_extract_link_flows.setEnabled(False)
-        self.but_build_query_extract.setEnabled(False)
-        self.list_link_extraction.setEnabled(False)
+        # self.do_extract_link_flows.setEnabled(False)
+        # self.but_build_query_extract.setEnabled(False)
+        # self.list_link_extraction.setEnabled(False)
+        # We'll temporarily remove the tab instead of disabling its resources
+        self.tabWidget.removeTab(4)
 
         self.tbl_traffic_classes.setColumnWidth(0, 125)
         self.tbl_traffic_classes.setColumnWidth(1, 125)
@@ -327,14 +328,15 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
 
         direction = self.cob_direction.currentText()
 
-        if direction in ["AB", "Both"]:
+        if direction == "AB":
             self.__current_links.extend([(link_id, 1)])
-
-        if direction in ["BA", "Both"]:
+        elif direction == "BA":
             self.__current_links.extend([(link_id, -1)])
+        else:
+            self.__current_links.extend([(link_id, 0)])
 
     def validate_link_id(self):
-        link_id = str(self.input_link_id.text())
+        link_id = self.input_link_id.text()
 
         # Check if we have only numbers
         if not link_id.isdigit():
@@ -368,8 +370,8 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
             self.error = self.tr("Please set a link selection")
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
-        else:
-            self.select_links[query_name] = self.__current_links
+
+        self.select_links[query_name] = self.__current_links
 
         self.select_link_list.clearContents()
         self.select_link_list.setRowCount(len(self.select_links.keys()))
@@ -478,10 +480,14 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
     # Save link flows to disk
     def produce_all_outputs(self):
         if self.do_select_link.isChecked():
-            if self.chb_save_flow.isChecked():
-                self.assignment.save_select_link_results(self.output_name)
-            else:
-                self.assignment.save_select_link_matrices(self.output_name)
+            if self.chb_save_matrix.isChecked():
+                self.assignment.save_select_link_matrices(
+                    os.path.join(self.project.project_base_path, "matrices", self.output_name)
+                )
+
+            if self.chb_save_result.isChecked():
+                self.assignment.save_select_link_flows(self.output_name)
+
         self.assignment.save_results(self.scenario_name)
         if self.skimming:
             self.assignment.save_skims(self.scenario_name, which_ones="all", format="omx")

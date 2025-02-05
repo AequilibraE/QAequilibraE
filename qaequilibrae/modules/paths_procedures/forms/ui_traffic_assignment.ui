@@ -700,7 +700,7 @@
           <item row="5" column="3">
            <widget class="QLineEdit" name="input_link_id">
             <property name="placeholderText">
-             <string>10001</string>
+             <string>12345</string>
             </property>
            </widget>
           </item>
@@ -731,16 +731,26 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_14">
              <item row="1" column="0">
-              <widget class="QCheckBox" name="chb_save_flow">
+              <widget class="QCheckBox" name="chb_save_matrix">
                <property name="text">
-                <string>Save select link flows</string>
+                <string>Save select link matrices</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="chb_save_result">
+               <property name="text">
+                <string>Save select link results</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
               <widget class="QLineEdit" name="sl_mat_name">
                <property name="inputMask">
                 <string/>
@@ -813,7 +823,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Add Query</string>
+             <string>Add to query</string>
             </property>
            </widget>
           </item>
@@ -833,7 +843,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Build Query</string>
+             <string>Save query</string>
             </property>
            </widget>
           </item>
