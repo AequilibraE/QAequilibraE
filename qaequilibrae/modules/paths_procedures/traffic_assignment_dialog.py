@@ -59,6 +59,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.cob_matrices.currentIndexChanged.connect(self.change_matrix_selected)
         self.cob_mode_for_class.currentIndexChanged.connect(self.change_class_name)
         self.chb_fixed_cost.toggled.connect(self.set_fixed_cost_use)
+        self.do_select_link.toggled.connect(self.set_select_link_use)
 
         self.do_assignment.clicked.connect(self.run)
         self.cancel_all.clicked.connect(self.exit_procedure)
@@ -109,9 +110,9 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.change_matrix_selected()
         self.change_class_name()
         self.set_fixed_cost_use()
+        self.set_select_link_use()
 
         # Set up select link analysis
-        self.do_select_link.setChecked(False)
         self.cob_direction.addItems(["AB", "Both", "BA"])
         self.but_add_query.clicked.connect(self.add_query)
         self.but_build_query.clicked.connect(self.build_query)
@@ -378,6 +379,10 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.__current_links = []
 
+    def set_select_link_use(self):
+        for item in [self.select_link_list, self.select_link_config]:
+            item.setEnabled(self.do_select_link.isChecked())
+
     def __remove_select_link_item(self, line):
         key = list(self.select_links.keys())[line]
         self.select_link_list.removeRow(line)
@@ -481,7 +486,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
                     os.path.join(self.project.project_base_path, "matrices", self.output_name)
                 )
 
-            # These two lines are raising an sqlite3 error
+            # These two lines are raising an sqlite3 error in pytest
             # if self.chb_save_result.isChecked():
             #     self.assignment.save_select_link_flows(self.output_name)
 

@@ -688,7 +688,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="1" column="0">
-        <widget class="QGroupBox" name="gridGroupBox">
+        <widget class="QGroupBox" name="select_link_config">
          <layout class="QGridLayout" name="gridLayout_13">
           <item row="5" column="0">
            <widget class="QLabel" name="label_16">
@@ -759,7 +759,7 @@
                 <string/>
                </property>
                <property name="placeholderText">
-                <string>matrix_name</string>
+                <string>output_name</string>
                </property>
               </widget>
              </item>
@@ -778,22 +778,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="do_select_link">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Set select link analysis</string>
-            </property>
-           </widget>
           </item>
           <item row="3" column="3">
            <widget class="QLineEdit" name="input_qry_name">
@@ -886,6 +870,22 @@
            <string>Query name</string>
           </property>
          </column>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="do_select_link">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Set select link analysis</string>
+         </property>
         </widget>
        </item>
       </layout>

@@ -107,6 +107,8 @@ want it averaged out for all iterations (properly averaged, that is).
     :align: center
     :alt: Skim iterations
 
+Next, we can choose to run a select link analysis.
+
 The final step is to setup the assignment itself.
 
 Here we select the fields for:
