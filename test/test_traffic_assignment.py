@@ -1,4 +1,5 @@
 import sqlite3
+from importlib.metadata import version
 from os.path import isfile
 from pathlib import Path
 from uuid import uuid4
@@ -266,6 +267,7 @@ def test_all_or_nothing(ae_with_project, qtbot):
     assert isfile(skims)
 
 
+@pytest.mark.skipif(version("aequilibrae") != "1.1.5", reason="Extension version lower than 1.1.5")
 def test_select_link_analysis(ae_with_project, qtbot):
     dialog = TrafficAssignmentDialog(ae_with_project)
 
@@ -307,24 +309,6 @@ def test_select_link_analysis(ae_with_project, qtbot):
     dialog.max_iter.setText("25")
     dialog.rel_gap.setText("0.001")
 
-    # if dialog.check_data():
-    #     dialog.assignment.set_classes(list(dialog.traffic_classes.values()))
-    #     dialog.assignment.set_vdf(dialog.cob_vdf.currentText())
-    #     dialog.assignment.set_vdf_parameters(dialog.vdf_parameters)
-    #     dialog.assignment.set_capacity_field(dialog.cob_capacity.currentText())
-    #     dialog.assignment.set_time_field(dialog.cob_ffttime.currentText())
-    #     dialog.assignment.max_iter = int(dialog.max_iter.text())
-    #     dialog.assignment.rgap_target = float(dialog.rel_gap.text())
-    #     dialog.assignment.set_algorithm(dialog.cb_choose_algorithm.currentText())
-    #     dialog.assignment.log_specification()
-
-    #     if dialog.do_select_link.isChecked():
-    #         for traffic_class in dialog.traffic_classes.values():
-    #             traffic_class.set_select_links(dialog.select_links)
-
-    #     dialog.worker_thread = dialog.assignment.assignment
-    #     dialog.worker_thread.signal.connect(dialog.signal_handler)
-    #     dialog.worker_thread.doWork()
     dialog.run()
 
     matrices = dialog.project.matrices
@@ -334,5 +318,4 @@ def test_select_link_analysis(ae_with_project, qtbot):
     pth = Path(dialog.project.project_base_path)
     conn = sqlite3.connect(pth / "results_database.sqlite")
     results = [x[0] for x in conn.execute("SELECT name FROM sqlite_master WHERE type ='table'").fetchall()]
-    print(results)
-    # assert "select_link_analysis" in results
+    assert "select_link_analysis" in results

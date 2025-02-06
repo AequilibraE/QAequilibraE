@@ -321,7 +321,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.skimming = True
 
     def add_query(self):
-        link_id = self.validate_link_id()
+        link_id = self.__validate_link_id()
 
         direction = self.cob_direction.currentText()
 
@@ -332,7 +332,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         else:
             self.__current_links.extend([(link_id, 0)])
 
-    def validate_link_id(self):
+    def __validate_link_id(self):
         link_id = self.input_link_id.text()
 
         # Check if we have only numbers
@@ -482,13 +482,11 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
     def produce_all_outputs(self):
         if self.do_select_link.isChecked():
             if self.chb_save_matrix.isChecked():
-                self.assignment.save_select_link_matrices(
-                    os.path.join(self.project.project_base_path, "matrices", self.output_name)
-                )
+                self.assignment.save_select_link_matrices(self.output_name)
 
             # These two lines are raising an sqlite3 error in pytest
-            # if self.chb_save_result.isChecked():
-            #     self.assignment.save_select_link_flows(self.output_name)
+            if self.chb_save_result.isChecked():
+                self.assignment.save_select_link_flows(self.output_name)
 
         self.assignment.save_results(self.scenario_name)
         if self.skimming:
