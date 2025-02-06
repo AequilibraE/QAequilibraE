@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>100</y>
+     <y>150</y>
      <width>571</width>
-     <height>361</height>
+     <height>311</height>
     </rect>
    </property>
    <property name="font">
@@ -52,6 +52,28 @@
       </property>
       <property name="text">
        <string>Algorithm</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Perform assignment</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="4">
+     <widget class="QPushButton" name="pushButton_2">
+      <property name="text">
+       <string>PushButton</string>
       </property>
      </widget>
     </item>
@@ -160,6 +182,15 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="2">
+     <widget class="QComboBox" name="comboBox">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
     <item row="4" column="3">
      <widget class="QLabel" name="label_6">
       <property name="font">
@@ -172,37 +203,6 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Perform assignment</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QComboBox" name="comboBox">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="4">
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="gridWidget_2" native="true">
@@ -211,7 +211,7 @@
      <x>580</x>
      <y>10</y>
      <width>281</width>
-     <height>441</height>
+     <height>171</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
@@ -237,10 +237,30 @@
      <x>10</x>
      <y>10</y>
      <width>571</width>
-     <height>81</height>
+     <height>101</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="title">
+    <string>Model Parameters</string>
+   </property>
    <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="4">
+     <widget class="QPushButton" name="pushButton">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add</string>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="2">
      <widget class="QLabel" name="label_9">
       <property name="font">
@@ -289,17 +309,25 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="2" colspan="2">
-     <widget class="QPushButton" name="pushButton">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
+    <item row="1" column="1">
+     <widget class="QComboBox" name="comboBox_2"/>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_10">
       <property name="text">
-       <string>PushButton</string>
+       <string>Mode</string>
       </property>
      </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>Matrix name</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="3" colspan="2">
+     <widget class="QComboBox" name="comboBox_3"/>
     </item>
    </layout>
   </widget>
