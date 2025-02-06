@@ -107,7 +107,46 @@ want it averaged out for all iterations (properly averaged, that is).
     :align: center
     :alt: Skim iterations
 
-Next, we can choose to run a select link analysis.
+Next, we can choose to run a select link analysis. Its default configuration is not
+to select any links, so we have to toggle its *"Set select link analysis"* button.
+
+.. image:: ../images/select_link_1.png
+    :width: 898
+    :align: center
+    :alt: Select link analysis 1
+
+The creation of queries for analysis consists in: create a name for the query,
+select the travel direction, add the link ID, and click on *Add to query*, to temporarily
+save the data to the query.
+
+.. image:: ../images/select_link_2.png
+    :width: 898
+    :align: center
+    :alt: Select link analysis 2
+
+Adding more links to the previous query is straightforward. Select the direction
+and the link ID, and press *Add to query* once again.
+
+.. image:: ../images/select_link_3.png
+    :width: 898
+    :align: center
+    :alt: Select link analysis 3
+
+When we are done with the current query, we click on *Save query*, and notice that
+the query with the selected links is going to appear in the right-hand side table.
+
+.. image:: ../images/select_link_4.png
+    :width: 898
+    :align: center
+    :alt: Select link analysis 4
+
+To finish the select link analysis step, we choose one name to save one or both of
+the matrix and results files.
+
+.. image:: ../images/select_link_5.png
+    :width: 898
+    :align: center
+    :alt: Select link analysis 5
 
 The final step is to setup the assignment itself.
 
