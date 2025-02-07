@@ -12,7 +12,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem
 
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
-FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_route_choice_v2.ui"))
+FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_route_choice.ui"))
 logger = logging.getLogger("AequilibraEGUI")
 
 
