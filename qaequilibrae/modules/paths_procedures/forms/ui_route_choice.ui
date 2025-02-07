@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>route_choice</class>
- <widget class="QWidget" name="route_choice">
+ <class>RouteChoice</class>
+ <widget class="QDialog" name="RouteChoice">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>862</width>
-    <height>461</height>
+    <width>864</width>
+    <height>449</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>AequilibraE - Route Choice</string>
   </property>
-  <widget class="QGroupBox" name="gridGroupBox">
+  <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>150</y>
-     <width>571</width>
-     <height>311</height>
+     <x>6</x>
+     <y>9</y>
+     <width>851</width>
+     <height>431</height>
     </rect>
    </property>
    <property name="font">
@@ -27,309 +27,264 @@
      <pointsize>10</pointsize>
     </font>
    </property>
-   <property name="title">
-    <string>Route Choice Configuration</string>
+   <property name="currentIndex">
+    <number>0</number>
    </property>
-   <layout class="QGridLayout">
-    <item row="1" column="3">
-     <widget class="QLabel" name="label_3">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
+   <widget class="QWidget" name="tab_choice_set_gen">
+    <attribute name="title">
+     <string>Choice set generation</string>
+    </attribute>
+    <widget class="QGroupBox" name="gridGroupBox_2">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>9</y>
+       <width>601</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_1">
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="node_from">
+        <property name="placeholderText">
+         <string>12345</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Destination node ID</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Origin node ID</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="node_to">
+        <property name="placeholderText">
+         <string>98765</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="but_add_node">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Add</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QTableWidget" name="tbl_selected_nodes">
+     <property name="geometry">
+      <rect>
+       <x>625</x>
+       <y>11</y>
+       <width>211</width>
+       <height>381</height>
+      </rect>
+     </property>
+     <column>
       <property name="text">
-       <string>Maximum depth</string>
+       <string>Origin</string>
       </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
+     </column>
+     <column>
       <property name="text">
-       <string>Algorithm</string>
+       <string>Destination</string>
       </property>
-     </widget>
-    </item>
-    <item row="5" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Perform assignment</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="4">
-     <widget class="QPushButton" name="pushButton_2">
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Maximum routes</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="4">
-     <widget class="QLineEdit" name="lineEdit_2">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLineEdit" name="lineEdit">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="2">
-     <widget class="QLineEdit" name="lineEdit_4">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="placeholderText">
-       <string>1.01</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Maximum misses</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="3">
-     <widget class="QLabel" name="label_7">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Beta</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Penalty</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="4">
-     <widget class="QLineEdit" name="lineEdit_6">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLineEdit" name="lineEdit_3">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="4">
-     <widget class="QLineEdit" name="lineEdit_5">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QComboBox" name="comboBox">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="3">
-     <widget class="QLabel" name="label_6">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Cutoff probability</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="gridWidget_2" native="true">
-   <property name="geometry">
-    <rect>
-     <x>580</x>
-     <y>10</y>
-     <width>281</width>
-     <height>171</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QTableWidget" name="tableWidget">
-      <column>
-       <property name="text">
-        <string>Origin</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Destination</string>
-       </property>
-      </column>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="gridGroupBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>571</width>
-     <height>101</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="title">
-    <string>Model Parameters</string>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="4">
-     <widget class="QPushButton" name="pushButton">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Add</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="label_9">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Destination node ID</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Origin node ID</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QLineEdit" name="lineEdit_8">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="placeholderText">
-       <string>98765</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_7">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="placeholderText">
-       <string>12345</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="comboBox_2"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>Mode</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="label_11">
-      <property name="text">
-       <string>Matrix name</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="3" colspan="2">
-     <widget class="QComboBox" name="comboBox_3"/>
-    </item>
-   </layout>
+     </column>
+    </widget>
+    <widget class="QGroupBox" name="gridGroupBox_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>601</width>
+       <height>161</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Graph set up</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="chb_check_centroids">
+        <property name="text">
+         <string>Block flows through centroids</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cob_mode"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="chb_chosen_links">
+        <property name="text">
+         <string>Remove selected links from the graph</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Network Mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="but_add_graph">
+        <property name="text">
+         <string>Add Graph</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Set graph cost</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cob_graph_cost"/>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QGroupBox" name="gridGroupBox_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>240</y>
+       <width>601</width>
+       <height>151</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Route choice</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="chb_assignment">
+        <property name="text">
+         <string>Perform assignment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="max_routes">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="placeholderText">
+         <string>5</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Algorithm</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cob_algo"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Max. depth</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="penalty">
+        <property name="text">
+         <string>1.01</string>
+        </property>
+        <property name="placeholderText">
+         <string>1.01</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Max. routes</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Penalty</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="max_depth">
+        <property name="text">
+         <string>0</string>
+        </property>
+        <property name="placeholderText">
+         <string>5</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QPushButton" name="but_execute">
+        <property name="text">
+         <string>Execute</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="chb_save_results">
+        <property name="text">
+         <string>Save results</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_route_choice">
+    <attribute name="title">
+     <string>Route choice</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>9</y>
+       <width>831</width>
+       <height>401</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2"/>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_sub_area">
+    <attribute name="title">
+     <string>Sub-area analysis</string>
+    </attribute>
+   </widget>
   </widget>
  </widget>
  <resources/>

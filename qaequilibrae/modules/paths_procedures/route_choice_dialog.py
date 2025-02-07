@@ -1,24 +1,15 @@
 import logging
 import os
 import sys
-from tempfile import gettempdir
-from typing import List, Optional
 
 import numpy as np
-import pandas as pd
 import qgis
-from PyQt5.QtCore import Qt
-from aequilibrae.parameters import Parameters
-from aequilibrae.paths.traffic_assignment import TrafficAssignment
-from aequilibrae.paths.graph import Graph
 from aequilibrae.paths.route_choice import RouteChoice
-from aequilibrae.paths.vdf import all_vdf_functions
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 from qgis.PyQt import QtWidgets, uic
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QLineEdit, QComboBox, QCheckBox, QPushButton, QAbstractItemView
+from qgis.PyQt.QtWidgets import QTableWidgetItem
 
-from qaequilibrae.modules.common_tools import PandasModel, ReportDialog, standard_path
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_route_choice_v2.ui"))
@@ -38,7 +29,7 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.__populate_project_info()
 
-        self.__project_nodes = self.project.network.nodes.data.node_id
+        self.__project_nodes = self.project.network.nodes.data.node_id.tolist()
 
         # We start with `Choice set generation`
         self.tabWidget.removeTab(2)
@@ -48,6 +39,8 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.but_add_node.clicked.connect(self.add_nodes)
         self.tbl_selected_nodes.cellDoubleClicked.connect(self.__remove_nodes)
+        self.but_add_graph.clicked.connect(self.add_graph)
+        self.but_execute.clicked.connect(self.config_route_choice)
 
     def __populate_project_info(self):
 
@@ -71,11 +64,15 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         # Check if we have only numbers
         if not node_id.isdigit():
             self.error = self.tr("Wrong input value for node ID")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
 
         # Check if node_id exists
         node_id = int(node_id)
         if node_id not in self.__project_nodes:
             self.error = self.tr("Node ID doesn't exist in project")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
 
         return node_id
 
@@ -83,8 +80,7 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         from_node = self.__validate_node_id(self.node_from.text())
         to_node = self.__validate_node_id(self.node_to.text())
 
-        if not self.error:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+        if self.error:
             return
 
         self._pairs.extend([(from_node, to_node)])
@@ -120,11 +116,9 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         self.graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
 
     def config_route_choice(self):
-
         self.__validade_rc_inputs()
 
-        if not self.error:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+        if self.error:
             return
 
         max_routes = int(self.max_routes.text())
@@ -133,22 +127,41 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
 
         rc = RouteChoice(self.graph)
 
-        algorithm = "bfsle" if self.cob_algo.text().lower() == "bflse" else "lp"
+        algorithm = "bfsle" if self.cob_algo.currentText().lower() == "bflse" else "link-penalisation"
 
         rc.set_choice_set_generation(algorithm, max_routes=max_routes, penalty=penalty, max_depth=max_depth)
+        if self.chb_save_results.isChecked():
+            rc.set_save_routes(self.project.project_base_path)
         rc.prepare(self._pairs)
         rc.execute(self.chb_assignment.isChecked())
 
-    def __validade_rc_inputs(self, routes, depth, penalty):
+        self.exit_procedure()
 
-        if not routes and not depth:
+    def __validade_rc_inputs(self):
+
+        rt = self.max_routes.text()
+        dp = self.max_depth.text()
+        pen = self.penalty.text()
+
+        if not rt and not dp:
             self.error = "One must set at least one of max. routes or max. depth"
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
 
-        if not routes.isdigit():
+        if not rt.isdigit():
             self.error = self.tr("Wrong value for max. routes")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
 
-        if not depth.isdigit():
+        if not dp.isdigit():
             self.error = self.tr("Wrong value for max. depth")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
 
-        if not penalty.replace(".", "").isdigit():
+        if not pen.replace(".", "").isdigit():
             self.error = self.tr("Wrong value for penalty.")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+    def exit_procedure(self):
+        self.close()
