@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>864</width>
-    <height>360</height>
+    <height>449</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>6</x>
      <y>9</y>
      <width>851</width>
-     <height>341</height>
+     <height>431</height>
     </rect>
    </property>
    <property name="font">
@@ -40,12 +40,12 @@
        <x>9</x>
        <y>9</y>
        <width>601</width>
-       <height>41</height>
+       <height>51</height>
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout_1">
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="node_from">
         <property name="placeholderText">
          <string>12345</string>
         </property>
@@ -66,14 +66,20 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="node_to">
         <property name="placeholderText">
          <string>98765</string>
         </property>
        </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="but_add_node">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text">
          <string>Add</string>
         </property>
@@ -81,13 +87,13 @@
       </item>
      </layout>
     </widget>
-    <widget class="QTableWidget" name="tableWidget">
+    <widget class="QTableWidget" name="tbl_selected_nodes">
      <property name="geometry">
       <rect>
        <x>625</x>
        <y>11</y>
        <width>211</width>
-       <height>291</height>
+       <height>381</height>
       </rect>
      </property>
      <column>
@@ -105,17 +111,17 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>59</y>
+       <y>70</y>
        <width>601</width>
-       <height>121</height>
+       <height>161</height>
       </rect>
      </property>
      <property name="title">
-      <string>Graph configuration</string>
+      <string>Graph set up</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="1" column="0">
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="block_centroid_flows">
         <property name="text">
          <string>Block flows through centroids</string>
         </property>
@@ -125,10 +131,10 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="cob_mode"/>
       </item>
       <item row="2" column="0">
-       <widget class="QCheckBox" name="checkBox_2">
+       <widget class="QCheckBox" name="remove_selected_links">
         <property name="text">
          <string>Remove selected links from the graph</string>
         </property>
@@ -141,15 +147,22 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="comboBox_2"/>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="but_add_graph">
+        <property name="text">
+         <string>Add Graph</string>
+        </property>
+       </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="label_9">
         <property name="text">
          <string>Set graph cost</string>
         </property>
        </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="cob_graph_cost"/>
       </item>
      </layout>
     </widget>
@@ -157,9 +170,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>190</y>
+       <y>240</y>
        <width>601</width>
-       <height>111</height>
+       <height>151</height>
       </rect>
      </property>
      <property name="title">
@@ -167,7 +180,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_3">
+       <widget class="QLineEdit" name="max_routes">
         <property name="placeholderText">
          <string>5</string>
         </property>
@@ -181,14 +194,14 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QLineEdit" name="lineEdit_5">
+       <widget class="QLineEdit" name="penalty">
         <property name="placeholderText">
          <string>1.01</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox_3"/>
+       <widget class="QComboBox" name="cob_algo"/>
       </item>
       <item row="1" column="2">
        <widget class="QLabel" name="label_7">
@@ -212,21 +225,21 @@
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QLineEdit" name="lineEdit_4">
+       <widget class="QLineEdit" name="max_depth">
         <property name="placeholderText">
          <string>5</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="checkBox_3">
+       <widget class="QCheckBox" name="chb_assignment">
         <property name="text">
          <string>Perform assignment</string>
         </property>
        </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="but_execute">
         <property name="text">
          <string>Execute</string>
         </property>
