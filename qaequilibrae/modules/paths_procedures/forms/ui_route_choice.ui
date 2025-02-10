@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>AequilibraE - Route Choice</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="font">
@@ -24,33 +24,33 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab_choice_set_gen">
+     <widget class="QWidget" name="tab_route_choice_model">
       <attribute name="title">
        <string>Route choice model</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QGroupBox" name="gridGroupBox_3">
+        <widget class="QGroupBox" name="grid_choice_set">
          <property name="title">
           <string>Choice set generation</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="3">
-           <widget class="QLineEdit" name="penalty">
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>1.01</string>
-            </property>
-            <property name="placeholderText">
-             <string>1.01</string>
+             <string>Penalty</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_7">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_15">
             <property name="text">
-             <string>Max. depth</string>
+             <string>Probability cutoff</string>
             </property>
            </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="ln_cutoff"/>
           </item>
           <item row="1" column="3">
            <widget class="QLineEdit" name="max_depth">
@@ -62,8 +62,25 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="penalty">
+            <property name="text">
+             <string>1.01</string>
+            </property>
+            <property name="placeholderText">
+             <string>1.01</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Max. routes</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="label_11">
             <property name="text">
              <string>Algorithm</string>
             </property>
@@ -79,95 +96,78 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Max. depth</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="cob_algo"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Penalty</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Max. routes</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>Probability cutoff</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit_2"/>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="gridGroupBox_3">
+        <widget class="QGroupBox" name="grid_choice_model">
          <property name="title">
           <string>Route choice model</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="4" column="0">
-           <widget class="QLabel" name="label_16">
+           <widget class="QLabel" name="label_18">
             <property name="text">
              <string>Cost function</string>
             </property>
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QTextBrowser" name="textBrowser"/>
+           <widget class="QTextBrowser" name="tx_cost_func"/>
           </item>
           <item row="3" column="1">
            <widget class="QComboBox" name="cob_graph_cost"/>
           </item>
           <item row="3" column="0">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="ln_parameter">
             <property name="placeholderText">
              <string>0.10</string>
             </property>
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QLineEdit" name="lineEdit_3"/>
+           <widget class="QLineEdit" name="ln_psl"/>
           </item>
           <item row="3" column="2">
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="but_add_to_cost">
             <property name="text">
              <string>Add to cost function</string>
             </property>
            </widget>
           </item>
           <item row="5" column="0">
-           <widget class="QLabel" name="label_14">
+           <widget class="QLabel" name="label_19">
             <property name="text">
              <string>PSL (beta)</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLabel" name="label_9">
+           <widget class="QLabel" name="label_17">
             <property name="text">
              <string>Network field</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="label_16">
             <property name="text">
              <string>Parameter</string>
             </property>
            </widget>
           </item>
           <item row="4" column="2">
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="but_clear_cost">
             <property name="text">
              <string>Clear cost function</string>
             </property>
@@ -177,7 +177,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="gridGroupBox_2">
+        <widget class="QGroupBox" name="grid_graph">
          <property name="title">
           <string>Graph configuration</string>
          </property>
@@ -193,7 +193,7 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="label_110">
             <property name="text">
              <string>Network Mode</string>
             </property>
@@ -214,16 +214,16 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_sub_area">
+     <widget class="QWidget" name="tabl_critical_analysis">
       <attribute name="title">
        <string>Critical analysis</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab_workload">
       <attribute name="title">
        <string>Workload</string>
       </attribute>
-      <widget class="QGroupBox" name="gridGroupBox_2">
+      <widget class="QGroupBox" name="box_visualize">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -234,7 +234,7 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_1">
         <item row="0" column="2">
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="label_32">
           <property name="text">
            <string>Destination node ID</string>
           </property>
@@ -255,7 +255,7 @@
          </widget>
         </item>
         <item row="0" column="4">
-         <widget class="QPushButton" name="but_add_node">
+         <widget class="QPushButton" name="but_visualize">
           <property name="minimumSize">
            <size>
             <width>120</width>
@@ -268,21 +268,21 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="label_31">
           <property name="text">
            <string>Origin node ID</string>
           </property>
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_15">
+         <widget class="QLabel" name="label_33">
           <property name="text">
            <string>Demand</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEdit_4">
+         <widget class="QLineEdit" name="ln_demand">
           <property name="accessibleName">
            <string/>
           </property>
@@ -293,11 +293,11 @@
         </item>
        </layout>
       </widget>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="but_build_and_save">
        <property name="geometry">
         <rect>
-         <x>460</x>
-         <y>310</y>
+         <x>550</x>
+         <y>190</y>
          <width>211</width>
          <height>24</height>
         </rect>
@@ -306,20 +306,7 @@
         <string>Build and save choice set</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_12">
-       <property name="geometry">
-        <rect>
-         <x>340</x>
-         <y>240</y>
-         <width>351</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Qdo faz a aloc. tbm pode salvar o choice set</string>
-       </property>
-      </widget>
-      <widget class="QGroupBox" name="gridGroupBox">
+      <widget class="QGroupBox" name="box_demand">
        <property name="geometry">
         <rect>
          <x>9</x>
@@ -330,27 +317,27 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="1" column="0">
-         <widget class="QComboBox" name="comboBox"/>
+         <widget class="QComboBox" name="cob_matrix"/>
         </item>
         <item row="1" column="1">
-         <widget class="QComboBox" name="comboBox_2"/>
+         <widget class="QComboBox" name="cob_matrix_core"/>
         </item>
         <item row="0" column="0">
-         <widget class="QLabel" name="label_10">
+         <widget class="QLabel" name="label_34">
           <property name="text">
            <string>Matrix</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLabel" name="label_11">
+         <widget class="QLabel" name="label_35">
           <property name="text">
            <string>Matrix core</string>
           </property>
          </widget>
         </item>
         <item row="1" column="2">
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="but_perform_assig">
           <property name="text">
            <string>Perform assignment</string>
           </property>
