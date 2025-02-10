@@ -267,7 +267,6 @@ def test_all_or_nothing(ae_with_project, qtbot):
     assert isfile(skims)
 
 
-@pytest.mark.skipif(version("aequilibrae") != "1.1.5", reason="Extension version lower than 1.1.5")
 def test_select_link_analysis(ae_with_project, qtbot):
     dialog = TrafficAssignmentDialog(ae_with_project)
 
