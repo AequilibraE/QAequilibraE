@@ -50,7 +50,11 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="ln_cutoff"/>
+           <widget class="QLineEdit" name="ln_cutoff">
+            <property name="text">
+             <string>0.00</string>
+            </property>
+           </widget>
           </item>
           <item row="1" column="3">
            <widget class="QLineEdit" name="max_depth">
@@ -133,7 +137,11 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QLineEdit" name="ln_psl"/>
+           <widget class="QLineEdit" name="ln_psl">
+            <property name="text">
+             <string>1.00</string>
+            </property>
+           </widget>
           </item>
           <item row="3" column="2">
            <widget class="QPushButton" name="but_add_to_cost">
@@ -230,112 +238,128 @@
       <attribute name="title">
        <string>Workload</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="box_visualize">
-         <layout class="QGridLayout" name="gridLayout_1">
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_32">
-            <property name="text">
-             <string>Destination node ID</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="node_from">
-            <property name="placeholderText">
-             <string>12345</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLineEdit" name="node_to">
-            <property name="placeholderText">
-             <string>98765</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="ln_demand">
-            <property name="accessibleName">
-             <string/>
-            </property>
-            <property name="text">
-             <string>1.0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_33">
-            <property name="text">
-             <string>Demand</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <widget class="QPushButton" name="but_visualize">
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Visualize</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_31">
-            <property name="text">
-             <string>Origin node ID</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="box_demand">
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_35">
-            <property name="text">
-             <string>Matrix core</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="cob_matrix_core"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QComboBox" name="cob_matrices"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="but_perform_assig">
-            <property name="text">
-             <string>Perform assignment</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_34">
-            <property name="text">
-             <string>Matrix</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="but_build_and_save">
-         <property name="text">
-          <string>Build and save choice set</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QGroupBox" name="box_visualize">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>9</y>
+         <width>721</width>
+         <height>72</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_1">
+        <item row="0" column="2">
+         <widget class="QLabel" name="label_32">
+          <property name="text">
+           <string>Destination node ID</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="node_from">
+          <property name="placeholderText">
+           <string>12345</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLineEdit" name="node_to">
+          <property name="placeholderText">
+           <string>98765</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="ln_demand">
+          <property name="accessibleName">
+           <string/>
+          </property>
+          <property name="text">
+           <string>1.0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_33">
+          <property name="text">
+           <string>Demand</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QPushButton" name="but_visualize">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Visualize</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_31">
+          <property name="text">
+           <string>Origin node ID</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QPushButton" name="but_build_and_save">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>391</y>
+         <width>151</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Build and save choice set</string>
+       </property>
+      </widget>
+      <widget class="QGroupBox" name="box_demand">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>100</y>
+         <width>721</width>
+         <height>81</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="1">
+         <widget class="QComboBox" name="cob_matrix_core"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QComboBox" name="cob_matrices"/>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="but_perform_assig">
+          <property name="text">
+           <string>Perform assignment</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_34">
+          <property name="text">
+           <string>Matrix</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_35">
+          <property name="text">
+           <string>Matrix core</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
    </item>

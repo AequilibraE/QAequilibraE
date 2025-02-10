@@ -27,6 +27,8 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         self.setupUi(self)
         self.error = None
         self.matrix = None
+        self.cost_function = ""
+        self.utility = []
 
         self.all_modes = {}
         self._pairs = []
@@ -36,7 +38,7 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         self.__project_nodes = self.project.network.nodes.data.node_id.tolist()
         self.proj_matrices = list_matrices(self.project.matrices.fldr)
 
-        # We start with `Choice set generation`
+        # Removes `Critical analysis` until it is set
         self.tabWidget.removeTab(1)
 
         self.cob_algo.addItems(["BFSLE", "Link Penalization"])
@@ -46,6 +48,7 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.cob_matrices.currentTextChanged.connect(self.set_matrix)
         self.but_add_to_cost.clicked.connect(self.add_cost_function)
+        self.but_clear_cost.clicked.connect(self.clear_cost_function)
 
     def __populate_project_info(self):
 
@@ -86,29 +89,78 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
             self.cob_matrix_core.addItems(self.matrix.names)
 
     def add_cost_function(self):
-        valid_params = self.__check_parameter_value(self.ln_parameter.text())
+        params = self.ln_parameter.text()
+        valid_params = self.__check_parameter_value(params)
 
         if not valid_params:
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
-        
-        # cost_function = ""
-        # self.txt_cost_func.setText()
+
+        if len(self.cost_function) > 0 and self.parameter >= 0:
+            self.cost_function += " + "
+        elif len(self.cost_function) > 0 and self.parameter < 0:
+            params = params.replace("-", " - ")
+
+        self.cost_function += f"{params} * {self.cob_net_field.currentText()}"
+        self.txt_cost_func.setText(self.cost_function)
+
+        self.utility.extend((self.parameter, self.cob_net_field.currentText()))
+
+    def clear_cost_function(self):
+        self.txt_cost_func.clear()
+
+        self.cost_function = ""
 
     def exit_procedure(self):
         self.close()
 
     def __check_parameter_value(self, par):
         # parameter cannot be null
-        if par is None:
+        if len(par) == 0:
             self.error = "Check parameter value."
             return False
 
         # parameter needs to be numeric
-        if not par.replace(".", "").isdigit():
+        if not par.replace(".", "").replace("-", "").isdigit():
             self.error = "Wrong value in parameter."
             return False
         
         self.parameter = float(par)
         return True
+    
+    def graph_config(self):
+        mode = self.cob_mode.currentText()
+        mode_id = self.all_modes[mode]
+        if mode_id not in self.project.network.graphs:
+            self.project.network.build_graphs(modes=[mode_id])
+
+        self.graph = self.project.network.graphs[mode_id]
+
+        field = np.zeros((1, self.graph.network.shape[0]))
+        for idx, (par, col) in enumerate(self.utility):
+            x += (par * self.graph.network[col].array)
+
+        self.graph.network["utility"] = field.reshape(self.graph.network.shape[1], 1)
+
+        if self.chb_chosen_links.isChecked():
+            self.graph = self.project.network.graphs.pop(mode_id)
+            idx = self.link_layer.dataProvider().fieldNameIndex("link_id")
+            remove = [feat.attributes()[idx] for feat in self.link_layer.selectedFeatures()]
+            self.graph.exclude_links(remove)
         
+        self.graph.set_graph("utility")
+        # self.graph.prepare_graph(nodes_of_interest)
+        self.graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
+
+    def matrix_config(self):
+        self.matrix.computational_view([self.cob_matrix_core.currentText()])
+
+    def route_choice(self):
+        self.graph_config()
+        self.matrix_config()
+
+        rc = RouteChoice(self.graph)
+        rc.add_demand(self.matrix)
+
+        # Add a warning here
+        rc.set_choice_set_generation("bfsle", max_routes=5)
