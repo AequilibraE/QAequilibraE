@@ -6,286 +6,362 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>864</width>
-    <height>449</height>
+    <width>814</width>
+    <height>471</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>AequilibraE - Route Choice</string>
   </property>
-  <widget class="QTabWidget" name="tabWidget">
-   <property name="geometry">
-    <rect>
-     <x>6</x>
-     <y>9</y>
-     <width>851</width>
-     <height>431</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="currentIndex">
-    <number>0</number>
-   </property>
-   <widget class="QWidget" name="tab_choice_set_gen">
-    <attribute name="title">
-     <string>Choice set generation</string>
-    </attribute>
-    <widget class="QGroupBox" name="gridGroupBox_2">
-     <property name="geometry">
-      <rect>
-       <x>9</x>
-       <y>9</y>
-       <width>601</width>
-       <height>51</height>
-      </rect>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
-     <layout class="QGridLayout" name="gridLayout_1">
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="node_from">
-        <property name="placeholderText">
-         <string>12345</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Destination node ID</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Origin node ID</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="node_to">
-        <property name="placeholderText">
-         <string>98765</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QPushButton" name="but_add_node">
-        <property name="minimumSize">
-         <size>
-          <width>120</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Add</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_choice_set_gen">
+      <attribute name="title">
+       <string>Route choice model</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QGroupBox" name="gridGroupBox_3">
+         <property name="title">
+          <string>Choice set generation</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="penalty">
+            <property name="text">
+             <string>1.01</string>
+            </property>
+            <property name="placeholderText">
+             <string>1.01</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Max. depth</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLineEdit" name="max_depth">
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="placeholderText">
+             <string>5</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Algorithm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="max_routes">
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="placeholderText">
+             <string>5</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cob_algo"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Penalty</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Max. routes</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Probability cutoff</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_2"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="gridGroupBox_3">
+         <property name="title">
+          <string>Route choice model</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Cost function</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QTextBrowser" name="textBrowser"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="cob_graph_cost"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLineEdit" name="lineEdit">
+            <property name="placeholderText">
+             <string>0.10</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="lineEdit_3"/>
+          </item>
+          <item row="3" column="2">
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="text">
+             <string>Add to cost function</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>PSL (beta)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Network field</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Parameter</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QPushButton" name="pushButton_4">
+            <property name="text">
+             <string>Clear cost function</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="gridGroupBox_2">
+         <property name="title">
+          <string>Graph configuration</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="chb_check_centroids">
+            <property name="text">
+             <string>Block flows through centroids</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Network Mode</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="chb_chosen_links">
+            <property name="text">
+             <string>Remove selected links from the graph</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cob_mode"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_sub_area">
+      <attribute name="title">
+       <string>Critical analysis</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Workload</string>
+      </attribute>
+      <widget class="QGroupBox" name="gridGroupBox_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>761</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_1">
+        <item row="0" column="2">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Destination node ID</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="node_from">
+          <property name="placeholderText">
+           <string>12345</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLineEdit" name="node_to">
+          <property name="placeholderText">
+           <string>98765</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4">
+         <widget class="QPushButton" name="but_add_node">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Visualize</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Origin node ID</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Demand</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEdit_4">
+          <property name="accessibleName">
+           <string/>
+          </property>
+          <property name="text">
+           <string>1.0</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QPushButton" name="pushButton">
+       <property name="geometry">
+        <rect>
+         <x>460</x>
+         <y>310</y>
+         <width>211</width>
+         <height>24</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Build and save choice set</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_12">
+       <property name="geometry">
+        <rect>
+         <x>340</x>
+         <y>240</y>
+         <width>351</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Qdo faz a aloc. tbm pode salvar o choice set</string>
+       </property>
+      </widget>
+      <widget class="QGroupBox" name="gridGroupBox">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>99</y>
+         <width>761</width>
+         <height>64</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="1" column="0">
+         <widget class="QComboBox" name="comboBox"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="comboBox_2"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Matrix</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Matrix core</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="text">
+           <string>Perform assignment</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </widget>
-    <widget class="QTableWidget" name="tbl_selected_nodes">
-     <property name="geometry">
-      <rect>
-       <x>625</x>
-       <y>11</y>
-       <width>211</width>
-       <height>381</height>
-      </rect>
-     </property>
-     <column>
-      <property name="text">
-       <string>Origin</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Destination</string>
-      </property>
-     </column>
-    </widget>
-    <widget class="QGroupBox" name="gridGroupBox_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>601</width>
-       <height>161</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Graph set up</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="chb_check_centroids">
-        <property name="text">
-         <string>Block flows through centroids</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cob_mode"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QCheckBox" name="chb_chosen_links">
-        <property name="text">
-         <string>Remove selected links from the graph</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Network Mode</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QPushButton" name="but_add_graph">
-        <property name="text">
-         <string>Add Graph</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Set graph cost</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="cob_graph_cost"/>
-      </item>
-     </layout>
-    </widget>
-    <widget class="QGroupBox" name="gridGroupBox_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>240</y>
-       <width>601</width>
-       <height>151</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>Route choice</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="chb_assignment">
-        <property name="text">
-         <string>Perform assignment</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="max_routes">
-        <property name="text">
-         <string>0</string>
-        </property>
-        <property name="placeholderText">
-         <string>5</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Algorithm</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cob_algo"/>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Max. depth</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLineEdit" name="penalty">
-        <property name="text">
-         <string>1.01</string>
-        </property>
-        <property name="placeholderText">
-         <string>1.01</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Max. routes</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>Penalty</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QLineEdit" name="max_depth">
-        <property name="text">
-         <string>0</string>
-        </property>
-        <property name="placeholderText">
-         <string>5</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="3">
-       <widget class="QPushButton" name="but_execute">
-        <property name="text">
-         <string>Execute</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QCheckBox" name="chb_save_results">
-        <property name="text">
-         <string>Save results</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_route_choice">
-    <attribute name="title">
-     <string>Route choice</string>
-    </attribute>
-    <widget class="QWidget" name="gridLayoutWidget">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>9</y>
-       <width>831</width>
-       <height>401</height>
-      </rect>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2"/>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_sub_area">
-    <attribute name="title">
-     <string>Sub-area analysis</string>
-    </attribute>
-   </widget>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
