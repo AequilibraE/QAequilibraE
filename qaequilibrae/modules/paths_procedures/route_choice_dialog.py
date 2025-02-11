@@ -9,6 +9,8 @@ from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 from qgis.PyQt import QtWidgets, uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem
+from qgis.core import QgsVectorLayer, QgsProject
+from qgis._core import QgsLineSymbol
 
 from qaequilibrae.modules.matrix_procedures import list_matrices
 
@@ -32,6 +34,7 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.all_modes = {}
         self._pairs = []
+        self.link_layer = qgis_project.layers["links"][0]
 
         self.__populate_project_info()
 
@@ -152,11 +155,11 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         self.graph.network = self.graph.network.assign(utility=0)
         self.graph.network["utility"] = field.reshape(self.graph.network.shape[0], 1)
 
-        # if self.chb_chosen_links.isChecked():
-        #     self.graph = self.project.network.graphs.pop(mode_id)
-        #     idx = self.link_layer.dataProvider().fieldNameIndex("link_id")
-        #     remove = [feat.attributes()[idx] for feat in self.link_layer.selectedFeatures()]
-        #     self.graph.exclude_links(remove)
+        if self.chb_chosen_links.isChecked():
+            self.graph = self.project.network.graphs.pop(mode_id)
+            idx = self.link_layer.dataProvider().fieldNameIndex("link_id")
+            remove = [feat.attributes()[idx] for feat in self.link_layer.selectedFeatures()]
+            self.graph.exclude_links(remove)
 
         self.graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
 
@@ -210,8 +213,8 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         return True
 
     def execute_single(self):
-        from_node = self.__validate_node_id(self.node_from.text())
-        to_node = self.__validate_node_id(self.node_to.text())
+        self.from_node = self.__validate_node_id(self.node_from.text())
+        self.to_node = self.__validate_node_id(self.node_to.text())
 
         demand = self.ln_demand.text()
         if not demand.replace(".", "").isdigit():
@@ -221,17 +224,19 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
 
-        nodes_of_interest = np.array([from_node, to_node], dtype=np.int64)
+        nodes_of_interest = np.array([self.from_node, self.to_node], dtype=np.int64)
+
         self.graph_config()
         self.graph.prepare_graph(nodes_of_interest)
         self.graph.set_graph("utility")
 
         self.route_choice()
 
-        results = self.rc.execute_single(from_node, to_node, float(demand))
-        print(results[0])
+        results = self.rc.execute_single(self.from_node, self.to_node, float(demand))
 
-        # plot results
+        self._plot_results(results)
+
+        self.exit_procedure()
 
     def __validate_node_id(self, node_id: str):
         # Check if we have only numbers
@@ -244,3 +249,26 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
             self.error = self.tr("Node ID doesn't exist in project")
 
         return node_id
+
+    def _plot_results(self, res):
+        for idx, feat in enumerate(res):
+
+            exp = '"link_id" IN {}'.format(feat)
+            self.link_layer.selectByExpression(exp)
+
+            selected_features = [f for f in self.link_layer.getSelectedFeatures()]
+
+            temp_layer_name = f"route_set_{idx}-{self.from_node}-{self.to_node}"
+            temp_layer = QgsVectorLayer(
+                "LineString?crs={}".format(self.link_layer.crs().authid()), temp_layer_name, "memory"
+            )
+            temp_layer.dataProvider().addAttributes(self.link_layer.fields())
+            temp_layer.updateFields()
+            temp_layer.startEditing()
+            for feature in selected_features:
+                temp_layer.dataProvider().addFeature(feature)
+            temp_layer.commitChanges()
+
+            QgsProject.instance().addMapLayer(temp_layer)
+
+        qgis.utils.iface.mapCanvas().refresh()

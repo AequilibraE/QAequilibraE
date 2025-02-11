@@ -1,16 +1,16 @@
 import pytest
 from PyQt5.QtCore import Qt
 
+from qgis.core import QgsProject
+
 from qaequilibrae.modules.paths_procedures.route_choice_dialog import RouteChoiceDialog
 
 
-# TODO: test both algorithm selection
-# @pytest.mark.parametrize("save_file", [True, False])
-def test_create_choice_set(coquimbo_project, qtbot):
+def test_execute_single(coquimbo_project, qtbot):
     dialog = RouteChoiceDialog(coquimbo_project)
 
     # Choice set generation
-    dialog.max_routes.setText("5")
+    dialog.max_routes.setText("3")
 
     # Route choice
     dialog.cob_net_field.setCurrentText("distance")
@@ -22,20 +22,20 @@ def test_create_choice_set(coquimbo_project, qtbot):
     # Graph configuration
     dialog.chb_check_centroids.setChecked(False)
 
-    # path = qtbot.screenshot(dialog.tabWidget.widget(0))
-    # print(path)
-
+    # Workflow
     dialog.node_from.setText("77011")
     dialog.node_to.setText("74089")
     dialog.ln_demand.setText("1.0")
 
-    # path = qtbot.screenshot(dialog.tabWidget.widget(1))
-    # print(path)
-
     qtbot.mouseClick(dialog.but_visualize, Qt.LeftButton)
-    # dialog.execute_single()
 
-    # print(dialog.__dict__)
+    counter = 0
+    layers = list(QgsProject.instance().mapLayers().values())
+    for layer in layers:
+        if "route_set" in layer.name():
+            counter += 1
+
+    assert counter == 3
 
 
 # dialog.ln_parameter.setText("0,15")
