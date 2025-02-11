@@ -2510,38 +2510,73 @@
 <context>
     <name>TrafficAssignmentDialog</name>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="227"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="234"/>
         <source>Class name already used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="280"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="287"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="331"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="413"/>
         <source>Input error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="355"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="443"/>
         <source>No traffic classes to assign</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="360"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="448"/>
         <source>Missing scenario name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="365"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="453"/>
         <source>Result table name already exists. Choose a new name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="424"/>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="530"/>
         <source>VDF parameter is not numeric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="340"/>
+        <source>Wrong value for link ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="347"/>
+        <source>Link ID doesn&apos;t exist in project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="357"/>
+        <source>Missing query name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="362"/>
+        <source>Query name already used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="367"/>
+        <source>Please set a link selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="459"/>
+        <source>Missing select link matrix name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/traffic_assignment_dialog.py" line="463"/>
+        <source>Result matrix name already exists. Choose a new name.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3138,7 +3173,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1197"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1315"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3158,7 +3193,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="818"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="936"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;xcxc&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3263,7 +3298,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1202"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1320"/>
         <source>Field</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3283,123 +3318,173 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="702"/>
-        <source>Select link analysis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="808"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="926"/>
         <source>Build Query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="837"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="955"/>
         <source>Links</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="842"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="960"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="847"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="965"/>
         <source>Query name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="852"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="970"/>
         <source>Del</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="777"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="895"/>
         <source>Link flow extraction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="786"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="904"/>
         <source>Perform link flow extraction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="861"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="979"/>
         <source>Assignment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="913"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1031"/>
         <source>Status Message 0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="920"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1038"/>
         <source>ASSIGN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1058"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1176"/>
         <source>CANCEL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="989"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1107"/>
         <source>Algorithm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1021"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1139"/>
         <source>Relative Gap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1028"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1146"/>
         <source>Maximum Iterations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1071"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1189"/>
         <source>Network information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1082"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1200"/>
         <source>Free Flow Travel time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1094"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1212"/>
         <source>Capacity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="879"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="997"/>
         <source>Outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="888"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1006"/>
         <source>Save complete path file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="898"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1016"/>
         <source>Result_name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1146"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1264"/>
         <source>Volume-Delay function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1152"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1270"/>
         <source>Function</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1192"/>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="1310"/>
         <source>Parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="696"/>
+        <source>Link ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="703"/>
+        <source>12345</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="710"/>
+        <source>Direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="723"/>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="736"/>
+        <source>Save select link matrices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="746"/>
+        <source>Save select link results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="762"/>
+        <source>output_name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="797"/>
+        <source>query_name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="810"/>
+        <source>Add to query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="830"/>
+        <source>Save query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="887"/>
+        <source>Set select link analysis</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

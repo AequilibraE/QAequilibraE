@@ -49,6 +49,9 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.rgap = "Undefined"
         self.iter = 0
         self.miter = 1000
+        self.select_links = {}
+        self.__current_links = []
+        self.__project_links = self.project.network.links.data.link_id
 
         # Signals for the matrix_procedures tab
         self.but_add_skim.clicked.connect(self._add_skimming)
@@ -56,6 +59,7 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.cob_matrices.currentIndexChanged.connect(self.change_matrix_selected)
         self.cob_mode_for_class.currentIndexChanged.connect(self.change_class_name)
         self.chb_fixed_cost.toggled.connect(self.set_fixed_cost_use)
+        self.do_select_link.toggled.connect(self.set_select_link_use)
 
         self.do_assignment.clicked.connect(self.run)
         self.cancel_all.clicked.connect(self.exit_procedure)
@@ -80,21 +84,16 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         # Queries
         tables = [self.select_link_list, self.list_link_extraction]
         for table in tables:
-            table.setColumnWidth(0, 280)
-            table.setColumnWidth(1, 40)
+            table.setColumnWidth(0, 240)
+            table.setColumnWidth(1, 120)
             table.setColumnWidth(2, 150)
             table.setColumnWidth(3, 40)
 
         self.tbl_project_properties.setColumnWidth(0, 120)
         self.tbl_project_properties.setColumnWidth(1, 450)
 
-        # Disabling resources not yet implemented
-        self.do_select_link.setEnabled(False)
-        self.but_build_query.setEnabled(False)
-        self.select_link_list.setEnabled(False)
-        self.do_extract_link_flows.setEnabled(False)
-        self.but_build_query_extract.setEnabled(False)
-        self.list_link_extraction.setEnabled(False)
+        # We'll temporarily remove the tab instead of disabling its resources
+        self.tabWidget.removeTab(4)
 
         self.tbl_traffic_classes.setColumnWidth(0, 125)
         self.tbl_traffic_classes.setColumnWidth(1, 125)
@@ -111,6 +110,14 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.change_matrix_selected()
         self.change_class_name()
         self.set_fixed_cost_use()
+        self.set_select_link_use()
+
+        # Set up select link analysis
+        self.cob_direction.addItems(["AB", "Both", "BA"])
+        self.but_add_query.clicked.connect(self.add_query)
+        self.but_build_query.clicked.connect(self.build_query)
+        self.select_link_list.cellDoubleClicked.connect(self.__remove_select_link_item)
+        self.but_clean.clicked.connect(self.__clean_link_selection)
 
     def set_fixed_cost_use(self):
         for item in [self.cob_fixed_cost, self.lbl_vot, self.vot_setter]:
@@ -313,6 +320,81 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.skims[name].append(field)
         self.skimming = True
 
+    def add_query(self):
+        link_id = self.__validate_link_id()
+
+        direction = self.cob_direction.currentText()
+
+        if direction == "AB":
+            self.__current_links.extend([(link_id, 1)])
+        elif direction == "BA":
+            self.__current_links.extend([(link_id, -1)])
+        else:
+            self.__current_links.extend([(link_id, 0)])
+
+    def __validate_link_id(self):
+        link_id = self.input_link_id.text()
+
+        # Check if we have only numbers
+        if not link_id.isdigit():
+            self.error = self.tr("Wrong value for link ID")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+        # Check if link_id exists
+        link_id = int(link_id)
+        if link_id not in self.__project_links:
+            self.error = self.tr("Link ID doesn't exist in project")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=2, duration=5)
+            return
+
+        return link_id
+
+    def build_query(self):
+        query_name = self.input_qry_name.text()
+
+        if len(query_name) == 0 or not query_name:
+            self.error = self.tr("Missing query name")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+        if query_name in self.select_links:
+            self.error = self.tr("Query name already used")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+        if not self.__current_links:
+            self.error = self.tr("Please set a link selection")
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+        self.select_links[query_name] = self.__current_links
+
+        self.select_link_list.clearContents()
+        self.select_link_list.setRowCount(len(self.select_links.keys()))
+
+        for i, (name, links) in enumerate(self.select_links.items()):
+            self.select_link_list.setItem(i, 0, QTableWidgetItem(str(links)))
+            self.select_link_list.setItem(i, 1, QTableWidgetItem(str(name)))
+
+        self.__current_links = []
+
+    def set_select_link_use(self):
+        for item in [self.select_link_list, self.select_link_config]:
+            item.setEnabled(self.do_select_link.isChecked())
+
+    def __remove_select_link_item(self, line):
+        key = list(self.select_links.keys())[line]
+        self.select_link_list.removeRow(line)
+
+        self.select_links.pop(key)
+
+    def __clean_link_selection(self):
+        self.input_qry_name.clear()
+        self.input_link_id.clear()
+        self.cob_direction.setCurrentIndex(0)
+        self.__current_links = []
+
     def __remove_class(self):
         self.__edit_skimming_modes()
 
@@ -328,7 +410,8 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def run(self):
         if not self.check_data():
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=3, duration=10)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
 
         self.miter = int(self.max_iter.text())
         for q in [self.progressbar, self.progress_label]:
@@ -344,6 +427,11 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
         self.assignment.rgap_target = float(self.rel_gap.text())
         self.assignment.set_algorithm(self.cb_choose_algorithm.currentText())
         self.assignment.log_specification()
+
+        if self.do_select_link.isChecked():
+            for traffic_class in self.traffic_classes.values():
+                traffic_class.set_select_links(self.select_links)
+
         self.worker_thread = self.assignment.assignment
         self.run_thread()
 
@@ -365,6 +453,16 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
             self.error = self.tr("Result table name already exists. Choose a new name")
             return False
 
+        if self.do_select_link.isChecked():
+            self.output_name = self.sl_mat_name.text()
+            if len(self.output_name) == 0:
+                self.error = self.tr("Missing select link matrix name.")
+                return False
+
+            if self.output_name in self.matrices:
+                self.error = self.tr("Result matrix name already exists. Choose a new name.")
+                return False
+
         self.temp_path = gettempdir()
         tries_setup = self.set_assignment()
         return tries_setup
@@ -382,6 +480,14 @@ class TrafficAssignmentDialog(QtWidgets.QDialog, FORM_CLASS):
 
     # Save link flows to disk
     def produce_all_outputs(self):
+        if self.do_select_link.isChecked():
+            if self.chb_save_matrix.isChecked():
+                self.assignment.save_select_link_matrices(self.output_name)
+
+            # These two lines are raising an sqlite3 error in pytest
+            if self.chb_save_result.isChecked():
+                self.assignment.save_select_link_flows(self.output_name)
+
         self.assignment.save_results(self.scenario_name)
         if self.skimming:
             self.assignment.save_skims(self.scenario_name, which_ones="all", format="omx")
