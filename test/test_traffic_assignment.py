@@ -1,5 +1,4 @@
 import sqlite3
-from importlib.metadata import version
 from os.path import isfile
 from pathlib import Path
 from uuid import uuid4
