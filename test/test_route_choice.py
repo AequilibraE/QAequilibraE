@@ -1,6 +1,5 @@
 import pytest
 from PyQt5.QtCore import Qt
-
 from qgis.core import QgsProject
 
 from qaequilibrae.modules.paths_procedures.route_choice_dialog import RouteChoiceDialog

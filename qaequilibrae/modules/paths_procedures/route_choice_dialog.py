@@ -7,22 +7,21 @@ import qgis
 from aequilibrae.paths.route_choice import RouteChoice
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
-from qgis.PyQt import QtWidgets, uic
-from qgis.PyQt.QtWidgets import QTableWidgetItem
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QCheckBox, QDialog
 from qgis.core import QgsVectorLayer, QgsProject
-from qgis._core import QgsLineSymbol
 
 from qaequilibrae.modules.matrix_procedures import list_matrices
-
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_route_choice.ui"))
 logger = logging.getLogger("AequilibraEGUI")
 
 
-class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
+class RouteChoiceDialog(QDialog, FORM_CLASS):
     def __init__(self, qgis_project):
-        QtWidgets.QDialog.__init__(self)
+        QDialog.__init__(self)
         self.iface = qgis_project.iface
         self.project = qgis_project.project
         self.matrices = self.project.matrices
@@ -50,6 +49,7 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         self.set_matrix()
 
         self.cob_matrices.currentTextChanged.connect(self.set_matrix)
+        self.chb_use_all_matrices.toggled.connect(self.set_show_matrices)
         self.but_add_to_cost.clicked.connect(self.add_cost_function)
         self.but_clear_cost.clicked.connect(self.clear_cost_function)
         self.but_perform_assig.clicked.connect(self.route_choice)
@@ -91,10 +91,47 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
         else:
             self.matrix = self.matrices.get_matrix(self.cob_matrices.currentText())
 
-        self.cob_matrix_core.clear()
+    def set_show_matrices(self):
+        self.set_matrix()
+
+        self.tbl_array_cores.clear()
+        self.tbl_array_cores.setColumnWidth(0, 200)
+        self.tbl_array_cores.setColumnWidth(1, 80)
 
         if self.matrix is not None:
-            self.cob_matrix_core.addItems(self.matrix.names)
+            table = self.tbl_array_cores
+            table.setRowCount(self.matrix.cores)
+            for i, mat in enumerate(self.matrix.names):
+                item1 = QTableWidgetItem(mat)
+                item1.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                table.setItem(i, 0, item1)
+
+                chb1 = QCheckBox()
+                chb1.setChecked(True)
+                chb1.setEnabled(True)
+                table.setCellWidget(i, 1, self.centers_item(chb1))
+
+    def __check_matrices(self):
+        self.set_matrix()
+        if self.matrix is None:
+            return False
+
+        if self.chb_use_all_matrices.isChecked():
+            matrix_cores_to_use = self.matrix.names
+        else:
+            matrix_cores_to_use = []
+            for i, mat in enumerate(self.matrix.names):
+                if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
+                    matrix_cores_to_use.append(mat)
+
+        if len(matrix_cores_to_use) > 0:
+            self.matrix.computational_view(matrix_cores_to_use)
+            if len(matrix_cores_to_use) == 1:
+                self.matrix.matrix_view = self.matrix.matrix_view.reshape((self.matrix.zones, self.matrix.zones, 1))
+        else:
+            return False
+
+        return True
 
     def add_cost_function(self):
         print("add_cost_function")
@@ -163,9 +200,6 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
 
-    def matrix_config(self):
-        self.matrix.computational_view([self.cob_matrix_core.currentText()])
-
     def route_choice(self):
         print("route_choice")
         valid_params = self.__check_route_choice_params()
@@ -181,7 +215,6 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
             "max_depth": self.rc_depth,
             "penalty": float(self.penalty.text()),
             "cutoff_prob": self.cutoff,
-            "store_results": True,
             "beta": float(self.ln_psl.text()),
         }
         self.rc.set_choice_set_generation(self.cob_algo.currentText(), **kwargs)
@@ -272,3 +305,20 @@ class RouteChoiceDialog(QtWidgets.QDialog, FORM_CLASS):
             QgsProject.instance().addMapLayer(temp_layer)
 
         qgis.utils.iface.mapCanvas().refresh()
+
+    def save_and_assign(self):
+        valid_params = self.__check_matrices()
+        if not valid_params:
+            self.error = "Check matrices inputs"
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+        self.graph_config()
+        self.graph.set_graph("utility")
+
+        self.rc.add_demand(self.matrix)
+        self.rc.prepare()
+        self.rc.execute(perform_assignment=True)
+
+        if self.chb_save_choice_set.isChecked():
+            self.rc.set_save_routes(self.project.project_base_path)
