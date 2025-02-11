@@ -9,7 +9,7 @@ from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QTableWidgetItem, QCheckBox, QDialog
+from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
 from qgis.core import QgsVectorLayer, QgsProject
 
 from qaequilibrae.modules.matrix_procedures import list_matrices
@@ -24,6 +24,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         QDialog.__init__(self)
         self.iface = qgis_project.iface
         self.project = qgis_project.project
+        self.qgis_project = qgis_project
         self.matrices = self.project.matrices
         self.setupUi(self)
         self.error = None
@@ -45,15 +46,15 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.cob_algo.addItems(["BFSLE", "Link Penalization"])
 
-        self.list_matrices()
-        self.set_matrix()
-
-        self.cob_matrices.currentTextChanged.connect(self.set_matrix)
+        self.cob_matrices.currentTextChanged.connect(self.set_show_matrices)
         self.chb_use_all_matrices.toggled.connect(self.set_show_matrices)
         self.but_add_to_cost.clicked.connect(self.add_cost_function)
         self.but_clear_cost.clicked.connect(self.clear_cost_function)
         self.but_perform_assig.clicked.connect(self.route_choice)
         self.but_visualize.clicked.connect(self.execute_single)
+
+        self.list_matrices()
+        self.set_show_matrices()
 
     def __populate_project_info(self):
         print("__populate_project_info")
@@ -86,17 +87,20 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             self.matrix = None
             return
 
-        if len(self.matrices.list()) == 0:
-            self.matrix = None
-        else:
-            self.matrix = self.matrices.get_matrix(self.cob_matrices.currentText())
+        if self.cob_matrices.currentText() in self.qgis_project.matrices:
+            self.matrix = self.qgis_project.matrices[self.cob_matrices.currentText()]
+            return
+        self.matrix = self.qgis_project.project.matrices.get_matrix(self.cob_matrices.currentText())
 
     def set_show_matrices(self):
+        self.tbl_array_cores.setVisible(not self.chb_use_all_matrices.isChecked())
+        self.tbl_array_cores.clear()
+
         self.set_matrix()
 
-        self.tbl_array_cores.clear()
         self.tbl_array_cores.setColumnWidth(0, 200)
         self.tbl_array_cores.setColumnWidth(1, 80)
+        self.tbl_array_cores.setHorizontalHeaderLabels(["Matrix", "Use?"])
 
         if self.matrix is not None:
             table = self.tbl_array_cores
@@ -110,6 +114,15 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
                 chb1.setChecked(True)
                 chb1.setEnabled(True)
                 table.setCellWidget(i, 1, self.centers_item(chb1))
+
+    def centers_item(self, item):
+        cell_widget = QWidget()
+        lay_out = QHBoxLayout(cell_widget)
+        lay_out.addWidget(item)
+        lay_out.setAlignment(Qt.AlignCenter)
+        lay_out.setContentsMargins(0, 0, 0, 0)
+        cell_widget.setLayout(lay_out)
+        return cell_widget
 
     def __check_matrices(self):
         self.set_matrix()
