@@ -264,3 +264,56 @@ def test_all_or_nothing(ae_with_project, qtbot):
 
     skims = pth / f"matrices/{test_name}_car.omx"
     assert isfile(skims)
+
+
+def test_select_link_analysis(ae_with_project, qtbot):
+    dialog = TrafficAssignmentDialog(ae_with_project)
+
+    test_name = f"TestTrafficAssignment_SLA_{uuid4().hex[:6]}"
+    dialog.output_scenario_name.setText(test_name)
+    dialog.cob_matrices.setCurrentText("demand.aem")
+
+    # Traffic classes
+    dialog.tbl_core_list.selectRow(0)
+    dialog.cob_mode_for_class.setCurrentIndex(0)
+    dialog.ln_class_name.setText("car")
+    dialog.pce_setter.setValue(1.0)
+    dialog.chb_check_centroids.setChecked(False)
+    qtbot.mouseClick(dialog.but_add_class, Qt.LeftButton)
+
+    # Skimming
+    dialog.cob_skims_available.setCurrentText("free_flow_time")
+    qtbot.mouseClick(dialog.but_add_skim, Qt.LeftButton)
+    dialog.cob_skims_available.setCurrentText("distance")
+    qtbot.mouseClick(dialog.but_add_skim, Qt.LeftButton)
+
+    # Select link
+    dialog.do_select_link.setChecked(True)
+    dialog.input_qry_name.setText("Leaving from 1")
+    dialog.input_link_id.setText("1")
+    qtbot.mouseClick(dialog.but_add_query, Qt.LeftButton)
+    dialog.input_link_id.setText("2")
+    qtbot.mouseClick(dialog.but_add_query, Qt.LeftButton)
+    qtbot.mouseClick(dialog.but_build_query, Qt.LeftButton)
+    dialog.sl_mat_name.setText("select_link_analysis")
+
+    # Assignment
+    dialog.tbl_vdf_parameters.cellWidget(0, 1).setText("0.15")
+    dialog.tbl_vdf_parameters.cellWidget(1, 1).setText("4.0")
+    dialog.cob_vdf.setCurrentText("BPR")
+    dialog.cob_capacity.setCurrentText("capacity")
+    dialog.cob_ffttime.setCurrentText("free_flow_time")
+    dialog.cb_choose_algorithm.setCurrentText("bfw")
+    dialog.max_iter.setText("25")
+    dialog.rel_gap.setText("0.001")
+
+    dialog.run()
+
+    matrices = dialog.project.matrices
+    matrices.update_database()
+    assert "select_link_analysis.omx" in matrices.list()["file_name"].tolist()
+
+    pth = Path(dialog.project.project_base_path)
+    conn = sqlite3.connect(pth / "results_database.sqlite")
+    results = [x[0] for x in conn.execute("SELECT name FROM sqlite_master WHERE type ='table'").fetchall()]
+    assert "select_link_analysis" in results
