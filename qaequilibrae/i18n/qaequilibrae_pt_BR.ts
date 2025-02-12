@@ -3458,7 +3458,7 @@
     <message>
         <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="746"/>
         <source>Save select link results</source>
-        <translation type="unfinished"/>
+        <translation>Salvar resultados da análise de links selecionados</translation>
     </message>
     <message>
         <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="762"/>
