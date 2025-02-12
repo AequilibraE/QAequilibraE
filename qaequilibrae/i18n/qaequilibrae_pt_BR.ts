@@ -3463,7 +3463,7 @@
     <message>
         <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="762"/>
         <source>output_name</source>
-        <translation type="unfinished"/>
+        <translation>nome_do_arquivo_de_saída</translation>
     </message>
     <message>
         <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="797"/>
