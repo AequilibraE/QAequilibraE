@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from os.path import join
+from os import listdir
 from PyQt5.QtCore import Qt
 from qgis.core import QgsProject
 
@@ -52,10 +52,10 @@ def create_matrix(index: np.ndarray, path: str):
     mat.matrices.flush()
 
 
-def test_assign_and_save(coquimbo_project, qtbot):
-    dialog = RouteChoiceDialog(coquimbo_project)
+@pytest.mark.parametrize("save", [True, False])
+def test_assign_and_save(ae_with_project, qtbot, save):
+    dialog = RouteChoiceDialog(ae_with_project)
 
-    create_matrix(np.arange(1, 134), join(dialog.project.matrices.fldr, "demand.aem"))
     dialog.matrices.reload()
     dialog.list_matrices()
 
@@ -64,7 +64,7 @@ def test_assign_and_save(coquimbo_project, qtbot):
 
     # Route choice
     dialog.cob_net_field.setCurrentText("distance")
-    dialog.ln_parameter.setText("0.00011")
+    dialog.ln_parameter.setText("0.01")
     qtbot.mouseClick(dialog.but_add_to_cost, Qt.LeftButton)
 
     dialog.ln_psl.setText("1.1")
@@ -72,10 +72,51 @@ def test_assign_and_save(coquimbo_project, qtbot):
     # Graph configuration
     dialog.chb_check_centroids.setChecked(False)
 
-    dialog.chb_save_choice_set.setChecked(True)
-    path = qtbot.screenshot(dialog.tabWidget.widget(1))
-    print(path)
-    # qtbot.mouseClick(dialog.but_perform_assig, Qt.LeftButton)
+    dialog.chb_save_choice_set.setChecked(save)
+    dialog.cob_matrices.setCurrentText("demand.aem")
+    qtbot.mouseClick(dialog.but_perform_assig, Qt.LeftButton)
+
+    counter = 0
+    all_folders = listdir(dialog.project.project_base_path)
+    for folder in all_folders:
+        if "origin id=" in folder:
+            counter += 1
+
+    if save:
+        assert counter == 24
+    else:
+        assert counter == 0
+
+
+def test_build_and_save(ae_with_project, qtbot):
+    dialog = RouteChoiceDialog(ae_with_project)
+
+    dialog.matrices.reload()
+    dialog.list_matrices()
+
+    # Choice set generation
+    dialog.max_routes.setText("3")
+
+    # Route choice
+    dialog.cob_net_field.setCurrentText("distance")
+    dialog.ln_parameter.setText("0.01")
+    qtbot.mouseClick(dialog.but_add_to_cost, Qt.LeftButton)
+
+    dialog.ln_psl.setText("1.1")
+
+    # Graph configuration
+    dialog.chb_check_centroids.setChecked(False)
+
+    dialog.cob_matrices.setCurrentText("demand.aem")
+    qtbot.mouseClick(dialog.but_build_and_save, Qt.LeftButton)
+
+    counter = 0
+    all_folders = listdir(dialog.project.project_base_path)
+    for folder in all_folders:
+        if "origin id=" in folder:
+            counter += 1
+
+    assert counter == 24
 
 
 # dialog.ln_parameter.setText("0,15")

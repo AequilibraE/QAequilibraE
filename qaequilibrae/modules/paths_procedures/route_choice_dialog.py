@@ -12,6 +12,9 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
 from qgis.core import QgsVectorLayer, QgsProject
 
+from qgis.core import QgsSymbol, QgsLineSymbol, QgsProperty, QgsSymbolLayer
+from PyQt5.QtGui import QColor
+
 from qaequilibrae.modules.matrix_procedures import list_matrices
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
@@ -141,8 +144,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         if len(matrix_cores_to_use) > 0:
             self.matrix.computational_view(matrix_cores_to_use)
-            if len(matrix_cores_to_use) == 1:
-                self.matrix.matrix_view = self.matrix.matrix_view.reshape((self.matrix.zones, self.matrix.zones, 1))
         else:
             return False
 
@@ -269,8 +270,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         demand = self.ln_demand.text()
         if not demand.replace(".", "").isdigit():
             self.error = "Wrong input value for demand"
-
-        if self.error:
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
 
@@ -286,7 +285,8 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self._plot_results(results)
 
-        self.exit_procedure()
+        self.box_demand.setEnabled(False)
+        self.box_build_and_save.setEnabled(False)
 
     def __validate_node_id(self, node_id: str):
         # Check if we have only numbers
@@ -323,6 +323,32 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             QgsProject.instance().addMapLayer(temp_layer)
 
         qgis.utils.iface.mapCanvas().refresh()
+
+        # # Generate random RGB values
+        # r = np.random.randint(0, 255)
+        # g = np.random.randint(0, 255)
+        # b = np.random.randint(0, 255)
+
+        # # Create a basic line symbol with random color
+        # symbol = QgsLineSymbol.createSimple({
+        #     'line_color': f'{r},{g},{b},255',  # Random color
+        #     'line_style': 'solid',
+        # })
+
+        # # Create a data-defined property for line width
+        # width_property = QgsProperty.fromExpression(
+        #     f'scale_linear("{column_name}", minimum("{column_name}"), maximum("{column_name}"), 0.26, 2.0)'
+        # )
+
+        # # Apply the data-defined width to the symbol layer
+        # symbol_layer = symbol.symbolLayer(0)
+        # symbol_layer.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, width_property)
+
+        # # Apply the symbol to the layer
+        # temp_layer.renderer().setSymbol(symbol)
+
+        # # Refresh the layer
+        # temp_layer.triggerRepaint()
 
     def assign_and_save(self, arg):
         print(f"assign_and_save: {arg}")

@@ -62,7 +62,7 @@
              <string>0</string>
             </property>
             <property name="placeholderText">
-             <string>5</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -96,7 +96,7 @@
              <string>0</string>
             </property>
             <property name="placeholderText">
-             <string>5</string>
+             <string/>
             </property>
            </widget>
           </item>
@@ -366,7 +366,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="gridGroupBox">
+        <widget class="QGroupBox" name="box_build_and_save">
          <layout class="QGridLayout" name="gridLayout_6">
           <item row="0" column="0">
            <widget class="QPushButton" name="but_build_and_save">
