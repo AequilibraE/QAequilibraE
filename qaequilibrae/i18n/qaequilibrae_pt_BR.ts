@@ -1631,7 +1631,7 @@
     <message>
         <location filename="../modules/processing_provider/import_gtfs.py" line="37"/>
         <source>Map-match transit routes</source>
-        <translation type="unfinished"/>
+        <translation>Concordância entre rotas de transporte público e o mapa</translation>
     </message>
     <message>
         <location filename="../modules/processing_provider/import_gtfs.py" line="44"/>
