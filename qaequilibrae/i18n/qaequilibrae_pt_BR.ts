@@ -3453,7 +3453,7 @@
     <message>
         <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="736"/>
         <source>Save select link matrices</source>
-        <translation>Salvar matrizes de links selecionados</translation>
+        <translation>Salvar matrizes provenientes da análise de links selecionados</translation>
     </message>
     <message>
         <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="746"/>
