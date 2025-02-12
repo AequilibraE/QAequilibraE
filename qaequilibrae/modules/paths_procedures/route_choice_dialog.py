@@ -50,7 +50,8 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.chb_use_all_matrices.toggled.connect(self.set_show_matrices)
         self.but_add_to_cost.clicked.connect(self.add_cost_function)
         self.but_clear_cost.clicked.connect(self.clear_cost_function)
-        self.but_perform_assig.clicked.connect(self.route_choice)
+        self.but_perform_assig.clicked.connect(lambda: self.assign_and_save(arg="assign"))
+        self.but_build_and_save.clicked.connect(lambda: self.assign_and_save(arg="build"))
         self.but_visualize.clicked.connect(self.execute_single)
 
         self.list_matrices()
@@ -125,6 +126,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         return cell_widget
 
     def __check_matrices(self):
+        print("__check_matrices")
         self.set_matrix()
         if self.matrix is None:
             return False
@@ -258,6 +260,8 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.rc_depth = int(self.max_depth.text())
         return True
 
+    # TODO: add a new screen to allow the user to build more route sets because the data is already in memory
+    # It will be like the one in shortest path
     def execute_single(self):
         self.from_node = self.__validate_node_id(self.node_from.text())
         self.to_node = self.__validate_node_id(self.node_to.text())
@@ -296,6 +300,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         return node_id
 
+    # TODO: fix line width
     def _plot_results(self, res):
         for idx, feat in enumerate(res):
 
@@ -319,7 +324,8 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         qgis.utils.iface.mapCanvas().refresh()
 
-    def save_and_assign(self):
+    def assign_and_save(self, arg):
+        print(f"assign_and_save: {arg}")
         valid_params = self.__check_matrices()
         if not valid_params:
             self.error = "Check matrices inputs"
@@ -327,11 +333,17 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             return
 
         self.graph_config()
+        self.graph.prepare_graph(self.graph.centroids)
         self.graph.set_graph("utility")
 
+        self.route_choice()
         self.rc.add_demand(self.matrix)
         self.rc.prepare()
-        self.rc.execute(perform_assignment=True)
 
-        if self.chb_save_choice_set.isChecked():
+        if self.chb_save_choice_set.isChecked() or arg == "build":
             self.rc.set_save_routes(self.project.project_base_path)
+
+        assig = True if arg == "assign" else False
+        self.rc.execute(perform_assignment=assig)
+
+        self.exit_procedure()
