@@ -3433,7 +3433,7 @@
     <message>
         <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="696"/>
         <source>Link ID</source>
-        <translation type="unfinished"/>
+        <translation>Link ID</translation>
     </message>
     <message>
         <location filename="../modules/paths_procedures/forms/ui_traffic_assignment.ui" line="703"/>
