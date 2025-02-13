@@ -1,20 +1,21 @@
 import os
-import numpy as np
 
+import numpy as np
 import qgis
+from aequilibrae.paths.route_choice import RouteChoice
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.core import QgsVectorLayer, QgsProject, QDialog
-from aequilibrae.paths.route_choice import RouteChoice
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_execute_single.ui"))
 
 
 class VisualizeSingle(QDialog, FORM_CLASS):
-    def __init__(self, iface, graph, kwargs, demand):
+    def __init__(self, iface, graph, algo, kwargs, demand):
         QDialog.__init__(self, None, Qt.WindowStaysOnTopHint)
         self.iface = iface
         self.graph = graph
+        self._algo = algo
         self._kwargs = kwargs
         self.demand = demand
 
@@ -29,9 +30,9 @@ class VisualizeSingle(QDialog, FORM_CLASS):
         self.graph.prepare_graph(nodes_of_interest)
         self.graph.set_graph("utility")
 
-        self.rc = RouteChoice(self.graph)
-        self.rc.set_choice_set_generation(self.cob_algo.currentText(), **self._kwargs)
-        results = self.rc.execute_single(self.from_node, self.to_node, self.demand)
+        rc = RouteChoice(self.graph)
+        rc.set_choice_set_generation(self._algo, **self._kwargs)
+        results = rc.execute_single(self.from_node, self.to_node, self.demand)
 
         self._plot_results(results)
 

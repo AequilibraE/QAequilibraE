@@ -1,10 +1,10 @@
-import pytest
-import numpy as np
 from os import listdir
-from PyQt5.QtCore import Qt
-from qgis.core import QgsProject
 
+import numpy as np
+import pytest
+from PyQt5.QtCore import Qt
 from aequilibrae.matrix import AequilibraeMatrix
+from qgis.core import QgsProject
 
 from qaequilibrae.modules.paths_procedures.route_choice_dialog import RouteChoiceDialog
 

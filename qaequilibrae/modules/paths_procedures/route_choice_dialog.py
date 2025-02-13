@@ -8,12 +8,10 @@ from aequilibrae.paths.route_choice import RouteChoice
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import Qt, QVariant
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
 from qgis.core import QgsVectorLayer, QgsProject
-
-from qgis.core import QgsSymbol, QgsLineSymbol, QgsProperty, QgsSymbolLayer
-from PyQt5.QtGui import QColor
+from qgis.core import QgsField, QgsFeature, QgsSymbol, QgsSimpleLineSymbolLayer, QgsPropertyCollection
 
 from qaequilibrae.modules.matrix_procedures import list_matrices
 from qaequilibrae.modules.paths_procedures.execute_single_dialog import VisualizeSingle
@@ -287,9 +285,9 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self._plot_results(results)
         self.exit_procedure()
 
-        dlg2 = VisualizeSingle(self.iface, self.graph, self.__kwargs, float(demand))
-        dlg2.show()
-        dlg2.exec_()
+        self.dlg2 = VisualizeSingle(self.iface, self.graph, self.cob_algo.currentText(), self.__kwargs, float(demand))
+        self.dlg2.show()
+        self.dlg2.exec_()
 
     def __validate_node_id(self, node_id: str):
         # Check if we have only numbers
@@ -304,54 +302,57 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         return node_id
 
     # TODO: fix line width
-    def _plot_results(self, res):
-        for idx, feat in enumerate(res):
+    def _plot_results(self, results):
+        links = self.__set_links_width(results)
 
-            exp = '"link_id" IN {}'.format(feat)
-            self.link_layer.selectByExpression(exp)
+        exp = '"link_id" IN {}'.format(tuple(links.keys()))
+        self.link_layer.selectByExpression(exp)
 
-            selected_features = [f for f in self.link_layer.getSelectedFeatures()]
+        selected_features = [f for f in self.link_layer.getSelectedFeatures()]
 
-            temp_layer_name = f"route_set_{idx}-{self.from_node}-{self.to_node}"
-            temp_layer = QgsVectorLayer(
-                "LineString?crs={}".format(self.link_layer.crs().authid()), temp_layer_name, "memory"
-            )
-            temp_layer.dataProvider().addAttributes(self.link_layer.fields())
-            temp_layer.updateFields()
-            temp_layer.startEditing()
-            for feature in selected_features:
-                temp_layer.dataProvider().addFeature(feature)
-            temp_layer.commitChanges()
+        temp_layer_name = f"route_set-{self.from_node}-{self.to_node}"
+        temp_layer = QgsVectorLayer(
+            "LineString?crs={}".format(self.link_layer.crs().authid()), temp_layer_name, "memory"
+        )
+        provider = temp_layer.dataProvider()
+        provider.addAttributes([QgsField("link_id", QVariant.String), QgsField("probability", QVariant.Double)])
+        temp_layer.updateFields()
 
-            QgsProject.instance().addMapLayer(temp_layer)
+        features = []
+        for feature in selected_features:
+            link_id = feature["link_id"]
+            feat = QgsFeature()
+            feat.setGeometry(feature.geometry())
+            feat.setAttributes([link_id, links[link_id]])
+            features.append(feat)
+
+        provider.addFeatures(features)
+
+        symbol = QgsSymbol.defaultSymbol(temp_layer.geometryType())
+        symbol_layer = QgsSimpleLineSymbolLayer()
+        symbol_layer.setWidth(0.5)
+
+        width_expression = '0.5 + ("probabilidade" * 2)'  # Ajuste os valores conforme necessário
+        prop = QgsPropertyCollection()
+        prop.setProperty(QgsSimpleLineSymbolLayer.PropertyWidth, width_expression)
+        symbol_layer.setDataDefinedProperties(prop)
+
+        symbol.changeSymbolLayer(0, symbol_layer)
+        temp_layer.renderer().setSymbol(symbol)
+
+        QgsProject.instance().addMapLayer(temp_layer)
 
         qgis.utils.iface.mapCanvas().refresh()
 
-        # # Generate random RGB values
-        # r = np.random.randint(0, 255)
-        # g = np.random.randint(0, 255)
-        # b = np.random.randint(0, 255)
+    def __set_links_width(self, result):
+        links = {}
+        for _, rec in result.iterrows():
+            for route in rec["route set"]:
+                if route not in links:
+                    links[route] = 0
+                links[route] += rec["probability"]
 
-        # # Create a basic line symbol with random color
-        # symbol = QgsLineSymbol.createSimple({
-        #     'line_color': f'{r},{g},{b},255',  # Random color
-        #     'line_style': 'solid',
-        # })
-
-        # # Create a data-defined property for line width
-        # width_property = QgsProperty.fromExpression(
-        #     f'scale_linear("{column_name}", minimum("{column_name}"), maximum("{column_name}"), 0.26, 2.0)'
-        # )
-
-        # # Apply the data-defined width to the symbol layer
-        # symbol_layer = symbol.symbolLayer(0)
-        # symbol_layer.setDataDefinedProperty(QgsSymbolLayer.PropertyStrokeWidth, width_property)
-
-        # # Apply the symbol to the layer
-        # temp_layer.renderer().setSymbol(symbol)
-
-        # # Refresh the layer
-        # temp_layer.triggerRepaint()
+        return links
 
     def assign_and_save(self, arg):
         print(f"assign_and_save: {arg}")
