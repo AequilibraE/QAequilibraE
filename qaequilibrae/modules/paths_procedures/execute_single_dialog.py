@@ -23,6 +23,7 @@ class VisualizeSingle(QDialog, FORM_CLASS):
         self.link_layer = link_layer
 
         self.but_visualize.clicked.connect(self.execute_single)
+        self.sld_max_routes.valueChanged.connect(self.set_max_routes)
 
     def execute_single(self):
         self.from_node = int(self.node_from.text())
@@ -37,4 +38,7 @@ class VisualizeSingle(QDialog, FORM_CLASS):
         rc.set_choice_set_generation(self._algo, **self._kwargs)
         _ = rc.execute_single(self.from_node, self.to_node, self.demand)
 
-        plot_results(self.rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
+        plot_results(rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
+
+    def set_max_routes(self):
+        self._kwargs["max_routes"] = self.sld_max_routes.value()

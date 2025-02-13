@@ -180,7 +180,8 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
                 self.graph,
                 self.cob_algo.currentText(),
                 self.__kwargs,
-                float(self.ln_demand.text(), self.link_layer),
+                float(self.ln_demand.text()),
+                self.link_layer,
             )
             self.dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
             self.dlg2.show()
