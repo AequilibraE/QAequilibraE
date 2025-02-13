@@ -16,6 +16,7 @@ from qgis.core import QgsSymbol, QgsLineSymbol, QgsProperty, QgsSymbolLayer
 from PyQt5.QtGui import QColor
 
 from qaequilibrae.modules.matrix_procedures import list_matrices
+from qaequilibrae.modules.paths_procedures.execute_single_dialog import VisualizeSingle
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_route_choice.ui"))
@@ -226,14 +227,14 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.rc = RouteChoice(self.graph)
 
-        kwargs = {
+        self.__kwargs = {
             "max_routes": self.num_routes,
             "max_depth": self.rc_depth,
             "penalty": float(self.penalty.text()),
             "cutoff_prob": self.cutoff,
             "beta": float(self.ln_psl.text()),
         }
-        self.rc.set_choice_set_generation(self.cob_algo.currentText(), **kwargs)
+        self.rc.set_choice_set_generation(self.cob_algo.currentText(), **self.__kwargs)
 
     def __check_route_choice_params(self):
         # parameter needs to be numeric
@@ -268,7 +269,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.to_node = self.__validate_node_id(self.node_to.text())
 
         demand = self.ln_demand.text()
-        if not demand.replace(".", "").isdigit():
+        if not self.demand.replace(".", "").isdigit():
             self.error = "Wrong input value for demand"
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
@@ -284,9 +285,11 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         results = self.rc.execute_single(self.from_node, self.to_node, float(demand))
 
         self._plot_results(results)
+        self.exit_procedure()
 
-        self.box_demand.setEnabled(False)
-        self.box_build_and_save.setEnabled(False)
+        dlg2 = VisualizeSingle(self.iface, self.graph, self.__kwargs, float(demand))
+        dlg2.show()
+        dlg2.exec_()
 
     def __validate_node_id(self, node_id: str):
         # Check if we have only numbers
@@ -366,10 +369,11 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.rc.add_demand(self.matrix)
         self.rc.prepare()
 
-        if self.chb_save_choice_set.isChecked() or arg == "build":
-            self.rc.set_save_routes(self.project.project_base_path)
-
         assig = True if arg == "assign" else False
         self.rc.execute(perform_assignment=assig)
+
+        if self.chb_save_choice_set.isChecked() or arg == "build":
+            # self.rc.set_save_routes(self.project.project_base_path)
+            self.rc.save_link_flows("route_choice")
 
         self.exit_procedure()

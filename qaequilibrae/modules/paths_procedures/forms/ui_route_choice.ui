@@ -312,10 +312,10 @@
           <string>Matrix</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="4" column="1">
-           <widget class="QPushButton" name="but_perform_assig">
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="chb_save_choice_set">
             <property name="text">
-             <string>Perform assignment</string>
+             <string>Save route choice set results</string>
             </property>
            </widget>
           </item>
@@ -338,17 +338,10 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QCheckBox" name="chb_save_choice_set">
-            <property name="text">
-             <string>Save choice set</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QComboBox" name="cob_matrices"/>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="3" column="0" colspan="3">
            <widget class="QTableWidget" name="tbl_array_cores">
             <column>
              <property name="text">
@@ -362,16 +355,17 @@
             </column>
            </widget>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="box_build_and_save">
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="0" column="0">
+          <item row="4" column="1">
            <widget class="QPushButton" name="but_build_and_save">
             <property name="text">
-             <string>Build and save choice set</string>
+             <string>Build choice sets only</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QPushButton" name="but_perform_assig">
+            <property name="text">
+             <string>Perform assignment</string>
             </property>
            </widget>
           </item>
