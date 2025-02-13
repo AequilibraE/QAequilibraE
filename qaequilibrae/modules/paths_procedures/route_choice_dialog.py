@@ -7,11 +7,11 @@ import qgis
 from aequilibrae.paths.route_choice import RouteChoice
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
-from qgis.PyQt import uic
+from qgis.PyQt import uic, QtGui
 from qgis.PyQt.QtCore import Qt, QVariant
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
 from qgis.core import QgsVectorLayer, QgsProject
-from qgis.core import QgsField, QgsFeature, QgsSymbol, QgsSimpleLineSymbolLayer, QgsPropertyCollection
+from qgis.core import QgsField, QgsFeature, QgsSymbol, QgsSimpleLineSymbolLayer, QgsProperty, QgsPropertyCollection
 
 from qaequilibrae.modules.matrix_procedures import list_matrices
 from qaequilibrae.modules.paths_procedures.execute_single_dialog import VisualizeSingle
@@ -267,7 +267,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.to_node = self.__validate_node_id(self.node_to.text())
 
         demand = self.ln_demand.text()
-        if not self.demand.replace(".", "").isdigit():
+        if not demand.replace(".", "").isdigit():
             self.error = "Wrong input value for demand"
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
@@ -280,12 +280,13 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.route_choice()
 
-        results = self.rc.execute_single(self.from_node, self.to_node, float(demand))
+        _ = self.rc.execute_single(self.from_node, self.to_node, float(demand))
 
-        self._plot_results(results)
+        self._plot_results(self.rc.get_results().to_pandas())
         self.exit_procedure()
 
         self.dlg2 = VisualizeSingle(self.iface, self.graph, self.cob_algo.currentText(), self.__kwargs, float(demand))
+        self.dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.dlg2.show()
         self.dlg2.exec_()
 
@@ -301,7 +302,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         return node_id
 
-    # TODO: fix line width
     def _plot_results(self, results):
         links = self.__set_links_width(results)
 
@@ -328,21 +328,13 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         provider.addFeatures(features)
 
-        symbol = QgsSymbol.defaultSymbol(temp_layer.geometryType())
-        symbol_layer = QgsSimpleLineSymbolLayer()
-        symbol_layer.setWidth(0.5)
-
-        width_expression = '0.5 + ("probabilidade" * 2)'  # Ajuste os valores conforme necessário
-        prop = QgsPropertyCollection()
-        prop.setProperty(QgsSimpleLineSymbolLayer.PropertyWidth, width_expression)
-        symbol_layer.setDataDefinedProperties(prop)
-
-        symbol.changeSymbolLayer(0, symbol_layer)
-        temp_layer.renderer().setSymbol(symbol)
-
         QgsProject.instance().addMapLayer(temp_layer)
 
-        qgis.utils.iface.mapCanvas().refresh()
+        symbol_layer = self.create_style()
+
+        temp_layer.renderer().symbol().appendSymbolLayer(symbol_layer)
+        temp_layer.renderer().symbol().deleteSymbolLayer(0)
+        temp_layer.triggerRepaint()
 
     def __set_links_width(self, result):
         links = {}
@@ -353,6 +345,17 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
                 links[route] += rec["probability"]
 
         return links
+    
+    def create_style(self):
+        r, g, b = np.random.randint(0, 256, (1, 3)).tolist()[0]
+
+        symbol_layer = QgsSimpleLineSymbolLayer.create({})
+        props = symbol_layer.properties()
+        props["width_dd_expression"] = 'coalesce(scale_linear("probability", 0, 1, 0, 2), 0)'
+        props["color_dd_expression"] = f'color_rgb({r}, {g}, {b})'
+        symbol_layer = QgsSimpleLineSymbolLayer.create(props)
+
+        return symbol_layer
 
     def assign_and_save(self, arg):
         print(f"assign_and_save: {arg}")

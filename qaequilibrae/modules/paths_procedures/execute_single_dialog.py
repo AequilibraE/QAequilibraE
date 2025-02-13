@@ -5,15 +5,18 @@ import qgis
 from aequilibrae.paths.route_choice import RouteChoice
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
-from qgis.core import QgsVectorLayer, QgsProject, QDialog
+from qgis.PyQt.QtWidgets import QDialog
+from qgis.core import QgsVectorLayer, QgsProject
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_execute_single.ui"))
 
 
 class VisualizeSingle(QDialog, FORM_CLASS):
     def __init__(self, iface, graph, algo, kwargs, demand):
-        QDialog.__init__(self, None, Qt.WindowStaysOnTopHint)
+        QDialog.__init__(self)
         self.iface = iface
+        self.setupUi(self)
+
         self.graph = graph
         self._algo = algo
         self._kwargs = kwargs
