@@ -7,14 +7,13 @@ import qgis
 from aequilibrae.paths.route_choice import RouteChoice
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
-from qgis.PyQt import uic, QtGui
-from qgis.PyQt.QtCore import Qt, QVariant
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
-from qgis.core import QgsVectorLayer, QgsProject
-from qgis.core import QgsField, QgsFeature, QgsSymbol, QgsSimpleLineSymbolLayer, QgsProperty, QgsPropertyCollection
 
 from qaequilibrae.modules.matrix_procedures import list_matrices
 from qaequilibrae.modules.paths_procedures.execute_single_dialog import VisualizeSingle
+from qaequilibrae.modules.paths_procedures.route_choice_plot import plot_results
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_route_choice.ui"))
@@ -37,6 +36,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.all_modes = {}
         self._pairs = []
         self.link_layer = qgis_project.layers["links"][0]
+        self._job = None
 
         self.__populate_project_info()
 
@@ -174,6 +174,17 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
     def exit_procedure(self):
         self.close()
+        if self._job:
+            self.dlg2 = VisualizeSingle(
+                self.iface,
+                self.graph,
+                self.cob_algo.currentText(),
+                self.__kwargs,
+                float(self.ln_demand.text(), self.link_layer),
+            )
+            self.dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
+            self.dlg2.show()
+            self.dlg2.exec_()
 
     def __check_parameter_value(self, par):
         print("__check_parameter_value")
@@ -269,6 +280,8 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         demand = self.ln_demand.text()
         if not demand.replace(".", "").isdigit():
             self.error = "Wrong input value for demand"
+
+        if self.error:
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
 
@@ -282,80 +295,23 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         _ = self.rc.execute_single(self.from_node, self.to_node, float(demand))
 
-        self._plot_results(self.rc.get_results().to_pandas())
+        plot_results(self.rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
+        self._job = "execute_single"
         self.exit_procedure()
-
-        self.dlg2 = VisualizeSingle(self.iface, self.graph, self.cob_algo.currentText(), self.__kwargs, float(demand))
-        self.dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.dlg2.show()
-        self.dlg2.exec_()
 
     def __validate_node_id(self, node_id: str):
         # Check if we have only numbers
         if not node_id.isdigit():
             self.error = self.tr("Wrong input value for node ID")
+            return
 
         # Check if node_id exists
         node_id = int(node_id)
         if node_id not in self.__project_nodes:
             self.error = self.tr("Node ID doesn't exist in project")
+            return
 
         return node_id
-
-    def _plot_results(self, results):
-        links = self.__set_links_width(results)
-
-        exp = '"link_id" IN {}'.format(tuple(links.keys()))
-        self.link_layer.selectByExpression(exp)
-
-        selected_features = [f for f in self.link_layer.getSelectedFeatures()]
-
-        temp_layer_name = f"route_set-{self.from_node}-{self.to_node}"
-        temp_layer = QgsVectorLayer(
-            "LineString?crs={}".format(self.link_layer.crs().authid()), temp_layer_name, "memory"
-        )
-        provider = temp_layer.dataProvider()
-        provider.addAttributes([QgsField("link_id", QVariant.String), QgsField("probability", QVariant.Double)])
-        temp_layer.updateFields()
-
-        features = []
-        for feature in selected_features:
-            link_id = feature["link_id"]
-            feat = QgsFeature()
-            feat.setGeometry(feature.geometry())
-            feat.setAttributes([link_id, links[link_id]])
-            features.append(feat)
-
-        provider.addFeatures(features)
-
-        QgsProject.instance().addMapLayer(temp_layer)
-
-        symbol_layer = self.create_style()
-
-        temp_layer.renderer().symbol().appendSymbolLayer(symbol_layer)
-        temp_layer.renderer().symbol().deleteSymbolLayer(0)
-        temp_layer.triggerRepaint()
-
-    def __set_links_width(self, result):
-        links = {}
-        for _, rec in result.iterrows():
-            for route in rec["route set"]:
-                if route not in links:
-                    links[route] = 0
-                links[route] += rec["probability"]
-
-        return links
-    
-    def create_style(self):
-        r, g, b = np.random.randint(0, 256, (1, 3)).tolist()[0]
-
-        symbol_layer = QgsSimpleLineSymbolLayer.create({})
-        props = symbol_layer.properties()
-        props["width_dd_expression"] = 'coalesce(scale_linear("probability", 0, 1, 0, 2), 0)'
-        props["color_dd_expression"] = f'color_rgb({r}, {g}, {b})'
-        symbol_layer = QgsSimpleLineSymbolLayer.create(props)
-
-        return symbol_layer
 
     def assign_and_save(self, arg):
         print(f"assign_and_save: {arg}")
