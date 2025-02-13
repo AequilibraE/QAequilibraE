@@ -330,11 +330,13 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.rc.add_demand(self.matrix)
         self.rc.prepare()
 
+        if arg == "build":
+            self.rc.set_save_routes(self.project.project_base_path)
+
         assig = True if arg == "assign" else False
         self.rc.execute(perform_assignment=assig)
 
-        if self.chb_save_choice_set.isChecked() or arg == "build":
-            # self.rc.set_save_routes(self.project.project_base_path)
+        if self.chb_save_choice_set.isChecked() and assig:
             self.rc.save_link_flows("route_choice")
 
         self.exit_procedure()
