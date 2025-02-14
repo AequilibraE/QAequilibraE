@@ -233,6 +233,70 @@
       <attribute name="title">
        <string>Critical analysis</string>
       </attribute>
+      <widget class="QGroupBox" name="box_select_link_analysis">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>381</width>
+         <height>481</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Select link analysis</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="chb_set_select_link">
+          <property name="text">
+           <string>Set select link analysis</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="box_sub_area">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>10</y>
+         <width>371</width>
+         <height>481</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Sub-area analysis</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="rdo_zones_from_layer">
+          <property name="text">
+           <string>Use selected zones from layer</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QRadioButton" name="rdo_selected_zones">
+          <property name="text">
+           <string>Select zones</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="chb_set_sub_area">
+          <property name="text">
+           <string>Set sub-area analysis</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0" colspan="2">
+         <widget class="QTableWidget" name="list_zones"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_workload">
       <attribute name="title">

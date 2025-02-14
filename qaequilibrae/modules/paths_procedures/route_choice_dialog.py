@@ -5,6 +5,7 @@ import sys
 import numpy as np
 import qgis
 from aequilibrae.paths.route_choice import RouteChoice
+from aequilibrae.paths import SubAreaAnalysis
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 from qgis.PyQt import uic
@@ -36,15 +37,13 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.all_modes = {}
         self._pairs = []
         self.link_layer = qgis_project.layers["links"][0]
+        self.zones = self.project.zoning.all_zones()
         self._job = None
 
         self.__populate_project_info()
 
         self.__project_nodes = self.project.network.nodes.data.node_id.tolist()
         self.proj_matrices = list_matrices(self.project.matrices.fldr)
-
-        # Removes `Critical analysis` until it is set
-        self.tabWidget.removeTab(1)
 
         self.cob_algo.addItems(["BFSLE", "Link Penalization"])
 
@@ -55,9 +54,11 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.but_perform_assig.clicked.connect(lambda: self.assign_and_save(arg="assign"))
         self.but_build_and_save.clicked.connect(lambda: self.assign_and_save(arg="build"))
         self.but_visualize.clicked.connect(self.execute_single)
+        self.chb_set_sub_area.toggled.connect(self.set_sub_area_use)
 
         self.list_matrices()
         self.set_show_matrices()
+        self.set_sub_area_use()
 
     def __populate_project_info(self):
         print("__populate_project_info")
@@ -272,8 +273,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.rc_depth = int(self.max_depth.text())
         return True
 
-    # TODO: add a new screen to allow the user to build more route sets because the data is already in memory
-    # It will be like the one in shortest path
     def execute_single(self):
         self.from_node = self.__validate_node_id(self.node_from.text())
         self.to_node = self.__validate_node_id(self.node_to.text())
@@ -340,3 +339,16 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             self.rc.save_link_flows("route_choice")
 
         self.exit_procedure()
+
+    def set_sub_area(self):
+        if self.chb_set_sub_area.isChecked():
+            # Select zones of interest
+
+            self.sub_area = SubAreaAnalysis(self.graph, "", self.matrix)  # missing zones
+
+    def set_sub_area_use(self):
+        for item in [self.rdo_selected_zones, self.rdo_zones_from_layer, self.list_zones]:
+            item.setEnabled(self.chb_set_sub_area.isChecked())
+
+    def __get_zones_of_interest(self):
+        pass
