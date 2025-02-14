@@ -232,12 +232,14 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             self.__get_parameters()
 
         rc = RouteChoice(self.graph)
-        rc.set_choice_set_generation(self.cob_algo.currentText(), **self.__kwargs)
+        rc.set_choice_set_generation(**self.__kwargs)
 
         return rc
 
     def __get_parameters(self):
+        algo = "bfsle" if self.cob_algo.currentText().lower() == "bfsle" else "lp"
         self.__kwargs = {
+            "algorithm": algo,
             "max_routes": self.num_routes,
             "max_depth": self.rc_depth,
             "penalty": float(self.penalty.text()),
@@ -294,7 +296,19 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         _ = rc.execute_single(self.from_node, self.to_node, float(demand))
 
         plot_results(rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
-        self._job = "execute_single"
+
+        self.dlg2 = VisualizeSingle(
+            qgis.utils.iface.mainWindow(),
+            self.graph,
+            self.__kwargs,
+            float(self.ln_demand.text()),
+            self.link_layer,
+        )
+        self.dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.dlg2.show()
+        self.dlg2.open()
+        # see note in https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QDialog.html#PySide2.QtWidgets.PySide2.QtWidgets.QDialog.exec_
+
         self.exit_procedure()
 
     def __validate_node_id(self, node_id: str):
@@ -342,21 +356,10 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         rc.execute(perform_assignment=assig)
 
         if self.chb_save_choice_set.isChecked() and assig:
-            rc.save_link_flows("route_choice")
+            name = "route_choice_for_subarea" if self.chb_set_sub_area.isChecked() else "route_choice"
+            rc.save_link_flows(name)
 
         self.exit_procedure()
-
-        dlg2 = VisualizeSingle(
-            self.iface,
-            self.graph,
-            self.cob_algo.currentText(),
-            self.__kwargs,
-            float(self.ln_demand.text()),
-            self.link_layer,
-        )
-        dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
-        dlg2.show()
-        dlg2.exec_()
 
     def set_sub_area(self):
         # Sub-area prep
@@ -367,7 +370,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.__get_parameters()
 
         sub_area = SubAreaAnalysis(self.graph, zones, self.matrix)
-        sub_area.rc.set_choice_set_generation(self.cob_algo.currentText(), **self.__kwargs)
+        sub_area.rc.set_choice_set_generation(**self.__kwargs)
         sub_area.rc.execute(perform_assignment=True)
 
         return sub_area.post_process()
@@ -420,3 +423,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         if self.zones_layer.selectedFeatureCount() == 0:
             self.error == "Select at least one zone to proceed with sub-area analysis"
+
+    def doWork(self):
+        if self.job == "single_route":
+            pass

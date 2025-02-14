@@ -11,13 +11,13 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui
 
 
 class VisualizeSingle(QDialog, FORM_CLASS):
-    def __init__(self, iface, graph, algo, kwargs, demand, link_layer):
+    def __init__(self, iface, graph, kwargs, demand, link_layer):
         QDialog.__init__(self)
+        # self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.iface = iface
         self.setupUi(self)
 
         self.graph = graph
-        self._algo = algo
         self._kwargs = kwargs
         self.demand = demand
         self.link_layer = link_layer
@@ -35,10 +35,13 @@ class VisualizeSingle(QDialog, FORM_CLASS):
         self.graph.set_graph("utility")
 
         rc = RouteChoice(self.graph)
-        rc.set_choice_set_generation(self._algo, **self._kwargs)
+        rc.set_choice_set_generation(**self._kwargs)
         _ = rc.execute_single(self.from_node, self.to_node, self.demand)
 
         plot_results(rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
 
     def set_max_routes(self):
         self._kwargs["max_routes"] = self.sld_max_routes.value()
+
+    def exit_procedure(self):
+        self.close()

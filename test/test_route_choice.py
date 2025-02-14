@@ -31,6 +31,8 @@ def test_execute_single(coquimbo_project, qtbot):
 
     qtbot.mouseClick(dialog.but_visualize, Qt.LeftButton)
 
+    dialog.dlg2.exit_procedure()
+
     layers = list(QgsProject.instance().mapLayers().values())
     layers = [lyr.name() for lyr in layers]
     assert "route_set-77011-74089" in layers
