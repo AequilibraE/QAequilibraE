@@ -293,7 +293,18 @@
          </widget>
         </item>
         <item row="4" column="0" colspan="2">
-         <widget class="QTableWidget" name="list_zones"/>
+         <widget class="QTableWidget" name="tbl_zones">
+          <column>
+           <property name="text">
+            <string>Zone ID</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Use?</string>
+           </property>
+          </column>
+         </widget>
         </item>
        </layout>
       </widget>

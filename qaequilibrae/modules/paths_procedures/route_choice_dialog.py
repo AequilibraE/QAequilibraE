@@ -55,10 +55,12 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.but_build_and_save.clicked.connect(lambda: self.assign_and_save(arg="build"))
         self.but_visualize.clicked.connect(self.execute_single)
         self.chb_set_sub_area.toggled.connect(self.set_sub_area_use)
+        self.rdo_selected_zones.toggled.connect(self.set_show_zones)
 
         self.list_matrices()
         self.set_show_matrices()
         self.set_sub_area_use()
+        self.set_show_zones()
 
     def __populate_project_info(self):
         print("__populate_project_info")
@@ -347,8 +349,29 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             self.sub_area = SubAreaAnalysis(self.graph, "", self.matrix)  # missing zones
 
     def set_sub_area_use(self):
-        for item in [self.rdo_selected_zones, self.rdo_zones_from_layer, self.list_zones]:
+        for item in [self.rdo_selected_zones, self.rdo_zones_from_layer, self.tbl_zones]:
             item.setEnabled(self.chb_set_sub_area.isChecked())
 
     def __get_zones_of_interest(self):
         pass
+
+    def set_show_zones(self):
+        # self.tbl_zones.setVisible(not self.chb_set_sub_area.isChecked())
+        self.tbl_zones.clear()
+
+        self.tbl_zones.setColumnWidth(0, 200)
+        self.tbl_zones.setColumnWidth(1, 80)
+        self.tbl_zones.setHorizontalHeaderLabels(["Zone ID", "Use?"])
+
+        if self.zones is not None:
+            table = self.tbl_zones
+            table.setRowCount(len(self.zones))
+            for i, zone in enumerate(self.zones.keys()):
+                item1 = QTableWidgetItem(str(zone))
+                item1.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                table.setItem(i, 0, item1)
+
+                chb1 = QCheckBox()
+                chb1.setChecked(True)
+                chb1.setEnabled(True)
+                table.setCellWidget(i, 1, self.centers_item(chb1))
