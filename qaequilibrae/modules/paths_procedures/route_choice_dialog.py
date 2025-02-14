@@ -39,8 +39,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.link_layer = qgis_project.layers["links"][0]
         self.zones_layer = qgis_project.layers["zones"][0]
         self.zones = self.project.zoning.all_zones()
-        self._job = None
-        self.__kwargs = None
+        self.__kwargs = {}
 
         self.__populate_project_info()
 
@@ -65,8 +64,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.set_sub_area_use()
 
     def __populate_project_info(self):
-        print("__populate_project_info")
-
         with read_and_close(database_connection("network")) as conn:
             res = conn.execute("""select mode_name, mode_id from modes""")
 
@@ -84,13 +81,11 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.cob_net_field.addItems(flds)
 
     def list_matrices(self):
-        print("list_matrices")
         for _, rec in self.proj_matrices.iterrows():
             if len(rec.WARNINGS) == 0:
                 self.cob_matrices.addItem(rec["name"])
 
     def set_matrix(self):
-        print("set_matrix")
         if self.cob_matrices.currentIndex() < 0:
             self.matrix = None
             return
@@ -133,7 +128,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         return cell_widget
 
     def __check_matrices(self):
-        print("__check_matrices")
         self.set_matrix()
         if self.matrix is None:
             return False
@@ -154,7 +148,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         return True
 
     def add_cost_function(self):
-        print("add_cost_function")
         params = self.ln_parameter.text()
         valid_params = self.__check_parameter_value(params)
 
@@ -181,7 +174,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.close()
 
     def __check_parameter_value(self, par):
-        print("__check_parameter_value")
         # parameter cannot be null
         if len(par) == 0:
             self.error = "Check parameter value."
@@ -196,8 +188,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         return True
 
     def graph_config(self):
-        print("graph_config")
-
         mode = self.cob_mode.currentText()
         mode_id = self.all_modes[mode]
         if mode_id not in self.project.network.graphs:
@@ -220,32 +210,27 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
 
-    def set_route_choice(self):
-        print("route_choice")
-        valid_params = self.__check_route_choice_params()
+    def __get_parameters(self):
+        self.__check_route_choice_params()
 
-        if not valid_params:
+        if self.error:
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
 
-        if not self.__kwargs:
-            self.__get_parameters()
-
-        rc = RouteChoice(self.graph)
-        rc.set_choice_set_generation(**self.__kwargs)
-
-        return rc
-
-    def __get_parameters(self):
-        algo = "bfsle" if self.cob_algo.currentText().lower() == "bfsle" else "lp"
         self.__kwargs = {
-            "algorithm": algo,
             "max_routes": self.num_routes,
             "max_depth": self.rc_depth,
             "penalty": float(self.penalty.text()),
             "cutoff_prob": self.cutoff,
             "beta": float(self.ln_psl.text()),
         }
+
+        if self.cob_algo.currentText().lower() == "bfsle":
+            self.__kwargs["algorithm"] = "bflse"
+            self.__kwargs["store_results"] = True
+        else:
+            self.__kwargs["algorithm"] = "lp"
+            self.__kwargs["store_results"] = False
 
     def __check_route_choice_params(self):
         # parameter needs to be numeric
@@ -271,7 +256,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.num_routes = int(self.max_routes.text())
         self.rc_depth = int(self.max_depth.text())
-        return True
 
     def execute_single(self):
         self.from_node = self.__validate_node_id(self.node_from.text())
@@ -326,27 +310,30 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         return node_id
 
     def assign_and_save(self, arg):
-        print(f"assign_and_save: {arg}")
         valid_params = self.__check_matrices()
         if not valid_params:
             self.error = "Check matrices inputs"
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
 
+        if not self.__kwargs:
+            self.__get_parameters()
+
         self.graph_config()
         self.graph.prepare_graph(self.graph.centroids)
         self.graph.set_graph("utility")
 
         if self.chb_set_sub_area.isChecked():
-            self.matrix = self.set_sub_area()
+            demand = self.set_sub_area()
 
             # Rebuild graph for external ODs
-            new_centroids = np.unique(self.matrix.reset_index()[["origin id", "destination id"]].to_numpy().reshape(-1))
+            new_centroids = np.unique(demand.reset_index()[["origin id", "destination id"]].to_numpy().reshape(-1))
             self.graph.prepare_graph(new_centroids)
             self.graph.set_graph("utility")
 
-        rc = self.set_route_choice()
-        rc.add_demand(self.matrix)
+        rc = RouteChoice(self.graph)
+        rc.add_demand(demand)  # replace variable
+        rc.set_choice_set_generation(**self.__kwargs)
         rc.prepare()
 
         if arg == "build":
@@ -364,6 +351,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
     def set_sub_area(self):
         # Sub-area prep
         zones_of_interest = self.__get_zones_of_interest()  # Select zones of interest
+        print(zones_of_interest)
         zones = self.project.zoning.data.set_index("zone_id")
         zones = zones.loc[zones_of_interest]
 
@@ -423,7 +411,3 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         if self.zones_layer.selectedFeatureCount() == 0:
             self.error == "Select at least one zone to proceed with sub-area analysis"
-
-    def doWork(self):
-        if self.job == "single_route":
-            pass

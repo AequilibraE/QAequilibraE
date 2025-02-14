@@ -1,6 +1,9 @@
 from os import listdir
+from os.path import join
 
+import numpy as np
 import pytest
+from aequilibrae.matrix.aequilibrae_matrix import AequilibraeMatrix
 from PyQt5.QtCore import Qt
 from qgis.core import QgsProject
 
@@ -101,6 +104,69 @@ def test_build_and_save(ae_with_project, qtbot):
             counter += 1
 
     assert counter == 24
+
+
+def create_matrix(index: np.ndarray, path: str):
+    names_list = ["demand"]
+    zones = index.shape[0]
+
+    mat = AequilibraeMatrix()
+    mat.create_empty(zones=zones, matrix_names=names_list, memory_only=False, file_name=path)
+    mat.index = index[:]
+
+    for name in names_list:
+        mat.matrix[name][:, :] = np.random.randint(1, 11, size=(zones, zones))[:, :]
+
+    mat.matrices.flush()
+
+
+def test_sub_area_analysis(coquimbo_project, qtbot):
+    pth = join(coquimbo_project.project.project_base_path, "demand.aem")
+    create_matrix(np.arange(1, 134), pth)
+
+    matrices = coquimbo_project.project.matrices
+    matrices.update_database()
+    matrices.reload()
+
+    dialog = RouteChoiceDialog(coquimbo_project)
+
+    # Select zones
+    exp = '"zone_id" IN (29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 49, 50, 51, 52, 57, 58, 59, 60)'
+    dialog.zones_layer.selectByExpression(exp)
+
+    dialog.matrices.reload()
+    dialog.list_matrices()
+
+    # Choice set generation
+    dialog.max_routes.setText("3")
+    dialog.cob_algo.setCurrentText("Link Penalization")
+    dialog.penalty.setText("1.02")
+
+    # Route choice
+    dialog.cob_net_field.setCurrentText("distance")
+    dialog.ln_parameter.setText("0.01")
+    qtbot.mouseClick(dialog.but_add_to_cost, Qt.LeftButton)
+
+    dialog.ln_psl.setText("1.1")
+
+    # Graph configuration
+    dialog.chb_check_centroids.setChecked(False)
+
+    path = qtbot.screenshot(dialog.tabWidget.widget(0))
+    print(path)
+
+    # Set sub-area analysis
+    dialog.chb_set_sub_area.setChecked(True)
+    dialog.rdo_zones_from_layer.setChecked(True)
+
+    path = qtbot.screenshot(dialog.tabWidget.widget(1))
+    print(path)
+
+    dialog.cob_matrices.setCurrentText("demand.aem")
+    # qtbot.mouseClick(dialog.but_build_and_save, Qt.LeftButton)
+
+    path = qtbot.screenshot(dialog.tabWidget.widget(2))
+    print(path)
 
 
 # dialog.ln_parameter.setText("0,15")
