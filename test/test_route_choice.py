@@ -8,7 +8,6 @@ from qaequilibrae.modules.matrix_procedures.results_lister import list_results
 from qaequilibrae.modules.paths_procedures.route_choice_dialog import RouteChoiceDialog
 
 
-@pytest.mark.skip("The addition of dlg2 is breaking the test")
 def test_execute_single(coquimbo_project, qtbot):
     dialog = RouteChoiceDialog(coquimbo_project)
 

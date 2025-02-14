@@ -40,6 +40,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.zones_layer = qgis_project.layers["zones"][0]
         self.zones = self.project.zoning.all_zones()
         self._job = None
+        self.__kwargs = None
 
         self.__populate_project_info()
 
@@ -178,18 +179,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
     def exit_procedure(self):
         self.close()
-        if self._job:
-            self.dlg2 = VisualizeSingle(
-                self.iface,
-                self.graph,
-                self.cob_algo.currentText(),
-                self.__kwargs,
-                float(self.ln_demand.text()),
-                self.link_layer,
-            )
-            self.dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
-            self.dlg2.show()
-            self.dlg2.exec_()
 
     def __check_parameter_value(self, par):
         print("__check_parameter_value")
@@ -231,7 +220,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
 
-    def route_choice(self):
+    def set_route_choice(self):
         print("route_choice")
         valid_params = self.__check_route_choice_params()
 
@@ -239,8 +228,15 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
 
-        self.rc = RouteChoice(self.graph)
+        if not self.__kwargs:
+            self.__get_parameters()
 
+        rc = RouteChoice(self.graph)
+        rc.set_choice_set_generation(self.cob_algo.currentText(), **self.__kwargs)
+
+        return rc
+
+    def __get_parameters(self):
         self.__kwargs = {
             "max_routes": self.num_routes,
             "max_depth": self.rc_depth,
@@ -248,7 +244,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             "cutoff_prob": self.cutoff,
             "beta": float(self.ln_psl.text()),
         }
-        self.rc.set_choice_set_generation(self.cob_algo.currentText(), **self.__kwargs)
 
     def __check_route_choice_params(self):
         # parameter needs to be numeric
@@ -294,11 +289,11 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.graph.prepare_graph(nodes_of_interest)
         self.graph.set_graph("utility")
 
-        self.route_choice()
+        rc = self.set_route_choice()
 
-        _ = self.rc.execute_single(self.from_node, self.to_node, float(demand))
+        _ = rc.execute_single(self.from_node, self.to_node, float(demand))
 
-        plot_results(self.rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
+        plot_results(rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
         self._job = "execute_single"
         self.exit_procedure()
 
@@ -328,29 +323,54 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.graph.prepare_graph(self.graph.centroids)
         self.graph.set_graph("utility")
 
-        self.route_choice()
-        self.rc.add_demand(self.matrix)
-        self.rc.prepare()
+        if self.chb_set_sub_area.isChecked():
+            self.matrix = self.set_sub_area()
+
+            # Rebuild graph for external ODs
+            new_centroids = np.unique(self.matrix.reset_index()[["origin id", "destination id"]].to_numpy().reshape(-1))
+            self.graph.prepare_graph(new_centroids)
+            self.graph.set_graph("utility")
+
+        rc = self.set_route_choice()
+        rc.add_demand(self.matrix)
+        rc.prepare()
 
         if arg == "build":
-            self.rc.set_save_routes(self.project.project_base_path)
+            rc.set_save_routes(self.project.project_base_path)
 
         assig = True if arg == "assign" else False
-        self.rc.execute(perform_assignment=assig)
+        rc.execute(perform_assignment=assig)
 
         if self.chb_save_choice_set.isChecked() and assig:
-            self.rc.save_link_flows("route_choice")
+            rc.save_link_flows("route_choice")
 
         self.exit_procedure()
 
-    def set_sub_area(self):
-        if self.chb_set_sub_area.isChecked():
-            # Sub-area prep
-            zones_of_interest = self.__get_zones_of_interest() # Select zones of interest
-            zones = self.project.zoning.data.set_index("zone_id")
-            zones = zones.loc[zones_of_interest]
+        dlg2 = VisualizeSingle(
+            self.iface,
+            self.graph,
+            self.cob_algo.currentText(),
+            self.__kwargs,
+            float(self.ln_demand.text()),
+            self.link_layer,
+        )
+        dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
+        dlg2.show()
+        dlg2.exec_()
 
-            self.sub_area = SubAreaAnalysis(self.graph, zones, self.matrix)
+    def set_sub_area(self):
+        # Sub-area prep
+        zones_of_interest = self.__get_zones_of_interest()  # Select zones of interest
+        zones = self.project.zoning.data.set_index("zone_id")
+        zones = zones.loc[zones_of_interest]
+
+        self.__get_parameters()
+
+        sub_area = SubAreaAnalysis(self.graph, zones, self.matrix)
+        sub_area.rc.set_choice_set_generation(self.cob_algo.currentText(), **self.__kwargs)
+        sub_area.rc.execute(perform_assignment=True)
+
+        return sub_area.post_process()
 
     def set_sub_area_use(self):
         for item in [self.rdo_selected_zones, self.rdo_zones_from_layer, self.tbl_zones]:
@@ -360,7 +380,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         if self.error:
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
-        
+
         if self.rdo_zones_from_layer.isChecked():
             zones_to_use = [feat["zone_id"] for feat in self.zones_layer.selectedFeatures()]
         elif self.rdo_zones_from_layer.isChecked():
@@ -368,7 +388,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             for i, zone in enumerate(self.zones.keys()):
                 if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
                     zones_to_use.append(zone)
-        
+
         return zones_to_use
 
     def set_show_zones(self):
@@ -391,7 +411,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
                 chb1.setChecked(False)
                 chb1.setEnabled(True)
                 table.setCellWidget(i, 1, self.centers_item(chb1))
-    
+
     def use_selected_zones(self):
         self.tbl_zones.setEnabled(not self.rdo_zones_from_layer.isChecked())
         self.tbl_zones.clear()
