@@ -37,6 +37,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.all_modes = {}
         self._pairs = []
         self.link_layer = qgis_project.layers["links"][0]
+        self.zones_layer = qgis_project.layers["zones"][0]
         self.zones = self.project.zoning.all_zones()
         self._job = None
 
@@ -56,11 +57,11 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.but_visualize.clicked.connect(self.execute_single)
         self.chb_set_sub_area.toggled.connect(self.set_sub_area_use)
         self.rdo_selected_zones.toggled.connect(self.set_show_zones)
+        self.rdo_zones_from_layer.toggled.connect(self.use_selected_zones)
 
         self.list_matrices()
         self.set_show_matrices()
         self.set_sub_area_use()
-        self.set_show_zones()
 
     def __populate_project_info(self):
         print("__populate_project_info")
@@ -344,23 +345,38 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
     def set_sub_area(self):
         if self.chb_set_sub_area.isChecked():
-            # Select zones of interest
+            # Sub-area prep
+            zones_of_interest = self.__get_zones_of_interest() # Select zones of interest
+            zones = self.project.zoning.data.set_index("zone_id")
+            zones = zones.loc[zones_of_interest]
 
-            self.sub_area = SubAreaAnalysis(self.graph, "", self.matrix)  # missing zones
+            self.sub_area = SubAreaAnalysis(self.graph, zones, self.matrix)
 
     def set_sub_area_use(self):
         for item in [self.rdo_selected_zones, self.rdo_zones_from_layer, self.tbl_zones]:
             item.setEnabled(self.chb_set_sub_area.isChecked())
 
     def __get_zones_of_interest(self):
-        pass
+        if self.error:
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+        
+        if self.rdo_zones_from_layer.isChecked():
+            zones_to_use = [feat["zone_id"] for feat in self.zones_layer.selectedFeatures()]
+        elif self.rdo_zones_from_layer.isChecked():
+            zones_to_use = []
+            for i, zone in enumerate(self.zones.keys()):
+                if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
+                    zones_to_use.append(zone)
+        
+        return zones_to_use
 
     def set_show_zones(self):
-        # self.tbl_zones.setVisible(not self.chb_set_sub_area.isChecked())
+        self.tbl_zones.setEnabled(self.rdo_selected_zones.isChecked())
         self.tbl_zones.clear()
 
-        self.tbl_zones.setColumnWidth(0, 200)
-        self.tbl_zones.setColumnWidth(1, 80)
+        self.tbl_zones.setColumnWidth(0, 100)
+        self.tbl_zones.setColumnWidth(1, 60)
         self.tbl_zones.setHorizontalHeaderLabels(["Zone ID", "Use?"])
 
         if self.zones is not None:
@@ -372,6 +388,15 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
                 table.setItem(i, 0, item1)
 
                 chb1 = QCheckBox()
-                chb1.setChecked(True)
+                chb1.setChecked(False)
                 chb1.setEnabled(True)
                 table.setCellWidget(i, 1, self.centers_item(chb1))
+    
+    def use_selected_zones(self):
+        self.tbl_zones.setEnabled(not self.rdo_zones_from_layer.isChecked())
+        self.tbl_zones.clear()
+
+        self.tbl_zones.setHorizontalHeaderLabels(["Zone ID", "Use?"])
+
+        if self.zones_layer.selectedFeatureCount() == 0:
+            self.error == "Select at least one zone to proceed with sub-area analysis"
