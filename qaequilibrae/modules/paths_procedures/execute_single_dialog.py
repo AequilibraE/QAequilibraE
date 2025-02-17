@@ -4,7 +4,10 @@ import numpy as np
 from aequilibrae.paths.route_choice import RouteChoice
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtCore import pyqtSlot
 
+
+from qaequilibrae.modules.common_tools.debouncer import Debouncer
 from qaequilibrae.modules.paths_procedures.plot_route_choice import plot_results
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_execute_single.ui"))
@@ -21,8 +24,11 @@ class VisualizeSingle(QDialog, FORM_CLASS):
         self.demand = demand
         self.link_layer = link_layer
 
-        # self.but_visualize.clicked.connect(self.execute_single)
-        # self.sld_max_routes.valueChanged.connect(self.set_max_routes)
+        self.debouncer = Debouncer(delay_ms=3000, callback=self.on_input_changed)
+
+        self.node_from.textChanged.connect(self._on_node_from_changed)
+        self.node_to.textChanged.connect(self._on_node_to_changed)
+        self.sld_max_routes.valueChanged.connect(self._on_slider_changed)
 
     def execute_single(self):
         self.from_node = int(self.node_from.text())
@@ -39,8 +45,24 @@ class VisualizeSingle(QDialog, FORM_CLASS):
 
         plot_results(rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
 
-    def set_max_routes(self):
-        self._kwargs["max_routes"] = self.sld_max_routes.value()
-
     def exit_procedure(self):
         self.close()
+
+    @pyqtSlot(str)
+    def _on_node_from_changed(self, text):
+        self.debouncer(("node_from", text))
+
+    @pyqtSlot(str)
+    def _on_node_to_changed(self, text):
+        self.debouncer(("node_to", text))
+
+    @pyqtSlot(int)
+    def _on_slider_changed(self, value):
+        self.debouncer(("sld_max_routes", value))
+
+    def on_input_changed(self, source_and_value):
+        source, value = source_and_value
+        if source == "sld_max_routes":
+            self._kwargs["max_routes"] = value
+
+        self.execute_single()

@@ -3,6 +3,7 @@ import os
 import sys
 
 import numpy as np
+import pandas as pd
 import qgis
 from aequilibrae.paths import SubAreaAnalysis, RouteChoice
 from aequilibrae.project.database_connection import database_connection
@@ -38,7 +39,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.link_layer = qgis_project.layers["links"][0]
         self.zones_layer = qgis_project.layers["zones"][0]
         self.zones = self.project.zoning.all_zones()
-        self.__kwargs = {}
+        self.__kwargs = None
 
         self.__populate_project_info()
 
@@ -90,6 +91,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         if self.cob_matrices.currentText() in self.qgis_project.matrices:
             self.matrix = self.qgis_project.matrices[self.cob_matrices.currentText()]
             return
+
         self.matrix = self.qgis_project.project.matrices.get_matrix(self.cob_matrices.currentText())
 
     def set_show_matrices(self):
@@ -123,26 +125,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         lay_out.setContentsMargins(0, 0, 0, 0)
         cell_widget.setLayout(lay_out)
         return cell_widget
-
-    def __check_matrices(self):
-        self.set_matrix()
-        if self.matrix is None:
-            return False
-
-        if self.chb_use_all_matrices.isChecked():
-            matrix_cores_to_use = self.matrix.names
-        else:
-            matrix_cores_to_use = []
-            for i, mat in enumerate(self.matrix.names):
-                if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
-                    matrix_cores_to_use.append(mat)
-
-        if len(matrix_cores_to_use) > 0:
-            self.matrix.computational_view(matrix_cores_to_use)
-        else:
-            return False
-
-        return True
 
     def add_cost_function(self):
         params = self.ln_parameter.text()
@@ -184,7 +166,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.parameter = float(par)
         return True
 
-    def graph_config(self):
+    def configure_graph(self):
         mode = self.cob_mode.currentText()
         mode_id = self.all_modes[mode]
         if mode_id not in self.project.network.graphs:
@@ -208,11 +190,25 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
 
     def __get_parameters(self):
-        self.__check_route_choice_params()
+        # parameter needs to be numeric
+        if not self.max_routes.text().isdigit():
+            self.error = "Max. routes needs to be a numeric integer value"
 
-        if self.error:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
-            return
+        if not self.max_depth.text().isdigit():
+            self.error = "Max. depth needs to be a numeric integer value"
+
+        # Check cutoff
+        if not self.ln_cutoff.text().replace(".", "").isdigit():
+            self.error = "Probability cutoff needs to be a float number"
+
+        self.cutoff = float(self.ln_cutoff.text())
+        if self.cutoff < 0 or self.cutoff > 1:
+            self.error = "Probability cutoff assumes values between 0 and 1"
+
+        # TODO: Check penalty
+
+        self.num_routes = int(self.max_routes.text())
+        self.rc_depth = int(self.max_depth.text())
 
         self.__kwargs = {
             "max_routes": self.num_routes,
@@ -230,31 +226,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         else:
             self.__kwargs["store_results"] = False
             self.__algo = "lp"
-
-    def __check_route_choice_params(self):
-        # parameter needs to be numeric
-        if not self.max_routes.text().isdigit():
-            self.error = "Max. routes needs to be a numeric integer value"
-            return False
-
-        if not self.max_depth.text().isdigit():
-            self.error = "Max. depth needs to be a numeric integer value"
-            return False
-
-        # Check cutoff
-        if not self.ln_cutoff.text().replace(".", "").isdigit():
-            self.error = "Probability cutoff needs to be a float number"
-            return False
-
-        self.cutoff = float(self.ln_cutoff.text())
-        if self.cutoff < 0 or self.cutoff > 1:
-            self.error = "Probability cutoff assumes values between 0 and 1"
-            return False
-
-        # TODO: Check penalty
-
-        self.num_routes = int(self.max_routes.text())
-        self.rc_depth = int(self.max_depth.text())
+        print(0)
 
     def execute_single(self):
         self.from_node = self.__validate_node_id(self.node_from.text())
@@ -270,7 +242,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         nodes_of_interest = np.array([self.from_node, self.to_node], dtype=np.int64)
 
-        self.graph_config()
+        self.configure_graph()
         self.graph.prepare_graph(nodes_of_interest)
         self.graph.set_graph("utility")
 
@@ -313,22 +285,34 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         return node_id
 
     def assign_and_save(self, arg):
-        valid_params = self.__check_matrices()
-        if not valid_params:
+        self.set_matrix()
+
+        if self.chb_use_all_matrices.isChecked():
+            matrix_cores_to_use = self.matrix.names
+        else:
+            matrix_cores_to_use = []
+            for i, mat in enumerate(self.matrix.names):
+                if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
+                    matrix_cores_to_use.append(mat)
+
+        if len(matrix_cores_to_use) > 0:
+            self.matrix.computational_view(matrix_cores_to_use)
+        else:
             self.error = "Check matrices inputs"
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
-            return
 
         if not self.__kwargs:
             self.__get_parameters()
 
-        self.graph_config()
+        if self.error:
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+        self.configure_graph()
         self.graph.prepare_graph(self.graph.centroids)
         self.graph.set_graph("utility")
 
         if self.chb_set_sub_area.isChecked():
             self.matrix = self.set_sub_area()
-            print(self.matrix.index)
 
             # Rebuild graph for external ODs
             new_centroids = np.unique(self.matrix.reset_index()[["origin id", "destination id"]].to_numpy().reshape(-1))
