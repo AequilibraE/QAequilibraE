@@ -13,6 +13,8 @@ def plot_results(results, from_node, to_node, link_layer):
     selected_features = [f for f in link_layer.getSelectedFeatures()]
 
     temp_layer_name = f"route_set-{from_node}-{to_node}"
+    QgsProject.instance().removeMapLayers([temp_layer_name])
+
     temp_layer = QgsVectorLayer("LineString?crs={}".format(link_layer.crs().authid()), temp_layer_name, "memory")
     provider = temp_layer.dataProvider()
     provider.addAttributes([QgsField("link_id", QVariant.String), QgsField("probability", QVariant.Double)])

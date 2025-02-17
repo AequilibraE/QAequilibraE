@@ -1,5 +1,7 @@
+import sqlite3
 from os import listdir
 from os.path import join
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -206,13 +208,18 @@ def test_select_link_analysis(coquimbo_project, qtbot):
     qtbot.mouseClick(dialog.but_save_qry, Qt.LeftButton)
     dialog.ln_mat_name.setText("select_link_analysis")
 
-    # path = qtbot.screenshot(dialog.tabWidget.widget(1))
-    # print(path)
-
     # Execute workflow
-    # dialog.chb_save_choice_set.setChecked(True)
-    # dialog.cob_matrices.setCurrentText("b''")
-    # qtbot.mouseClick(dialog.but_perform_assig, Qt.LeftButton)
+    dialog.chb_save_choice_set.setChecked(True)
+    dialog.cob_matrices.setCurrentText("b''")
+    qtbot.mouseClick(dialog.but_perform_assig, Qt.LeftButton)
+
+    matrices = listdir(dialog.project.matrices.fldr)
+    assert "select_link_analysis.omx" in matrices
+
+    pth = Path(dialog.project.project_base_path)
+    conn = sqlite3.connect(pth / "results_database.sqlite")
+    results = [x[0] for x in conn.execute("SELECT name FROM sqlite_master WHERE type ='table'").fetchall()]
+    assert "select_link_analysis_uncompressed" in results
 
 
 # dialog.ln_parameter.setText("0,15")

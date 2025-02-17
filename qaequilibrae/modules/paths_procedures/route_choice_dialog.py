@@ -331,12 +331,13 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         rc = RouteChoice(self.graph)
         rc.add_demand(self.matrix)  # replace variable
         rc.set_choice_set_generation(self.__algo, **self.__kwargs)
-
-        if not self.chb_set_sub_area.isChecked():
-            rc.prepare()
+        rc.prepare()
 
         if arg == "build":
             rc.set_save_routes(self.project.project_base_path)
+
+        if self.chb_set_select_link.isChecked():
+            rc.set_select_links(self.select_links)
 
         assig = True if arg == "assign" else False
         rc.execute(perform_assignment=assig)
@@ -344,6 +345,10 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         if self.chb_save_choice_set.isChecked() and assig:
             name = "route_choice_for_subarea" if self.chb_set_sub_area.isChecked() else "route_choice"
             rc.save_link_flows(name)
+
+        if self.chb_set_select_link.isChecked():
+            if self.chb_save_result.isChecked():
+                rc.save_select_link_flows(self.ln_mat_name.text())
 
         self.exit_procedure()
 
@@ -419,7 +424,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
 
-        self.select_links[query_name] = self.__current_links
+        self.select_links[query_name] = [self.__current_links]
 
         self.tbl_selected_links.clearContents()
         self.tbl_selected_links.setRowCount(len(self.select_links.keys()))
