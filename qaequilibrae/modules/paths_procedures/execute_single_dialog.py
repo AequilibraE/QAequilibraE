@@ -5,7 +5,7 @@ from aequilibrae.paths.route_choice import RouteChoice
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog
 
-from qaequilibrae.modules.paths_procedures.route_choice_plot import plot_results
+from qaequilibrae.modules.paths_procedures.plot_route_choice import plot_results
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_execute_single.ui"))
 
@@ -13,7 +13,6 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui
 class VisualizeSingle(QDialog, FORM_CLASS):
     def __init__(self, iface, graph, kwargs, demand, link_layer):
         QDialog.__init__(self)
-        # self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.iface = iface
         self.setupUi(self)
 
@@ -22,8 +21,8 @@ class VisualizeSingle(QDialog, FORM_CLASS):
         self.demand = demand
         self.link_layer = link_layer
 
-        self.but_visualize.clicked.connect(self.execute_single)
-        self.sld_max_routes.valueChanged.connect(self.set_max_routes)
+        # self.but_visualize.clicked.connect(self.execute_single)
+        # self.sld_max_routes.valueChanged.connect(self.set_max_routes)
 
     def execute_single(self):
         self.from_node = int(self.node_from.text())

@@ -4,8 +4,7 @@ import sys
 
 import numpy as np
 import qgis
-from aequilibrae.paths.route_choice import RouteChoice
-from aequilibrae.paths import SubAreaAnalysis
+from aequilibrae.paths import SubAreaAnalysis, RouteChoice
 from aequilibrae.project.database_connection import database_connection
 from aequilibrae.utils.db_utils import read_and_close
 from qgis.PyQt import uic
@@ -14,7 +13,7 @@ from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBo
 
 from qaequilibrae.modules.matrix_procedures import list_matrices
 from qaequilibrae.modules.paths_procedures.execute_single_dialog import VisualizeSingle
-from qaequilibrae.modules.paths_procedures.route_choice_plot import plot_results
+from qaequilibrae.modules.paths_procedures.plot_route_choice import plot_results
 
 sys.modules["qgsmaplayercombobox"] = qgis.gui
 FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui_route_choice.ui"))
@@ -56,8 +55,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.but_build_and_save.clicked.connect(lambda: self.assign_and_save(arg="build"))
         self.but_visualize.clicked.connect(self.execute_single)
         self.chb_set_sub_area.toggled.connect(self.set_sub_area_use)
-        self.rdo_selected_zones.toggled.connect(self.set_show_zones)
-        self.rdo_zones_from_layer.toggled.connect(self.use_selected_zones)
 
         self.list_matrices()
         self.set_show_matrices()
@@ -225,12 +222,14 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             "beta": float(self.ln_psl.text()),
         }
 
-        if self.cob_algo.currentText().lower() == "bfsle":
-            self.__kwargs["algorithm"] = "bflse"
+        algo = self.cob_algo.currentText().lower()
+
+        if algo == "bfsle":
             self.__kwargs["store_results"] = True
+            self.__algo = "bfsle"
         else:
-            self.__kwargs["algorithm"] = "lp"
             self.__kwargs["store_results"] = False
+            self.__algo = "lp"
 
     def __check_route_choice_params(self):
         # parameter needs to be numeric
@@ -275,7 +274,11 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.graph.prepare_graph(nodes_of_interest)
         self.graph.set_graph("utility")
 
-        rc = self.set_route_choice()
+        if not self.__kwargs:
+            self.__get_parameters()
+
+        rc = RouteChoice(self.graph)
+        rc.set_choice_set_generation(self.__algo, **self.__kwargs)
 
         _ = rc.execute_single(self.from_node, self.to_node, float(demand))
 
@@ -324,16 +327,17 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.graph.set_graph("utility")
 
         if self.chb_set_sub_area.isChecked():
-            demand = self.set_sub_area()
+            self.matrix = self.set_sub_area()
+            print(self.matrix.index)
 
             # Rebuild graph for external ODs
-            new_centroids = np.unique(demand.reset_index()[["origin id", "destination id"]].to_numpy().reshape(-1))
+            new_centroids = np.unique(self.matrix.reset_index()[["origin id", "destination id"]].to_numpy().reshape(-1))
             self.graph.prepare_graph(new_centroids)
             self.graph.set_graph("utility")
 
         rc = RouteChoice(self.graph)
-        rc.add_demand(demand)  # replace variable
-        rc.set_choice_set_generation(**self.__kwargs)
+        rc.add_demand(self.matrix)  # replace variable
+        rc.set_choice_set_generation(self.__algo, **self.__kwargs)
         rc.prepare()
 
         if arg == "build":
@@ -351,63 +355,28 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
     def set_sub_area(self):
         # Sub-area prep
         zones_of_interest = self.__get_zones_of_interest()  # Select zones of interest
-        print(zones_of_interest)
         zones = self.project.zoning.data.set_index("zone_id")
         zones = zones.loc[zones_of_interest]
 
         self.__get_parameters()
 
         sub_area = SubAreaAnalysis(self.graph, zones, self.matrix)
-        sub_area.rc.set_choice_set_generation(**self.__kwargs)
+        sub_area.rc.set_choice_set_generation(self.__algo, **self.__kwargs)
         sub_area.rc.execute(perform_assignment=True)
 
         return sub_area.post_process()
 
     def set_sub_area_use(self):
-        for item in [self.rdo_selected_zones, self.rdo_zones_from_layer, self.tbl_zones]:
+        for item in [self.cob_layer, self.rdo_selected_zones, self.rdo_all_zones]:
             item.setEnabled(self.chb_set_sub_area.isChecked())
 
     def __get_zones_of_interest(self):
-        if self.error:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
-            return
-
-        if self.rdo_zones_from_layer.isChecked():
+        if self.rdo_selected_zones.isChecked():
             zones_to_use = [feat["zone_id"] for feat in self.zones_layer.selectedFeatures()]
-        elif self.rdo_zones_from_layer.isChecked():
+        elif self.rdo_all_zones.isChecked():
             zones_to_use = []
             for i, zone in enumerate(self.zones.keys()):
                 if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
                     zones_to_use.append(zone)
 
         return zones_to_use
-
-    def set_show_zones(self):
-        self.tbl_zones.setEnabled(self.rdo_selected_zones.isChecked())
-        self.tbl_zones.clear()
-
-        self.tbl_zones.setColumnWidth(0, 100)
-        self.tbl_zones.setColumnWidth(1, 60)
-        self.tbl_zones.setHorizontalHeaderLabels(["Zone ID", "Use?"])
-
-        if self.zones is not None:
-            table = self.tbl_zones
-            table.setRowCount(len(self.zones))
-            for i, zone in enumerate(self.zones.keys()):
-                item1 = QTableWidgetItem(str(zone))
-                item1.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-                table.setItem(i, 0, item1)
-
-                chb1 = QCheckBox()
-                chb1.setChecked(False)
-                chb1.setEnabled(True)
-                table.setCellWidget(i, 1, self.centers_item(chb1))
-
-    def use_selected_zones(self):
-        self.tbl_zones.setEnabled(not self.rdo_zones_from_layer.isChecked())
-        self.tbl_zones.clear()
-
-        self.tbl_zones.setHorizontalHeaderLabels(["Zone ID", "Use?"])
-
-        if self.zones_layer.selectedFeatureCount() == 0:
-            self.error == "Select at least one zone to proceed with sub-area analysis"

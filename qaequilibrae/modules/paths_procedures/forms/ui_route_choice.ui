@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>814</width>
-    <height>543</height>
+    <height>547</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>AequilibraE - Route Choice</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_9">
+   <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="font">
       <font>
@@ -233,81 +233,180 @@
       <attribute name="title">
        <string>Critical analysis</string>
       </attribute>
-      <widget class="QGroupBox" name="box_select_link_analysis">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>381</width>
-         <height>481</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Select link analysis</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QCheckBox" name="chb_set_select_link">
-          <property name="text">
-           <string>Set select link analysis</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QGroupBox" name="box_sub_area">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>10</y>
-         <width>371</width>
-         <height>481</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Sub-area analysis</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_6">
-        <item row="4" column="0" colspan="2">
-         <widget class="QTableWidget" name="tbl_zones">
-          <column>
-           <property name="text">
-            <string>Zone ID</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Use?</string>
-           </property>
-          </column>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QRadioButton" name="rdo_zones_from_layer">
-          <property name="text">
-           <string>Use selected zones from layer</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QRadioButton" name="rdo_selected_zones">
-          <property name="text">
-           <string>Select zones</string>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QCheckBox" name="chb_set_sub_area">
-          <property name="text">
-           <string>Set sub-area analysis</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_10">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="box_select_link_analysis">
+         <property name="title">
+          <string>Select link analysis</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="2" column="1" colspan="2">
+           <widget class="QComboBox" name="cob_direction"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>Query name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QLineEdit" name="ln_qry_name">
+            <property name="placeholderText">
+             <string>query_name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="but_add_qry">
+            <property name="text">
+             <string>Add to query</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="but_save_qry">
+            <property name="text">
+             <string>Save query</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QLineEdit" name="ln_link_id">
+            <property name="placeholderText">
+             <string>12345</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Link ID</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="3">
+           <widget class="QGroupBox" name="gridGroupBox">
+            <property name="title">
+             <string>Outputs</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_8">
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="checkBox">
+               <property name="text">
+                <string>Save select link matrices</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="checkBox_2">
+               <property name="text">
+                <string>Save select link results</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
+              <widget class="QLineEdit" name="lineEdit_3">
+               <property name="placeholderText">
+                <string>output_name</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_22">
+            <property name="text">
+             <string>Direction</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="chb_set_select_link">
+            <property name="text">
+             <string>Set select link analysis</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QPushButton" name="but_clear_qry">
+            <property name="text">
+             <string>Clear</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="3">
+           <widget class="QTableWidget" name="tbl_selected_links">
+            <column>
+             <property name="text">
+              <string>Links</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Query name</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="box_sub_area">
+         <property name="title">
+          <string>Sub-area analysis</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="3" column="1">
+           <widget class="QRadioButton" name="rdo_all_zones">
+            <property name="text">
+             <string>Use all zones</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QgsMapLayerComboBox" name="cob_layer"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="chb_set_sub_area">
+            <property name="text">
+             <string>Set sub-area analysis</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_24">
+            <property name="text">
+             <string>Zoning layer</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QRadioButton" name="rdo_selected_zones">
+            <property name="text">
+             <string>Selected features only</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tab_workload">
       <attribute name="title">
@@ -466,6 +565,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
