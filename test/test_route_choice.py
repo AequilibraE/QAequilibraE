@@ -45,9 +45,6 @@ def test_execute_single(coquimbo_project, qtbot):
 def test_assign_and_save(ae_with_project, qtbot, save):
     dialog = RouteChoiceDialog(ae_with_project)
 
-    # dialog.matrices.reload()
-    # dialog.list_matrices()
-
     # Choice set generation
     dialog.max_routes.setText("3")
 
@@ -141,7 +138,7 @@ def test_sub_area_analysis(coquimbo_project, qtbot):
 
     # Choice set generation
     dialog.max_routes.setText("5")
-    dialog.cob_algo.setCurrentText("Link Penalization")
+    dialog.cob_algo.setCurrentText("BFSLE")
     dialog.penalty.setText("1.02")
 
     # Route choice
@@ -162,6 +159,60 @@ def test_sub_area_analysis(coquimbo_project, qtbot):
     dialog.chb_save_choice_set.setChecked(True)
     dialog.cob_matrices.setCurrentText("b''")
     qtbot.mouseClick(dialog.but_perform_assig, Qt.LeftButton)
+
+
+def test_select_link_analysis(coquimbo_project, qtbot):
+    pth = join(coquimbo_project.project.project_base_path, "matrices/demand.aem")
+    create_matrix(np.arange(1, 134), pth)
+
+    matrices = coquimbo_project.project.matrices
+    matrices.update_database()
+    matrices.reload()
+
+    dialog = RouteChoiceDialog(coquimbo_project)
+
+    dialog.matrices.reload()
+    dialog.list_matrices()
+
+    # Choice set generation
+    dialog.max_routes.setText("5")
+    dialog.cob_algo.setCurrentText("BFSLE")
+    dialog.penalty.setText("1.00")
+
+    # Route choice
+    dialog.cob_net_field.setCurrentText("distance")
+    dialog.ln_parameter.setText("0.011")
+    qtbot.mouseClick(dialog.but_add_to_cost, Qt.LeftButton)
+
+    dialog.ln_psl.setText("1.1")
+
+    # Graph configuration
+    dialog.chb_check_centroids.setChecked(False)
+
+    # Set select link analysis
+    dialog.chb_set_select_link.setChecked(True)
+    dialog.ln_qry_name.setText("sl1")
+    dialog.ln_link_id.setText("7369")
+    dialog.cob_direction.setCurrentText("AB")
+    qtbot.mouseClick(dialog.but_add_qry, Qt.LeftButton)
+    dialog.ln_link_id.setText("20983")
+    dialog.cob_direction.setCurrentText("AB")
+    qtbot.mouseClick(dialog.but_add_qry, Qt.LeftButton)
+    qtbot.mouseClick(dialog.but_save_qry, Qt.LeftButton)
+    dialog.ln_qry_name.setText("sl2")
+    dialog.ln_link_id.setText("7369")
+    dialog.cob_direction.setCurrentText("AB")
+    qtbot.mouseClick(dialog.but_add_qry, Qt.LeftButton)
+    qtbot.mouseClick(dialog.but_save_qry, Qt.LeftButton)
+    dialog.ln_mat_name.setText("select_link_analysis")
+
+    # path = qtbot.screenshot(dialog.tabWidget.widget(1))
+    # print(path)
+
+    # Execute workflow
+    # dialog.chb_save_choice_set.setChecked(True)
+    # dialog.cob_matrices.setCurrentText("b''")
+    # qtbot.mouseClick(dialog.but_perform_assig, Qt.LeftButton)
 
 
 # dialog.ln_parameter.setText("0,15")

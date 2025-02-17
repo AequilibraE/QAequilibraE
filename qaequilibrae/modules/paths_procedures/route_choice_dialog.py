@@ -41,6 +41,9 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.zones = self.project.zoning.all_zones()
         self.__kwargs = None
 
+        self.select_links = {}
+        self.__current_links = []
+
         self.__populate_project_info()
 
         self.__project_nodes = self.project.network.nodes.data.node_id.tolist()
@@ -56,10 +59,17 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.but_build_and_save.clicked.connect(lambda: self.assign_and_save(arg="build"))
         self.but_visualize.clicked.connect(self.execute_single)
         self.chb_set_sub_area.toggled.connect(self.set_sub_area_use)
+        self.chb_set_select_link.toggled.connect(self.set_select_link_use)
+
+        self.but_add_qry.clicked.connect(self.add_query)
+        self.but_save_qry.clicked.connect(self.save_query)
+        self.tbl_selected_links.cellDoubleClicked.connect(self.__remove_select_link_item)
+        self.but_clear_qry.clicked.connect(self.__clean_link_selection)
 
         self.list_matrices()
         self.set_show_matrices()
         self.set_sub_area_use()
+        self.set_select_link_use()
 
     def __populate_project_info(self):
         with read_and_close(database_connection("network")) as conn:
@@ -226,7 +236,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         else:
             self.__kwargs["store_results"] = False
             self.__algo = "lp"
-        print(0)
 
     def execute_single(self):
         self.from_node = self.__validate_node_id(self.node_from.text())
@@ -322,7 +331,9 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         rc = RouteChoice(self.graph)
         rc.add_demand(self.matrix)  # replace variable
         rc.set_choice_set_generation(self.__algo, **self.__kwargs)
-        rc.prepare()
+
+        if not self.chb_set_sub_area.isChecked():
+            rc.prepare()
 
         if arg == "build":
             rc.set_save_routes(self.project.project_base_path)
@@ -364,3 +375,69 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
                     zones_to_use.append(zone)
 
         return zones_to_use
+
+    def set_select_link_use(self):
+        for item in [
+            self.ln_qry_name,
+            self.ln_link_id,
+            self.cob_direction,
+            self.but_add_qry,
+            self.but_save_qry,
+            self.but_clear_qry,
+            self.tbl_selected_links,
+            self.gridGroupBox,
+        ]:
+            item.setEnabled(self.chb_set_select_link.isChecked())
+
+        self.cob_direction.addItems(["AB", "Both", "BA"])
+
+    def add_query(self):
+        link_id = int(self.ln_link_id.text())
+
+        direction = self.cob_direction.currentText()
+
+        if direction == "AB":
+            self.__current_links.extend([(link_id, 1)])
+        elif direction == "BA":
+            self.__current_links.extend([(link_id, -1)])
+        else:
+            self.__current_links.extend([(link_id, 0)])
+
+    def save_query(self):
+        query_name = self.ln_qry_name.text()
+
+        if len(query_name) == 0 or not query_name:
+            self.error = self.tr("Missing query name")
+
+        if query_name in self.select_links:
+            self.error = self.tr("Query name already used")
+
+        if not self.__current_links:
+            self.error = self.tr("Please set a link selection")
+
+        if self.error:
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
+
+        self.select_links[query_name] = self.__current_links
+
+        self.tbl_selected_links.clearContents()
+        self.tbl_selected_links.setRowCount(len(self.select_links.keys()))
+
+        for i, (name, links) in enumerate(self.select_links.items()):
+            self.tbl_selected_links.setItem(i, 0, QTableWidgetItem(str(links)))
+            self.tbl_selected_links.setItem(i, 1, QTableWidgetItem(str(name)))
+
+        self.__current_links = []
+
+    def __remove_select_link_item(self, line):
+        key = list(self.select_links.keys())[line]
+        self.tbl_selected_links.removeRow(line)
+
+        self.select_links.pop(key)
+
+    def __clean_link_selection(self):
+        self.ln_qry_name.clear()
+        self.ln_link_id.clear()
+        self.cob_direction.setCurrentIndex(0)
+        self.__current_links = []
