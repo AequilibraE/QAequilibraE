@@ -3,6 +3,8 @@ import numpy as np
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsVectorLayer, QgsProject, QgsField, QgsFeature, QgsSimpleLineSymbolLayer
 
+from qaequilibrae.modules.common_tools.auxiliary_functions import get_vector_layer_by_name
+
 
 def plot_results(results, from_node, to_node, link_layer):
     links = set_links_width(results)
@@ -15,9 +17,8 @@ def plot_results(results, from_node, to_node, link_layer):
     temp_layer_name = f"route_set-{from_node}-{to_node}"
 
     # Check if layer exists, and if so, remove it
-    all_layers = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
-    if temp_layer_name in all_layers:
-        lyr = QgsProject.instance().mapLayersByName(temp_layer_name)[0]
+    lyr = get_vector_layer_by_name(temp_layer_name)
+    if lyr is not None:
         QgsProject.instance().removeMapLayers([lyr.id()])
 
     temp_layer = QgsVectorLayer("LineString?crs={}".format(link_layer.crs().authid()), temp_layer_name, "memory")

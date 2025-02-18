@@ -11,6 +11,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
 
+from qaequilibrae.modules.common_tools.auxiliary_functions import get_vector_layer_by_name
 from qaequilibrae.modules.matrix_procedures import list_matrices
 from qaequilibrae.modules.paths_procedures.execute_single_dialog import VisualizeSingle
 from qaequilibrae.modules.paths_procedures.plot_route_choice import plot_results
@@ -36,8 +37,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.all_modes = {}
         self._pairs = []
         self.link_layer = qgis_project.layers["links"][0]
-        self.zones_layer = qgis_project.layers["zones"][0]
-        self.zones = self.project.zoning.all_zones()
         self.__kwargs = None
 
         self.select_links = {}
@@ -367,17 +366,16 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         return sub_area.post_process()
 
     def set_sub_area_use(self):
-        for item in [self.cob_layer, self.rdo_selected_zones, self.rdo_all_zones]:
+        for item in [self.cob_zoning_layer, self.rdo_selected_zones, self.rdo_all_zones, self.label_24]:
             item.setEnabled(self.chb_set_sub_area.isChecked())
 
+        self.chb_set_select_link.setEnabled(not self.chb_set_sub_area.isChecked())
+
     def __get_zones_of_interest(self):
-        if self.rdo_selected_zones.isChecked():
-            zones_to_use = [feat["zone_id"] for feat in self.zones_layer.selectedFeatures()]
-        elif self.rdo_all_zones.isChecked():
-            zones_to_use = []
-            for i, zone in enumerate(self.zones.keys()):
-                if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
-                    zones_to_use.append(zone)
+        self.zones = get_vector_layer_by_name(self.cob_zoning_layer.currentText())
+
+        if self.chb_selected_zones.isChecked():
+            zones_to_use = [feat["zone_id"] for feat in self.zones.selectedFeatures()]
 
         return zones_to_use
 
@@ -391,10 +389,14 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             self.but_clear_qry,
             self.tbl_selected_links,
             self.gridGroupBox,
+            self.label_21,
+            self.label_22,
+            self.label_23,
         ]:
             item.setEnabled(self.chb_set_select_link.isChecked())
 
         self.cob_direction.addItems(["AB", "Both", "BA"])
+        self.chb_set_sub_area.setEnabled(not self.chb_set_select_link.isChecked())
 
     def add_query(self):
         link_id = int(self.ln_link_id.text())

@@ -386,7 +386,7 @@
            </spacer>
           </item>
           <item row="1" column="1" colspan="2">
-           <widget class="QgsMapLayerComboBox" name="cob_layer"/>
+           <widget class="QgsMapLayerComboBox" name="cob_zoning_layer"/>
           </item>
           <item row="0" column="0">
            <widget class="QCheckBox" name="chb_set_sub_area">
