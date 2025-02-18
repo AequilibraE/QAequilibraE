@@ -268,6 +268,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.dlg2 = VisualizeSingle(
             qgis.utils.iface.mainWindow(),
             self.graph,
+            self.__algo,
             self.__kwargs,
             float(self.ln_demand.text()),
             self.link_layer,

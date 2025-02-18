@@ -13,7 +13,12 @@ def plot_results(results, from_node, to_node, link_layer):
     selected_features = [f for f in link_layer.getSelectedFeatures()]
 
     temp_layer_name = f"route_set-{from_node}-{to_node}"
-    QgsProject.instance().removeMapLayers([temp_layer_name])
+
+    # Check if layer exists, and if so, remove it
+    all_layers = [layer.name() for layer in QgsProject.instance().mapLayers().values()]
+    if temp_layer_name in all_layers:
+        lyr = QgsProject.instance().mapLayersByName(temp_layer_name)[0]
+        QgsProject.instance().removeMapLayers([lyr.id()])
 
     temp_layer = QgsVectorLayer("LineString?crs={}".format(link_layer.crs().authid()), temp_layer_name, "memory")
     provider = temp_layer.dataProvider()

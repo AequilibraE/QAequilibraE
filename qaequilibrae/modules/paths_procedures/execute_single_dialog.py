@@ -14,17 +14,18 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(os.path.dirname(__file__), "forms/ui
 
 
 class VisualizeSingle(QDialog, FORM_CLASS):
-    def __init__(self, iface, graph, kwargs, demand, link_layer):
+    def __init__(self, iface, graph, algorithm, kwargs, demand, link_layer):
         QDialog.__init__(self)
         self.iface = iface
         self.setupUi(self)
 
         self.graph = graph
+        self._algo = algorithm
         self._kwargs = kwargs
         self.demand = demand
         self.link_layer = link_layer
 
-        self.debouncer = Debouncer(delay_ms=3000, callback=self.on_input_changed)
+        self.debouncer = Debouncer(delay_ms=4_000, callback=self.on_input_changed)
 
         self.node_from.textChanged.connect(self._on_node_from_changed)
         self.node_to.textChanged.connect(self._on_node_to_changed)
@@ -40,7 +41,7 @@ class VisualizeSingle(QDialog, FORM_CLASS):
         self.graph.set_graph("utility")
 
         rc = RouteChoice(self.graph)
-        rc.set_choice_set_generation(**self._kwargs)
+        rc.set_choice_set_generation(self._algo, **self._kwargs)
         _ = rc.execute_single(self.from_node, self.to_node, self.demand)
 
         plot_results(rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
