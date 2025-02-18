@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 
+import geopandas as gpd
 import numpy as np
 import qgis
 from aequilibrae.paths import SubAreaAnalysis, RouteChoice
@@ -10,8 +11,10 @@ from aequilibrae.utils.db_utils import read_and_close
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
+from qgis._core import QgsFeatureRequest
 
-from qaequilibrae.modules.common_tools.auxiliary_functions import get_vector_layer_by_name
+from qaequilibrae.modules.common_tools.auxiliary_functions import get_vector_layer_by_name, model_area_polygon
+from qaequilibrae.modules.common_tools import geodataframe_from_layer
 from qaequilibrae.modules.matrix_procedures import list_matrices
 from qaequilibrae.modules.paths_procedures.execute_single_dialog import VisualizeSingle
 from qaequilibrae.modules.paths_procedures.plot_route_choice import plot_results
@@ -180,22 +183,24 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         if mode_id not in self.project.network.graphs:
             self.project.network.build_graphs(modes=[mode_id])
 
-        self.graph = self.project.network.graphs[mode_id]
+        graph = self.project.network.graphs[mode_id]
 
-        field = np.zeros((1, self.graph.network.shape[0]))
+        field = np.zeros((1, graph.network.shape[0]))
         for idx, (par, col) in enumerate(self.utility):
-            field += par * self.graph.network[col].array
+            field += par * graph.network[col].array
 
-        self.graph.network = self.graph.network.assign(utility=0)
-        self.graph.network["utility"] = field.reshape(self.graph.network.shape[0], 1)
+        graph.network = graph.network.assign(utility=0)
+        graph.network["utility"] = field.reshape(graph.network.shape[0], 1)
 
         if self.chb_chosen_links.isChecked():
-            self.graph = self.project.network.graphs.pop(mode_id)
+            graph = self.project.network.graphs.pop(mode_id)
             idx = self.link_layer.dataProvider().fieldNameIndex("link_id")
             remove = [feat.attributes()[idx] for feat in self.link_layer.selectedFeatures()]
-            self.graph.exclude_links(remove)
+            graph.exclude_links(remove)
 
-        self.graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
+        graph.set_blocked_centroid_flows(self.chb_check_centroids.isChecked())
+
+        return graph
 
     def __get_parameters(self):
         # parameter needs to be numeric
@@ -249,14 +254,14 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         nodes_of_interest = np.array([self.from_node, self.to_node], dtype=np.int64)
 
-        self.configure_graph()
-        self.graph.prepare_graph(nodes_of_interest)
-        self.graph.set_graph("utility")
+        graph = self.configure_graph()
+        graph.prepare_graph(nodes_of_interest)
+        graph.set_graph("utility")
 
         if not self.__kwargs:
             self.__get_parameters()
 
-        rc = RouteChoice(self.graph)
+        rc = RouteChoice(graph)
         rc.set_choice_set_generation(self.__algo, **self.__kwargs)
 
         _ = rc.execute_single(self.from_node, self.to_node, float(demand))
@@ -265,7 +270,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.dlg2 = VisualizeSingle(
             qgis.utils.iface.mainWindow(),
-            self.graph,
+            graph,
             self.__algo,
             self.__kwargs,
             float(self.ln_demand.text()),
@@ -315,19 +320,22 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
             return
 
-        self.configure_graph()
-        self.graph.prepare_graph(self.graph.centroids)
-        self.graph.set_graph("utility")
+        graph = self.configure_graph()
+        graph.prepare_graph(graph.centroids)
+        graph.set_graph("utility")
 
+        print(type(self.matrix))
         if self.chb_set_sub_area.isChecked():
-            self.matrix = self.set_sub_area()
+            zones = self.__get_project_zones()  # Set selectes zones
+            self.matrix = self.set_sub_area(graph, zones, self.matrix)
+            print(type(self.matrix))
 
             # Rebuild graph for external ODs
             new_centroids = np.unique(self.matrix.reset_index()[["origin id", "destination id"]].to_numpy().reshape(-1))
-            self.graph.prepare_graph(new_centroids)
-            self.graph.set_graph("utility")
+            graph.prepare_graph(new_centroids)
+            graph.set_graph("utility")
 
-        rc = RouteChoice(self.graph)
+        rc = RouteChoice(graph)
         rc.add_demand(self.matrix)  # replace variable
         rc.set_choice_set_generation(self.__algo, **self.__kwargs)
         rc.prepare()
@@ -351,33 +359,32 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.exit_procedure()
 
-    def set_sub_area(self):
-        # Sub-area prep
-        zones_of_interest = self.__get_zones_of_interest()  # Select zones of interest
-        zones = self.project.zoning.data.set_index("zone_id")
-        zones = zones.loc[zones_of_interest]
-
+    def set_sub_area(self, graph, zones, matrix):
         self.__get_parameters()
 
-        sub_area = SubAreaAnalysis(self.graph, zones, self.matrix)
+        sub_area = SubAreaAnalysis(graph, zones, matrix)
         sub_area.rc.set_choice_set_generation(self.__algo, **self.__kwargs)
         sub_area.rc.execute(perform_assignment=True)
 
         return sub_area.post_process()
 
     def set_sub_area_use(self):
-        for item in [self.cob_zoning_layer, self.rdo_selected_zones, self.rdo_all_zones, self.label_24]:
+        for item in [self.cob_zoning_layer, self.chb_selected_zones, self.label_24]:
             item.setEnabled(self.chb_set_sub_area.isChecked())
 
         self.chb_set_select_link.setEnabled(not self.chb_set_sub_area.isChecked())
 
-    def __get_zones_of_interest(self):
-        self.zones = get_vector_layer_by_name(self.cob_zoning_layer.currentText())
+    def __get_project_zones(self):
+        zones = get_vector_layer_by_name(self.cob_zoning_layer.currentText())
 
         if self.chb_selected_zones.isChecked():
-            zones_to_use = [feat["zone_id"] for feat in self.zones.selectedFeatures()]
+            zones = zones.materialize(QgsFeatureRequest().setFilterFids(zones.selectedFeatureIds()))
 
-        return zones_to_use
+        zones_gdf = geodataframe_from_layer(zones)
+
+        poly, crs = model_area_polygon(zones_gdf)
+
+        return gpd.GeoDataFrame(geometry=[poly], crs=crs)
 
     def set_select_link_use(self):
         for item in [
@@ -396,6 +403,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             item.setEnabled(self.chb_set_select_link.isChecked())
 
         self.cob_direction.addItems(["AB", "Both", "BA"])
+
         self.chb_set_sub_area.setEnabled(not self.chb_set_select_link.isChecked())
 
     def add_query(self):
