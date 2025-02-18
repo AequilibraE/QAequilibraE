@@ -220,12 +220,9 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         # TODO: Check penalty
 
-        self.num_routes = int(self.max_routes.text())
-        self.rc_depth = int(self.max_depth.text())
-
         self.__kwargs = {
-            "max_routes": self.num_routes,
-            "max_depth": self.rc_depth,
+            "max_routes": int(self.max_routes.text()),
+            "max_depth": int(self.max_depth.text()),
             "penalty": float(self.penalty.text()),
             "cutoff_prob": self.cutoff,
             "beta": float(self.ln_psl.text()),
@@ -313,8 +310,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         else:
             self.error = "Check matrices inputs"
 
-        if not self.__kwargs:
-            self.__get_parameters()
+        self.__get_parameters()
 
         if self.error:
             qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
@@ -324,11 +320,9 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         graph.prepare_graph(graph.centroids)
         graph.set_graph("utility")
 
-        print(type(self.matrix))
         if self.chb_set_sub_area.isChecked():
             zones = self.__get_project_zones()  # Set selectes zones
-            self.matrix = self.set_sub_area(graph, zones, self.matrix)
-            print(type(self.matrix))
+            self.matrix = self.set_sub_area(graph, zones)
 
             # Rebuild graph for external ODs
             new_centroids = np.unique(self.matrix.reset_index()[["origin id", "destination id"]].to_numpy().reshape(-1))
@@ -359,14 +353,17 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         self.exit_procedure()
 
-    def set_sub_area(self, graph, zones, matrix):
-        self.__get_parameters()
-
-        sub_area = SubAreaAnalysis(graph, zones, matrix)
+    def set_sub_area(self, graph, zones):
+        sub_area = SubAreaAnalysis(graph, zones, self.matrix)
         sub_area.rc.set_choice_set_generation(self.__algo, **self.__kwargs)
         sub_area.rc.execute(perform_assignment=True)
 
-        return sub_area.post_process()
+        # I don't know why but origin and destination ID were assumed to be strings, which was
+        # raising an error when assembling the COO Matrix. We use infer objects to ensure that
+        # indexes are numeric integers (in this case)
+        demand = sub_area.post_process().reset_index().infer_objects()
+        demand = demand.groupby(["origin id", "destination id"]).sum()
+        return demand
 
     def set_sub_area_use(self):
         for item in [self.cob_zoning_layer, self.chb_selected_zones, self.label_24]:
@@ -382,9 +379,9 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         zones_gdf = geodataframe_from_layer(zones)
 
-        poly, crs = model_area_polygon(zones_gdf)
+        self._poly, crs = model_area_polygon(zones_gdf)
 
-        return gpd.GeoDataFrame(geometry=[poly], crs=crs)
+        return gpd.GeoDataFrame(geometry=[self._poly], crs=crs)
 
     def set_select_link_use(self):
         for item in [
