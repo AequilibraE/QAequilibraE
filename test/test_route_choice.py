@@ -119,7 +119,6 @@ def create_matrix(index: np.ndarray, path: str):
     mat.matrices.flush()
 
 
-# @pytest.mark.skip("Not working")
 def test_sub_area_analysis(coquimbo_project, qtbot):
     pth = join(coquimbo_project.project.project_base_path, "matrices/demand.aem")
     create_matrix(np.arange(1, 134), pth)
@@ -162,6 +161,11 @@ def test_sub_area_analysis(coquimbo_project, qtbot):
     dialog.chb_save_choice_set.setChecked(True)
     dialog.cob_matrices.setCurrentText("b''")
     qtbot.mouseClick(dialog.but_perform_assig, Qt.LeftButton)
+
+    pth = Path(dialog.project.project_base_path)
+    conn = sqlite3.connect(pth / "results_database.sqlite")
+    results = [x[0] for x in conn.execute("SELECT name FROM sqlite_master WHERE type ='table'").fetchall()]
+    assert "route_choice_for_subarea_uncompressed" in results
 
 
 def test_select_link_analysis(coquimbo_project, qtbot):

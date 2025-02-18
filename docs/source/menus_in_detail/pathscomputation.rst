@@ -181,6 +181,15 @@ layer will be automatically joined with the links layer.
 
 Now we can revisit the instructions for :ref:`siouxfalls-stacked-bandwidth`
 
+Route choice
+------------
+
+With route choice sub-module it is possible to create choice sets through multiple algorithms
+and also assign trips to the network using the traditional path-size logit. Route choice
+procedure tab looks like this:
+
+
+
 .. Video tutorial
 .. ~~~~~~~~~~~~~~
 

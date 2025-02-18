@@ -206,25 +206,36 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         # parameter needs to be numeric
         if not self.max_routes.text().isdigit():
             self.error = "Max. routes needs to be a numeric integer value"
+        max_routes = int(self.max_routes.text())
 
         if not self.max_depth.text().isdigit():
             self.error = "Max. depth needs to be a numeric integer value"
+        max_depth = int(self.max_depth.text())
+
+        if max_depth <= 0 and max_routes <= 0:
+            self.error = "One of max. routes or max. depth has to be greater than 0"
 
         # Check cutoff
         if not self.ln_cutoff.text().replace(".", "").isdigit():
             self.error = "Probability cutoff needs to be a float number"
 
-        self.cutoff = float(self.ln_cutoff.text())
-        if self.cutoff < 0 or self.cutoff > 1:
+        cutoff = float(self.ln_cutoff.text())
+        if cutoff < 0 or cutoff > 1:
             self.error = "Probability cutoff assumes values between 0 and 1"
 
-        # TODO: Check penalty
+        # Check penalty
+        if not self.penalty.text().replace(".", "").isdigit():
+            self.error = "Penalty needs to be a float number"
+
+        # Check PSL(beta)
+        if not self.ln_psl.text().replace(".", "").isdigit():
+            self.error = "PSL (beta) needs to be a float number"
 
         self.__kwargs = {
-            "max_routes": int(self.max_routes.text()),
-            "max_depth": int(self.max_depth.text()),
+            "max_routes": max_routes,
+            "max_depth": max_depth,
             "penalty": float(self.penalty.text()),
-            "cutoff_prob": self.cutoff,
+            "cutoff_prob": cutoff,
             "beta": float(self.ln_psl.text()),
         }
 
@@ -245,18 +256,17 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         if not demand.replace(".", "").isdigit():
             self.error = "Wrong input value for demand"
 
-        if self.error:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
-            return
-
         nodes_of_interest = np.array([self.from_node, self.to_node], dtype=np.int64)
 
         graph = self.configure_graph()
         graph.prepare_graph(nodes_of_interest)
         graph.set_graph("utility")
 
-        if not self.__kwargs:
-            self.__get_parameters()
+        self.__get_parameters()
+
+        if self.error:
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            return
 
         rc = RouteChoice(graph)
         rc.set_choice_set_generation(self.__algo, **self.__kwargs)
@@ -358,7 +368,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         sub_area.rc.set_choice_set_generation(self.__algo, **self.__kwargs)
         sub_area.rc.execute(perform_assignment=True)
 
-        # I don't know why but origin and destination ID were assumed to be strings, which was
+        # I don't know why but origin and destination ID are assumed to be strings, which is
         # raising an error when assembling the COO Matrix. We use infer objects to ensure that
         # indexes are numeric integers (in this case)
         demand = sub_area.post_process().reset_index().infer_objects()
@@ -379,9 +389,9 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         zones_gdf = geodataframe_from_layer(zones)
 
-        self._poly, crs = model_area_polygon(zones_gdf)
+        poly, crs = model_area_polygon(zones_gdf)
 
-        return gpd.GeoDataFrame(geometry=[self._poly], crs=crs)
+        return gpd.GeoDataFrame(geometry=[poly], crs=crs)
 
     def set_select_link_use(self):
         for item in [
