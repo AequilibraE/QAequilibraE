@@ -5,8 +5,8 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from aequilibrae.matrix.aequilibrae_matrix import AequilibraeMatrix
 from PyQt5.QtCore import Qt
+from aequilibrae.matrix.aequilibrae_matrix import AequilibraeMatrix
 from qgis.core import QgsProject
 
 from qaequilibrae.modules.matrix_procedures.results_lister import list_results

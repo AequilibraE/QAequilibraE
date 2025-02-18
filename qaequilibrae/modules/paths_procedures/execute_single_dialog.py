@@ -3,9 +3,8 @@ import os
 import numpy as np
 from aequilibrae.paths.route_choice import RouteChoice
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtCore import pyqtSlot
-
+from qgis.PyQt.QtWidgets import QDialog
 
 from qaequilibrae.modules.common_tools.debouncer import Debouncer
 from qaequilibrae.modules.paths_procedures.plot_route_choice import plot_results

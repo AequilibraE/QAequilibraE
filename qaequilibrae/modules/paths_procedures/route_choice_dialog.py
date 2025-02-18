@@ -3,7 +3,6 @@ import os
 import sys
 
 import numpy as np
-import pandas as pd
 import qgis
 from aequilibrae.paths import SubAreaAnalysis, RouteChoice
 from aequilibrae.project.database_connection import database_connection
