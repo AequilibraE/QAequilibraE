@@ -185,9 +185,131 @@ Route choice
 ------------
 
 With route choice sub-module it is possible to create choice sets through multiple algorithms
-and also assign trips to the network using the traditional path-size logit. Route choice
-procedure tab looks like this:
+and also assign trips to the network using the traditional path-size logit.
 
+In the tab "Route choice model", we'll add the model configurations. It consists of
+three different boxes. The first box "*Choice set generation*", in which we input parameters to 
+build the choice models. In the "*Route choice model"*, we'll add the parameters for the route 
+choice model, such as the cost function and the PSL (beta) value. Finally, in 
+"*Graph configuration*" we set up the graph used for computation.
+
+.. image:: ../images/route_choice_1.png
+    :width: 750
+    :align: center
+    :alt: Route Choice model tab
+
+In the tab "Critical analysis", we can select if we want to run one of select link or sub-area 
+analysis. These analysis cannot be run at the same time in QAequilibraE. If you run sub-area 
+analysis, all OD pairs with demand are considered for computation. To select only a few pairs
+of interest, we encourage you to take a look at 
+`Route choice with sub-area analysis <https://www.aequilibrae.com/develop/python/route_choice/_auto_examples/plot_subarea_analysis.html>`_ 
+at AequilibraE's python documentation and run this task outside QGIS.
+
+.. image:: ../images/route_choice_2.png
+    :width: 750
+    :align: center
+    :alt: Critical analysis tab
+
+Lastly, the tab "Workload" consists in running the workflows. The first box, "*Execute single*"
+consists in computing the route choices between two different nodes and visualize it, while the
+second box "*Matrix*" allows selecting the demand data used in the model, and which tasks we'll
+execute: only build the choice sets or assign the demand for route choice.
+
+.. image:: ../images/route_choice_3.png
+    :width: 750
+    :align: center
+    :alt: Workload tab
+
+We can run different workflows with the route choice sub-model. We'll briefly present them.
+
+Basic route choice
+~~~~~~~~~~~~~~~~~~
+
+In this example, we'll generate a route choice for Coquimbo. As this example folder does not
+contain any demand matrix, we can manually create an open layer and use its data to import the
+matrix to the project, as shown in :ref:`importing_matrices`.
+
+.. _basic_route_choice_setting:
+
+.. image:: ../images/route_choice_4.png
+    :width: 750
+    :align: center
+    :alt: Basic route choice - tab 0
+
+We start setting the route choice parameters. In the "Choice set generation" box, we select the algorithm
+to be one of BFLSE or Link Penalization, choose the values for probability cutoff and penalty, and
+choose a positive value for one of maximum number of routes or depth.
+
+In the box "Route choice model" box, we configure our cost function. In this example, it is a
+function of distance, but could be any other numeric field, such as travel time or tolls.
+We then add the parameters to the cost function and it will appear in the cost function box. We can
+change the cost function by cleaning it and adding it one more time. To add more parameters to the
+cost function, just change the values and click in "Add to cost function" one more time.
+
+Regarding "Graph configuration", we'll use the network for cars and allow flows through centroids.
+
+We can now move directly to the "Workload" tab.
+
+.. image:: ../images/route_choice_5.png
+    :width: 750
+    :align: center
+    :alt: Basic route choice - tab 1
+
+A new window will appear and if we are done with the route choice set generation, we can close it.
+But for the sake of this example, we add another OD pair and set the desired number of routes. 
+
+.. image:: ../images/route_choice_6.png
+    :align: center
+    :alt: Basic route choice - execute single dialog
+
+After a few seconds, the output visualization for the routes is shown in the map canvas and we
+can close the Execute Single window. The figure below presents the route choice sets, in which
+the line width corresponds to the probability of choosing each link.
+
+.. image:: ../images/route_choice_7.png
+    :align: center
+    :alt: Basic route choice - map canva
+
+Build choice sets
+~~~~~~~~~~~~~~~~~
+
+.. image:: ../images/route_choice_8.png
+    :width: 750
+    :align: center
+    :alt: Basic route choice - only build choice sets
+
+Perform assignment
+~~~~~~~~~~~~~~~~~~
+
+.. image:: ../images/route_choice_9.png
+    :width: 750
+    :align: center
+    :alt: Basic route choice - assignment
+
+Sub-area analysis
+~~~~~~~~~~~~~~~~~
+
+To run sub-area analysis, we have to set up the parameters for route choice, as presented
+:ref:`here <basic_route_choice_setting>`. Then we go straight to the "Critical analysis" tab
+and toggle the "Set sub-area analysis" checkbox, which enables us to choose a zone to proceed
+with the analysis. In this example, we select a couple zones in Coquimbo, and toggle the
+checkbox "Selected features only". We could also use an external polygon layer with the desired
+area, so that we use all the layer features rather than a part of it.
+
+.. image:: ../images/route_choice_10.png
+    :width: 750
+    :align: center
+    :alt: Basic route choice - sub-area configs
+
+Finally, we can run the assignment using all cores of our demand matrix for computation. In
+a couple seconds, the route choice window is automatically closed, indicating the end of the
+procedure.
+
+Select link analysis
+~~~~~~~~~~~~~~~~~~~~~
+
+The left portion of the "Critical analysis" tab corresponds to the select link analysis.
+To run it, we have to 
 
 
 .. Video tutorial
