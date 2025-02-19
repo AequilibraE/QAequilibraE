@@ -1,5 +1,4 @@
 import numpy as np
-
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsVectorLayer, QgsProject, QgsField, QgsFeature, QgsSimpleLineSymbolLayer
 

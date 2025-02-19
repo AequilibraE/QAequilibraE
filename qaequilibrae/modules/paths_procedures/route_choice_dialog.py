@@ -13,8 +13,8 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QCheckBox, QDialog
 from qgis._core import QgsFeatureRequest
 
-from qaequilibrae.modules.common_tools.auxiliary_functions import get_vector_layer_by_name, model_area_polygon
 from qaequilibrae.modules.common_tools import geodataframe_from_layer
+from qaequilibrae.modules.common_tools.auxiliary_functions import get_vector_layer_by_name, model_area_polygon
 from qaequilibrae.modules.matrix_procedures import list_matrices
 from qaequilibrae.modules.paths_procedures.execute_single_dialog import VisualizeSingle
 from qaequilibrae.modules.paths_procedures.plot_route_choice import plot_results
@@ -58,7 +58,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.but_clear_cost.clicked.connect(self.clear_cost_function)
         self.but_perform_assig.clicked.connect(lambda: self.assign_and_save(arg="assign"))
         self.but_build_and_save.clicked.connect(lambda: self.assign_and_save(arg="build"))
-        self.but_visualize.clicked.connect(self.execute_single)
+        self.but_visualize.clicked.connect(lambda: self.assign_and_save(arg="single"))
         self.chb_set_sub_area.toggled.connect(self.set_sub_area_use)
         self.chb_set_select_link.toggled.connect(self.set_select_link_use)
 
@@ -248,48 +248,6 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             self.__kwargs["store_results"] = False
             self.__algo = "lp"
 
-    def execute_single(self):
-        self.from_node = self.__validate_node_id(self.node_from.text())
-        self.to_node = self.__validate_node_id(self.node_to.text())
-
-        demand = self.ln_demand.text()
-        if not demand.replace(".", "").isdigit():
-            self.error = "Wrong input value for demand"
-
-        nodes_of_interest = np.array([self.from_node, self.to_node], dtype=np.int64)
-
-        graph = self.configure_graph()
-        graph.prepare_graph(nodes_of_interest)
-        graph.set_graph("utility")
-
-        self.__get_parameters()
-
-        if self.error:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
-            return
-
-        rc = RouteChoice(graph)
-        rc.set_choice_set_generation(self.__algo, **self.__kwargs)
-
-        _ = rc.execute_single(self.from_node, self.to_node, float(demand))
-
-        plot_results(rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
-
-        self.dlg2 = VisualizeSingle(
-            qgis.utils.iface.mainWindow(),
-            graph,
-            self.__algo,
-            self.__kwargs,
-            float(self.ln_demand.text()),
-            self.link_layer,
-        )
-        self.dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.dlg2.show()
-        self.dlg2.open()
-        # see note in https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QDialog.html#PySide2.QtWidgets.PySide2.QtWidgets.QDialog.exec_
-
-        self.exit_procedure()
-
     def __validate_node_id(self, node_id: str):
         # Check if we have only numbers
         if not node_id.isdigit():
@@ -304,21 +262,49 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
 
         return node_id
 
+    def _build_rc(self, graph):
+        rc = RouteChoice(graph)
+        rc.set_choice_set_generation(self.__algo, **self.__kwargs)
+        return rc
+
+    def _open_visualize_single_dlg(self, graph):
+        self.dlg2 = VisualizeSingle(
+            qgis.utils.iface.mainWindow(),
+            graph,
+            self.__algo,
+            self.__kwargs,
+            float(self.ln_demand.text()),
+            self.link_layer,
+        )
+        self.dlg2.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.dlg2.show()
+        self.dlg2.open()
+        # see note in https://doc.qt.io/qtforpython-5/PySide2/QtWidgets/QDialog.html#PySide2.QtWidgets.PySide2.QtWidgets.QDialog.exec_
+
     def assign_and_save(self, arg):
-        self.set_matrix()
+        if arg == "single":
+            self.from_node = self.__validate_node_id(self.node_from.text())
+            self.to_node = self.__validate_node_id(self.node_to.text())
 
-        if self.chb_use_all_matrices.isChecked():
-            matrix_cores_to_use = self.matrix.names
-        else:
-            matrix_cores_to_use = []
-            for i, mat in enumerate(self.matrix.names):
-                if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
-                    matrix_cores_to_use.append(mat)
+            demand = self.ln_demand.text()
+            if not demand.replace(".", "").isdigit():
+                self.error = "Wrong input value for demand"
 
-        if len(matrix_cores_to_use) > 0:
-            self.matrix.computational_view(matrix_cores_to_use)
         else:
-            self.error = "Check matrices inputs"
+            self.set_matrix()
+
+            if self.chb_use_all_matrices.isChecked():
+                matrix_cores_to_use = self.matrix.names
+            else:
+                matrix_cores_to_use = []
+                for i, mat in enumerate(self.matrix.names):
+                    if self.tbl_array_cores.cellWidget(i, 1).findChildren(QCheckBox)[0].isChecked():
+                        matrix_cores_to_use.append(mat)
+
+            if len(matrix_cores_to_use) > 0:
+                self.matrix.computational_view(matrix_cores_to_use)
+            else:
+                self.error = "Check matrices inputs"
 
         self.__get_parameters()
 
@@ -327,7 +313,11 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             return
 
         graph = self.configure_graph()
-        graph.prepare_graph(graph.centroids)
+
+        nodes_of_interest = (
+            np.array([self.from_node, self.to_node], dtype=np.int64) if arg == "single" else graph.centroids
+        )
+        graph.prepare_graph(nodes_of_interest)
         graph.set_graph("utility")
 
         if self.chb_set_sub_area.isChecked():
@@ -339,29 +329,41 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             graph.prepare_graph(new_centroids)
             graph.set_graph("utility")
 
-        rc = RouteChoice(graph)
-        rc.add_demand(self.matrix)  # replace variable
-        rc.set_choice_set_generation(self.__algo, **self.__kwargs)
-        rc.prepare()
+        rc = self._build_rc(graph)
 
-        if arg == "build":
-            rc.set_save_routes(self.project.project_base_path)
+        if arg == "single":
+            _ = rc.execute_single(self.from_node, self.to_node, float(demand))
 
-        if self.chb_set_select_link.isChecked():
-            rc.set_select_links(self.select_links)
+            plot_results(rc.get_results().to_pandas(), self.from_node, self.to_node, self.link_layer)
 
-        assig = True if arg == "assign" else False
-        rc.execute(perform_assignment=assig)
+            self._open_visualize_single_dlg(graph)
 
-        if self.chb_save_choice_set.isChecked() and assig:
-            name = "route_choice_for_subarea" if self.chb_set_sub_area.isChecked() else "route_choice"
-            rc.save_link_flows(name)
+        else:
+            rc.add_demand(self.matrix)
+            rc.prepare()
 
-        if self.chb_set_select_link.isChecked():
-            if self.chb_save_result.isChecked():
+            if arg == "build":
+                rc.set_save_routes(self.project.project_base_path)
+
+            if self.chb_set_select_link.isChecked():
+                rc.set_select_links(self.select_links)
+
+            assig = True if arg == "assign" else False
+            rc.execute(perform_assignment=assig)
+
+            if self.chb_save_choice_set.isChecked() and assig:
+                name = "route_choice_for_subarea" if self.chb_set_sub_area.isChecked() else "route_choice"
+                rc.save_link_flows(name)
+
+            if self.chb_set_select_link.isChecked() and self.chb_save_result.isChecked():
                 rc.save_select_link_flows(self.ln_mat_name.text())
 
+            if self.chb_set_sub_area.isChecked():
+                self.matrix.to_parquet(os.path.join(self.matrices.fldr, "subarea_demand.parquet"))
+
         self.exit_procedure()
+
+    ###### For sub-area analysis
 
     def set_sub_area(self, graph, zones):
         sub_area = SubAreaAnalysis(graph, zones, self.matrix)
@@ -392,6 +394,8 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         poly, crs = model_area_polygon(zones_gdf)
 
         return gpd.GeoDataFrame(geometry=[poly], crs=crs)
+
+    ###### For select link analysis
 
     def set_select_link_use(self):
         for item in [

@@ -6,11 +6,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 from PyQt5.QtCore import Qt
-from aequilibrae.matrix.aequilibrae_matrix import AequilibraeMatrix
 from qgis.core import QgsProject
 
 from qaequilibrae.modules.matrix_procedures.results_lister import list_results
 from qaequilibrae.modules.paths_procedures.route_choice_dialog import RouteChoiceDialog
+from .utilities import create_matrix
 
 
 def test_execute_single(coquimbo_project, qtbot):
@@ -105,20 +105,6 @@ def test_build_and_save(ae_with_project, qtbot):
     assert counter == 24
 
 
-def create_matrix(index: np.ndarray, path: str):
-    names_list = ["demand"]
-    zones = index.shape[0]
-
-    mat = AequilibraeMatrix()
-    mat.create_empty(zones=zones, matrix_names=names_list, memory_only=False, file_name=path)
-    mat.index[:] = index[:]
-
-    for name in names_list:
-        mat.matrix[name][:, :] = np.full((zones, zones), 10.0)[:, :]
-
-    mat.matrices.flush()
-
-
 def test_sub_area_analysis(coquimbo_project, qtbot):
     pth = join(coquimbo_project.project.project_base_path, "matrices/demand.aem")
     create_matrix(np.arange(1, 134), pth)
@@ -166,6 +152,9 @@ def test_sub_area_analysis(coquimbo_project, qtbot):
     conn = sqlite3.connect(pth / "results_database.sqlite")
     results = [x[0] for x in conn.execute("SELECT name FROM sqlite_master WHERE type ='table'").fetchall()]
     assert "route_choice_for_subarea_uncompressed" in results
+
+    matrices = listdir(dialog.project.matrices.fldr)
+    assert "subarea_demand.parquet" in matrices
 
 
 def test_select_link_analysis(coquimbo_project, qtbot):
@@ -225,19 +214,3 @@ def test_select_link_analysis(coquimbo_project, qtbot):
     conn = sqlite3.connect(pth / "results_database.sqlite")
     results = [x[0] for x in conn.execute("SELECT name FROM sqlite_master WHERE type ='table'").fetchall()]
     assert "select_link_analysis_uncompressed" in results
-
-
-# dialog.ln_parameter.setText("0,15")
-# qtbot.mouseClick(dialog.but_add_to_cost, Qt.LeftButton)
-# messagebar = dialog.iface.messageBar()
-# assert messagebar.messages[1][-1] == 'Input error:Wrong value in parameter.'
-
-# dialog.ln_parameter.setText("abc")
-# qtbot.mouseClick(dialog.but_add_to_cost, Qt.LeftButton)
-# messagebar = dialog.iface.messageBar()
-# assert messagebar.messages[1][-1] == 'Input error:Wrong value in parameter.'
-
-# dialog.ln_parameter.setText("")
-# qtbot.mouseClick(dialog.but_add_to_cost, Qt.LeftButton)
-# messagebar = dialog.iface.messageBar()
-# assert messagebar.messages[1][-1] == 'Input error:Check parameter value.'
