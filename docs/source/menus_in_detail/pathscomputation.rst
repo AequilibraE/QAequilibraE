@@ -273,18 +273,39 @@ the line width corresponds to the probability of choosing each link.
 Build choice sets
 ~~~~~~~~~~~~~~~~~
 
+Within this workflow, we can build and save the choice sets without performing assignment.
+After :ref:`configuring the model parameters <basic_route_choice_setting>`, we can direct
+ourselves to the "Workload" tab, to select our demand matrix and the cores for computation.
+
 .. image:: ../images/route_choice_8.png
     :width: 750
     :align: center
     :alt: Basic route choice - only build choice sets
 
+If you want to use all cores for computation, just let the "Use all" checkbox untoggled after
+choosing the matrix. Otherwise a table with the matrix cores and if they should be used is 
+opened and we can select the cores we want.
+
+Then all we need to do is hit the "Build choice sets only". Once the task is finished, our
+route choice window will automatically close. If you go to the project folder, you will
+notice that there other folders were created, one for each centroid (index) in the demand
+matrix.
+
 Perform assignment
 ~~~~~~~~~~~~~~~~~~
+
+This workflow allows running an assignment with a route choice set and save the choice
+set generated (if we want to). The set up is quite the same as the one above: after 
+:ref:`setting the model parameters up <basic_route_choice_setting>`, we can go to the
+"Workload" tab and select the demand matrix and its cores for computation.
 
 .. image:: ../images/route_choice_9.png
     :width: 750
     :align: center
     :alt: Basic route choice - assignment
+
+To also save the choice sets generated, toggle the "Save route choice set results" otherwise
+only the flows are saved into the results database.
 
 Sub-area analysis
 ~~~~~~~~~~~~~~~~~
@@ -309,8 +330,8 @@ Select link analysis
 ~~~~~~~~~~~~~~~~~~~~~
 
 The left portion of the "Critical analysis" tab corresponds to the select link analysis.
-To run it, we have to 
-
+Its interface is quite similar to the one in Traffic Assignment, in which we can add and
+remove queries with selected links, and save both the matrix and the results in the databse.
 
 .. Video tutorial
 .. ~~~~~~~~~~~~~~
