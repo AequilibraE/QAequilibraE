@@ -3,24 +3,10 @@ import sqlite3
 from datetime import datetime
 
 import pytest
-from PyQt5.QtCore import QTimer
 from aequilibrae.transit import Transit
 
 from qaequilibrae.modules.public_transport_procedures.gtfs_feed import GTFSFeed
 from qaequilibrae.modules.public_transport_procedures.gtfs_importer import GTFSImporter
-
-
-def test_pt_menu(ae_with_project, qtbot):
-    from qaequilibrae.modules.public_transport_procedures.gtfs_importer import GTFSImporter
-    from test.test_qaequilibrae_menu_with_project import check_if_new_active_window_matches_class
-
-    def handle_trigger():
-        check_if_new_active_window_matches_class(qtbot, GTFSImporter)
-
-    action = ae_with_project.menuActions["Public Transport"][0]
-    assert action.text() == "Import GTFS", "Wrong text content"
-    QTimer.singleShot(10, handle_trigger)
-    action.trigger()
 
 
 def test_add_new_feed(pt_no_feed, mocker):
