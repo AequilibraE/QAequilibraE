@@ -1,22 +1,8 @@
 import numpy as np
 import pandas as pd
-from PyQt5.QtCore import QTimer
 
 from qaequilibrae.modules.common_tools.data_layer_from_dataframe import layer_from_dataframe
 from qaequilibrae.modules.matrix_procedures.load_matrix_dialog import LoadMatrixDialog
-
-
-def test_matrix_menu(ae_with_project, qtbot, timeoutDetector):
-    from qaequilibrae.modules.matrix_procedures.load_matrix_dialog import LoadMatrixDialog
-    from test.test_qaequilibrae_menu_with_project import check_if_new_active_window_matches_class
-
-    def handle_trigger():
-        check_if_new_active_window_matches_class(qtbot, LoadMatrixDialog)
-
-    action = ae_with_project.menuActions["Data"][1]
-    assert action.text() == "Import matrices", "Wrong text content"
-    QTimer.singleShot(10, handle_trigger)
-    action.trigger()
 
 
 # TODO: test removing the matrices

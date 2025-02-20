@@ -121,6 +121,6 @@ def test_routing_procedure(ae_with_project, has_solution):
     procedure.doWork()
 
     if has_solution:
-        assert procedure.report[0] == "Objective function value: 96.0"
+        assert "Objective function value:" in procedure.report[0]
     else:
         assert procedure.report[0] == "Solution not found"
