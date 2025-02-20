@@ -6,22 +6,9 @@ from uuid import uuid4
 import numpy as np
 import openmatrix as omx
 import pytest
-from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtCore import Qt
 
 from qaequilibrae.modules.paths_procedures.traffic_assignment_dialog import TrafficAssignmentDialog
-
-
-def test_ta_menu(ae_with_project, qtbot):
-    from qaequilibrae.modules.paths_procedures.traffic_assignment_dialog import TrafficAssignmentDialog
-    from test.test_qaequilibrae_menu_with_project import check_if_new_active_window_matches_class
-
-    def handle_trigger():
-        check_if_new_active_window_matches_class(qtbot, TrafficAssignmentDialog)
-
-    action = ae_with_project.menuActions["Paths and assignment"][2]
-    assert action.text() == "Traffic Assignment", "Wrong text content"
-    QTimer.singleShot(10, handle_trigger)
-    action.trigger()
 
 
 def test_single_class(ae_with_project, qtbot):
