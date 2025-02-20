@@ -142,7 +142,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         valid_params = self.__check_parameter_value(params)
 
         if not valid_params:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1)
             return
 
         if len(self.cost_function) > 0 and self.parameter >= 0:
@@ -309,7 +309,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
         self.__get_parameters()
 
         if self.error:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1)
             return
 
         graph = self.configure_graph()
@@ -442,7 +442,7 @@ class RouteChoiceDialog(QDialog, FORM_CLASS):
             self.error = self.tr("Please set a link selection")
 
         if self.error:
-            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1, duration=5)
+            qgis.utils.iface.messageBar().pushMessage(self.tr("Input error"), self.error, level=1)
             return
 
         self.select_links[query_name] = [self.__current_links]
